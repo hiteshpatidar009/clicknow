@@ -4,10 +4,7 @@
  */
 
 import Joi from "joi";
-import {
-  PROFESSIONAL_CATEGORIES,
-  SPECIALTIES,
-} from "../utils/constants.util.js";
+import { PROFESSIONAL_CATEGORIES } from "../utils/constants.util.js";
 
 const locationSchema = Joi.object({
   address: Joi.string().max(500).optional(),

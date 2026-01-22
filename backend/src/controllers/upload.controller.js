@@ -1,8 +1,3 @@
-/**
- * Upload Controller
- * Handles file upload endpoints
- */
-
 import { storageService, professionalService } from "../services/index.js";
 import ApiResponse from "../utils/response.util.js";
 import { asyncHandler } from "../middlewares/error.middleware.js";
@@ -107,4 +102,4 @@ class UploadController {
   });
 }
 
-export default new UploadController();
+export default UploadController;

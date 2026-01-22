@@ -1,8 +1,3 @@
-/**
- * User Model
- * Defines user data structure and transformations
- */
-
 import { USER_ROLES } from "../utils/constants.util.js";
 
 class UserModel {

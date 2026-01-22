@@ -1,8 +1,3 @@
-/**
- * Booking Service
- * Business logic for booking operations
- */
-
 import {
   bookingRepository,
   professionalRepository,
@@ -42,7 +37,6 @@ class BookingService {
       clientNotes,
     } = bookingData;
 
-    // Validate professional
     const professional = await professionalRepository.findById(professionalId);
     if (!professional) {
       throw new ProfessionalNotFoundError();
@@ -52,7 +46,6 @@ class BookingService {
       throw new ProfessionalNotApprovedError();
     }
 
-    // Check availability
     const hasConflict = await bookingRepository.hasTimeSlotConflict(
       professionalId,
       new Date(bookingDate),
@@ -64,10 +57,8 @@ class BookingService {
       throw new BookingSlotUnavailableError();
     }
 
-    // Calculate duration
     const duration = this.calculateDuration(startTime, endTime);
 
-    // Create booking model
     const bookingModel = BookingModel.forNewBooking({
       clientId,
       professionalId,
@@ -84,7 +75,6 @@ class BookingService {
 
     const booking = await bookingRepository.create(bookingModel.toJSON());
 
-    // Send notification to professional
     const user = await userRepository.findById(professional.userId);
     if (user) {
       await notificationService.sendNewBookingNotification(user.id, {
@@ -174,10 +164,8 @@ class BookingService {
       BOOKING_STATUS.CONFIRMED,
     );
 
-    // Increment booking count
     await professionalRepository.incrementBookingCount(booking.professionalId);
 
-    // Notify client
     await notificationService.sendBookingConfirmationNotification(
       booking.clientId,
       {
@@ -214,7 +202,6 @@ class BookingService {
       reason,
     );
 
-    // Notify client
     await notificationService.sendBookingRejectionNotification(
       booking.clientId,
       {
@@ -252,7 +239,6 @@ class BookingService {
       reason,
     );
 
-    // Notify the other party
     const notifyUserId =
       booking.clientId === userId ?
         (await professionalRepository.findById(booking.professionalId))?.userId
@@ -289,7 +275,6 @@ class BookingService {
 
     const { bookingDate, startTime, endTime } = newSchedule;
 
-    // Check availability for new slot
     const hasConflict = await bookingRepository.hasTimeSlotConflict(
       booking.professionalId,
       new Date(bookingDate),
@@ -336,7 +321,6 @@ class BookingService {
       BOOKING_STATUS.COMPLETED,
     );
 
-    // Notify client to leave review
     await notificationService.sendReviewRequestNotification(booking.clientId, {
       bookingId,
       professionalId: booking.professionalId,
@@ -380,7 +364,6 @@ class BookingService {
 
     for (const booking of bookings) {
       try {
-        // Notify client
         await notificationService.sendBookingReminderNotification(
           booking.clientId,
           {
@@ -390,7 +373,6 @@ class BookingService {
           },
         );
 
-        // Notify professional
         const professional = await professionalRepository.findById(
           booking.professionalId,
         );

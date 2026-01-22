@@ -1,164 +1,158 @@
-/**
- * Authentication Middleware
- * JWT verification and role-based access control
- */
+import jwt from "jsonwebtoken";
+import { appConfig } from "../config/index.js";
+import { userRepository } from "../repositories/index.js";
+import ApiResponse from "../utils/response.util.js";
+import { AuthenticationError } from "../utils/errors.util.js";
+import Logger from "../utils/logger.util.js";
 
-import jwt from 'jsonwebtoken';
-import { appConfig } from '../config/index.js';
-import { userRepository } from '../repositories/index.js';
-import ApiResponse from '../utils/response.util.js';
-import { AuthenticationError } from '../utils/errors.util.js';
-import Logger from '../utils/logger.util.js';
-
-/**
- * Verify JWT token
- */
-export const authenticate = async (req, res, next) => {
-  try {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return ApiResponse.unauthorized(res, 'Access token required');
-    }
-
-    const token = authHeader.split(' ')[1];
-
+class AuthMiddleware {
+  /**
+   * Verify JWT token
+   */
+  authenticate = async (req, res, next) => {
     try {
-      const decoded = jwt.verify(token, appConfig.jwt.secret);
+      const authHeader = req.headers.authorization;
 
-      // Attach user info to request
-      req.user = {
-        userId: decoded.userId,
-        email: decoded.email,
-        role: decoded.role
-      };
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return ApiResponse.unauthorized(res, "Access token required");
+      }
+
+      const token = authHeader.split(" ")[1];
+
+      try {
+        const decoded = jwt.verify(token, appConfig.jwt.secret);
+
+        req.user = {
+          userId: decoded.userId,
+          email: decoded.email,
+          role: decoded.role,
+        };
+
+        next();
+      } catch (error) {
+        if (error instanceof jwt.TokenExpiredError) {
+          return ApiResponse.unauthorized(
+            res,
+            "Token expired",
+            "AUTH_TOKEN_EXPIRED",
+          );
+        }
+        return ApiResponse.unauthorized(
+          res,
+          "Invalid token",
+          "AUTH_INVALID_TOKEN",
+        );
+      }
+    } catch (error) {
+      Logger.error("Authentication middleware error", error);
+      return ApiResponse.serverError(res, "Authentication failed");
+    }
+  };
+
+  /**
+   * Optional authentication - doesn't fail if no token
+   */
+  optionalAuth = async (req, res, next) => {
+    try {
+      const authHeader = req.headers.authorization;
+
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        req.user = null;
+        return next();
+      }
+
+      const token = authHeader.split(" ")[1];
+
+      try {
+        const decoded = jwt.verify(token, appConfig.jwt.secret);
+        req.user = {
+          userId: decoded.userId,
+          email: decoded.email,
+          role: decoded.role,
+        };
+      } catch (error) {
+        req.user = null;
+      }
 
       next();
     } catch (error) {
-      if (error instanceof jwt.TokenExpiredError) {
-        return ApiResponse.unauthorized(res, 'Token expired', 'AUTH_TOKEN_EXPIRED');
-      }
-      return ApiResponse.unauthorized(res, 'Invalid token', 'AUTH_INVALID_TOKEN');
-    }
-  } catch (error) {
-    Logger.error('Authentication middleware error', error);
-    return ApiResponse.serverError(res, 'Authentication failed');
-  }
-};
-
-/**
- * Optional authentication - doesn't fail if no token
- */
-export const optionalAuth = async (req, res, next) => {
-  try {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       req.user = null;
-      return next();
+      next();
     }
-
-    const token = authHeader.split(' ')[1];
-
-    try {
-      const decoded = jwt.verify(token, appConfig.jwt.secret);
-      req.user = {
-        userId: decoded.userId,
-        email: decoded.email,
-        role: decoded.role
-      };
-    } catch (error) {
-      req.user = null;
-    }
-
-    next();
-  } catch (error) {
-    req.user = null;
-    next();
-  }
-};
-
-/**
- * Role-based authorization
- */
-export const authorize = (...roles) => {
-  return (req, res, next) => {
-    if (!req.user) {
-      return ApiResponse.unauthorized(res, 'Authentication required');
-    }
-
-    if (!roles.includes(req.user.role)) {
-      Logger.logAuth('authorization_failed', req.user.userId, false, {
-        requiredRoles: roles,
-        userRole: req.user.role
-      });
-      return ApiResponse.forbidden(res, 'Insufficient permissions');
-    }
-
-    next();
   };
-};
 
-/**
- * Admin only access
- */
-export const adminOnly = authorize('admin');
+  /**
+   * Role-based authorization
+   */
+  authorize = (...roles) => {
+    return (req, res, next) => {
+      if (!req.user) {
+        return ApiResponse.unauthorized(res, "Authentication required");
+      }
 
-/**
- * Professional only access
- */
-export const professionalOnly = authorize('professional', 'admin');
+      if (!roles.includes(req.user.role)) {
+        Logger.logAuth("authorization_failed", req.user.userId, false, {
+          requiredRoles: roles,
+          userRole: req.user.role,
+        });
+        return ApiResponse.forbidden(res, "Insufficient permissions");
+      }
 
-/**
- * Verified user check
- */
-export const verifiedOnly = async (req, res, next) => {
-  try {
-    const user = await userRepository.findById(req.user.userId);
+      next();
+    };
+  };
 
-    if (!user) {
-      return ApiResponse.unauthorized(res, 'User not found');
+  /**
+   * Verified user check
+   */
+  verifiedOnly = async (req, res, next) => {
+    try {
+      const user = await userRepository.findById(req.user.userId);
+
+      if (!user) {
+        return ApiResponse.unauthorized(res, "User not found");
+      }
+
+      if (!user.isVerified) {
+        return ApiResponse.forbidden(res, "Email verification required");
+      }
+
+      next();
+    } catch (error) {
+      Logger.error("Verified only middleware error", error);
+      return ApiResponse.serverError(res);
     }
+  };
 
-    if (!user.isVerified) {
-      return ApiResponse.forbidden(res, 'Email verification required');
+  /**
+   * Active user check
+   */
+  activeOnly = async (req, res, next) => {
+    try {
+      const user = await userRepository.findById(req.user.userId);
+
+      if (!user) {
+        return ApiResponse.unauthorized(res, "User not found");
+      }
+
+      if (!user.isActive) {
+        return ApiResponse.forbidden(res, "Account is deactivated");
+      }
+
+      next();
+    } catch (error) {
+      Logger.error("Active only middleware error", error);
+      return ApiResponse.serverError(res);
     }
+  };
 
-    next();
-  } catch (error) {
-    Logger.error('Verified only middleware error', error);
-    return ApiResponse.serverError(res);
+  get adminOnly() {
+    return this.authorize("admin");
   }
-};
 
-/**
- * Active user check
- */
-export const activeOnly = async (req, res, next) => {
-  try {
-    const user = await userRepository.findById(req.user.userId);
-
-    if (!user) {
-      return ApiResponse.unauthorized(res, 'User not found');
-    }
-
-    if (!user.isActive) {
-      return ApiResponse.forbidden(res, 'Account is deactivated');
-    }
-
-    next();
-  } catch (error) {
-    Logger.error('Active only middleware error', error);
-    return ApiResponse.serverError(res);
+  get professionalOnly() {
+    return this.authorize("professional", "admin");
   }
-};
+}
 
-export default {
-  authenticate,
-  optionalAuth,
-  authorize,
-  adminOnly,
-  professionalOnly,
-  verifiedOnly,
-  activeOnly
-};
+export default new AuthMiddleware();

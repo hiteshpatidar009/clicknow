@@ -1,8 +1,3 @@
-/**
- * Chat Service
- * Business logic for in-app messaging
- */
-
 import {
   chatRepository,
   messageRepository,
@@ -30,7 +25,6 @@ class ChatService {
       throw new Error("Chat not found");
     }
 
-    // Verify user is participant
     if (!chat.participants.includes(userId)) {
       throw new Error("Unauthorized");
     }
@@ -44,7 +38,6 @@ class ChatService {
   async getUserChats(userId, options = {}) {
     const result = await chatRepository.findByUserId(userId, options);
 
-    // Enrich chats with participant info
     const enrichedChats = await Promise.all(
       result.data.map((chat) => this.enrichChat(chat, userId)),
     );
@@ -65,14 +58,12 @@ class ChatService {
       throw new Error("Chat not found");
     }
 
-    // Verify sender is participant
     if (!chat.participants.includes(senderId)) {
       throw new Error("Unauthorized");
     }
 
     const { text, type, attachments } = messageData;
 
-    // Create message
     const message = await messageRepository.createMessage(chatId, {
       senderId,
       text,
@@ -80,14 +71,12 @@ class ChatService {
       attachments: attachments || [],
     });
 
-    // Update chat's last message
     await chatRepository.updateLastMessage(chatId, {
       senderId,
       text,
       type: type || "text",
     });
 
-    // Send push notification to recipient
     const recipientId = chat.participants.find((p) => p !== senderId);
     const sender = await userRepository.findById(senderId);
 
@@ -118,7 +107,6 @@ class ChatService {
       throw new Error("Chat not found");
     }
 
-    // Verify user is participant
     if (!chat.participants.includes(userId)) {
       throw new Error("Unauthorized");
     }
@@ -136,15 +124,12 @@ class ChatService {
       throw new Error("Chat not found");
     }
 
-    // Verify user is participant
     if (!chat.participants.includes(userId)) {
       throw new Error("Unauthorized");
     }
 
-    // Mark all messages as read
     await messageRepository.markAllAsRead(chatId, userId);
 
-    // Update chat unread count
     await chatRepository.markAsRead(chatId, userId);
 
     return true;
@@ -160,12 +145,10 @@ class ChatService {
       throw new Error("Chat not found");
     }
 
-    // Verify user is participant
     if (!chat.participants.includes(userId)) {
       throw new Error("Unauthorized");
     }
 
-    // Get message to verify ownership
     const messages = await messageRepository.getMessages(chatId, { limit: 1 });
     const message = messages.data.find((m) => m.id === messageId);
 
@@ -222,7 +205,6 @@ class ChatService {
       participantDetails: participantDetails.filter(Boolean),
     };
 
-    // Add other participant info for convenience
     if (currentUserId) {
       const otherParticipant = participantDetails.find(
         (p) => p?.id !== currentUserId,

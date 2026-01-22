@@ -1,41 +1,36 @@
-/**
- * Application Configuration
- * Central configuration for all app settings
- */
-
 import dotenv from "dotenv";
-dotenv.config();
+import env from "./env.loader.js";
 
 class AppConfig {
   constructor() {
-    this.env = process.env.NODE_ENV || "development";
-    this.port = parseInt(process.env.PORT, 10) || 3000;
-    this.apiVersion = process.env.API_VERSION || "v1";
+    this.env = env.NODE_ENV;
+    this.port = env.PORT;
+    this.apiVersion = env.API_VERSION;
 
     this.jwt = {
-      secret: process.env.JWT_SECRET || "default-secret-change-in-production",
-      expiresIn: process.env.JWT_EXPIRES_IN || "7d",
-      refreshSecret: process.env.JWT_REFRESH_SECRET || "default-refresh-secret",
-      refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || "30d",
+      secret: env.JWT_SECRET,
+      expiresIn: env.JWT_EXPIRES_IN,
+      refreshSecret: env.JWT_REFRESH_SECRET,
+      refreshExpiresIn: env.JWT_REFRESH_EXPIRES_IN,
     };
 
     this.rateLimit = {
-      windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS, 10) || 900000,
-      maxRequests: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS, 10) || 100,
+      windowMs: env.RATE_LIMIT_WINDOW_MS,
+      maxRequests: env.RATE_LIMIT_MAX_REQUESTS,
     };
 
     this.logging = {
-      level: process.env.LOG_LEVEL || "info",
-      format: process.env.LOG_FORMAT || "combined",
+      level: env.LOG_LEVEL,
+      format: env.LOG_FORMAT,
     };
 
     this.cors = {
-      origin: process.env.CORS_ORIGIN || "*",
+      origin: env.CORS_ORIGIN,
     };
 
     this.pagination = {
-      defaultPageSize: parseInt(process.env.DEFAULT_PAGE_SIZE, 10) || 20,
-      maxPageSize: parseInt(process.env.MAX_PAGE_SIZE, 10) || 100,
+      defaultPageSize: env.DEFAULT_PAGE_SIZE,
+      maxPageSize: env.MAX_PAGE_SIZE,
     };
   }
 
@@ -52,4 +47,4 @@ class AppConfig {
   }
 }
 
-export default new AppConfig();
+export default AppConfig;

@@ -1,8 +1,3 @@
-/**
- * Enquiry Model
- * Defines client enquiry data structure
- */
-
 import { ENQUIRY_STATUS } from "../utils/constants.util.js";
 
 class EnquiryModel {
@@ -16,7 +11,7 @@ class EnquiryModel {
     this.location = data.location || {};
     this.budget = data.budget || null;
     this.requirements = data.requirements || "";
-    this.contactPreference = data.contactPreference || "in_app"; // in_app, phone, whatsapp
+    this.contactPreference = data.contactPreference || "in_app";
     this.status = data.status || ENQUIRY_STATUS.PENDING;
     this.statusNote = data.statusNote || null;
     this.statusUpdatedAt = data.statusUpdatedAt || null;

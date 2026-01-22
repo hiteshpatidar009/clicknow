@@ -1,8 +1,3 @@
-/**
- * Booking Model
- * Defines booking data structure
- */
-
 import { BOOKING_STATUS } from "../utils/constants.util.js";
 
 class BookingModel {
@@ -14,7 +9,7 @@ class BookingModel {
     this.bookingDate = data.bookingDate || null;
     this.startTime = data.startTime || null;
     this.endTime = data.endTime || null;
-    this.duration = data.duration || 0; // in minutes
+    this.duration = data.duration || 0;
     this.eventType = data.eventType || "";
     this.eventDetails = data.eventDetails || {};
     this.location = data.location || this.getDefaultLocation();
@@ -43,7 +38,7 @@ class BookingModel {
    */
   getDefaultLocation() {
     return {
-      type: "client", // client, professional, custom
+      type: "client",
       address: "",
       city: "",
       state: "",
@@ -61,7 +56,7 @@ class BookingModel {
    */
   getDefaultPricing() {
     return {
-      type: "hourly", // hourly, package
+      type: "hourly",
       packageId: null,
       packageName: "",
       baseAmount: 0,
@@ -72,7 +67,7 @@ class BookingModel {
       totalAmount: 0,
       currency: "INR",
       isPaid: false,
-      paymentStatus: "pending", // pending, partial, completed
+      paymentStatus: "pending",
       paidAmount: 0,
     };
   }
@@ -90,14 +85,12 @@ class BookingModel {
   calculateTotal() {
     let total = this.pricing.baseAmount;
 
-    // Add additional charges
     if (this.pricing.additionalCharges) {
       for (const charge of this.pricing.additionalCharges) {
         total += charge.amount;
       }
     }
 
-    // Apply discounts
     if (this.pricing.discounts) {
       for (const discount of this.pricing.discounts) {
         if (discount.type === "percentage") {
@@ -108,7 +101,6 @@ class BookingModel {
       }
     }
 
-    // Add travel fee
     total += this.pricing.travelFee || 0;
 
     this.pricing.totalAmount = Math.max(0, total);

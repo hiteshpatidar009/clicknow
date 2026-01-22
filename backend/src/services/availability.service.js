@@ -1,20 +1,10 @@
-/**
- * Availability Service
- * Business logic for professional availability
- */
-
 import {
   availabilityRepository,
   bookingRepository,
 } from "../repositories/index.js";
 import Logger from "../utils/logger.util.js";
 import { BOOKING_STATUS } from "../utils/constants.util.js";
-import {
-  calculateDuration,
-  addMinutesToTime,
-  timeToMinutes,
-  minutesToTime,
-} from "../utils/helpers.util.js";
+import helpers from "../utils/helpers.util.js";
 
 class AvailabilityService {
   /**
@@ -136,7 +126,6 @@ class AvailabilityService {
       await availabilityRepository.getOrCreate(professionalId);
     const dateObj = new Date(date);
 
-    // Check advance booking limit
     const maxDate = new Date();
     maxDate.setDate(
       maxDate.getDate() + (availability.advanceBookingDays || 60),
@@ -150,7 +139,6 @@ class AvailabilityService {
       };
     }
 
-    // Check minimum notice
     const minNoticeDate = new Date();
     minNoticeDate.setHours(
       minNoticeDate.getHours() + (availability.minBookingNotice || 24),
@@ -164,7 +152,6 @@ class AvailabilityService {
       };
     }
 
-    // Get base slots for the date
     const baseSlots = await availabilityRepository.getAvailableSlotsForDate(
       professionalId,
       dateObj,
@@ -178,7 +165,6 @@ class AvailabilityService {
       };
     }
 
-    // Get existing bookings for the date
     const existingBookings = await bookingRepository.findByDate(
       professionalId,
       dateObj,
@@ -192,7 +178,6 @@ class AvailabilityService {
         end: b.endTime,
       }));
 
-    // Calculate available time slots
     const availableSlots = this.calculateAvailableSlots(
       baseSlots,
       bookedSlots,
@@ -217,7 +202,6 @@ class AvailabilityService {
     const startDate = new Date(year, month - 1, 1);
     const endDate = new Date(year, month, 0);
 
-    // Get bookings for the month
     const bookings = await bookingRepository.findByDateRange(
       professionalId,
       startDate,
@@ -234,12 +218,10 @@ class AvailabilityService {
         return bookingDate === dateStr;
       });
 
-      // Check if date is blocked
       const isBlocked = availability.blockedDates?.some(
         (bd) => bd.date === dateStr,
       );
 
-      // Get slots for the day
       const slots = await availabilityRepository.getAvailableSlotsForDate(
         professionalId,
         currentDate,
@@ -267,7 +249,6 @@ class AvailabilityService {
       await availabilityRepository.getOrCreate(professionalId);
     const dateObj = new Date(date);
 
-    // Check if date is blocked
     const dateStr = dateObj.toISOString().split("T")[0];
     const isBlocked = availability.blockedDates?.some(
       (bd) => bd.date === dateStr,
@@ -277,7 +258,6 @@ class AvailabilityService {
       return false;
     }
 
-    // Check if within working hours
     const baseSlots = await availabilityRepository.getAvailableSlotsForDate(
       professionalId,
       dateObj,
@@ -290,7 +270,6 @@ class AvailabilityService {
       return false;
     }
 
-    // Check for booking conflicts
     const hasConflict = await bookingRepository.hasTimeSlotConflict(
       professionalId,
       dateObj,
@@ -308,21 +287,19 @@ class AvailabilityService {
     const availableSlots = [];
 
     for (const slot of baseSlots) {
-      const slotStart = timeToMinutes(slot.start);
-      const slotEnd = timeToMinutes(slot.end);
+      const slotStart = helpers.timeToMinutes(slot.start);
+      const slotEnd = helpers.timeToMinutes(slot.end);
 
-      // Generate possible slots within this time range
       let currentStart = slotStart;
 
       while (currentStart + duration <= slotEnd) {
         const currentEnd = currentStart + duration;
-        const startTimeStr = minutesToTime(currentStart);
-        const endTimeStr = minutesToTime(currentEnd);
+        const startTimeStr = helpers.minutesToTime(currentStart);
+        const endTimeStr = helpers.minutesToTime(currentEnd);
 
-        // Check if this slot conflicts with any booking
         const hasConflict = bookedSlots.some((booked) => {
-          const bookedStart = timeToMinutes(booked.start) - bufferTime;
-          const bookedEnd = timeToMinutes(booked.end) + bufferTime;
+          const bookedStart = helpers.timeToMinutes(booked.start) - bufferTime;
+          const bookedEnd = helpers.timeToMinutes(booked.end) + bufferTime;
 
           return currentStart < bookedEnd && currentEnd > bookedStart;
         });
@@ -335,7 +312,6 @@ class AvailabilityService {
           });
         }
 
-        // Move to next slot (30 minute intervals)
         currentStart += 30;
       }
     }

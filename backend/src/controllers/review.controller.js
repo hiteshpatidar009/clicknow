@@ -1,8 +1,3 @@
-/**
- * Review Controller
- * Handles review endpoints
- */
-
 import { reviewService } from "../services/index.js";
 import ApiResponse from "../utils/response.util.js";
 import { asyncHandler } from "../middlewares/error.middleware.js";
@@ -72,8 +67,6 @@ class ReviewController {
     );
     return ApiResponse.success(res, review);
   });
-
-  // Admin endpoints
 
   /**
    * GET /api/v1/admin/reviews/pending
@@ -145,4 +138,4 @@ class ReviewController {
   });
 }
 
-export default new ReviewController();
+export default ReviewController;

@@ -1,8 +1,3 @@
-/**
- * Search Validators
- * Joi schemas for search endpoints
- */
-
 import Joi from "joi";
 import { PROFESSIONAL_CATEGORIES } from "../utils/constants.util.js";
 
@@ -17,7 +12,7 @@ export const searchProfessionalsSchema = {
     state: Joi.string().max(100).optional(),
     lat: Joi.number().min(-90).max(90).optional(),
     lng: Joi.number().min(-180).max(180).optional(),
-    radius: Joi.number().min(1).max(500).optional(), // km
+    radius: Joi.number().min(1).max(500).optional(),
     minRating: Joi.number().min(0).max(5).optional(),
     maxPrice: Joi.number().min(0).optional(),
     minPrice: Joi.number().min(0).optional(),

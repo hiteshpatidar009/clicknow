@@ -1,8 +1,3 @@
-/**
- * Upload Validators
- * Joi schemas for upload endpoints
- */
-
 import Joi from "joi";
 
 export const deleteFileSchema = {
@@ -24,7 +19,7 @@ export const getUploadUrlSchema = {
 export const getSignedUrlSchema = {
   query: Joi.object({
     key: Joi.string().required(),
-    expiresIn: Joi.number().integer().min(60).max(86400).optional(), // 1 min to 24 hours
+    expiresIn: Joi.number().integer().min(60).max(86400).optional(),
   }),
 };
 

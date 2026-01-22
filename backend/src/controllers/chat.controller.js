@@ -1,8 +1,3 @@
-/**
- * Chat Controller
- * Handles messaging endpoints
- */
-
 import { chatService } from "../services/index.js";
 import ApiResponse from "../utils/response.util.js";
 import { asyncHandler } from "../middlewares/error.middleware.js";
@@ -107,4 +102,4 @@ class ChatController {
   });
 }
 
-export default new ChatController();
+export default ChatController;

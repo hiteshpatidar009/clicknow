@@ -1,8 +1,3 @@
-/**
- * Professional Service
- * Business logic for professional profiles
- */
-
 import {
   professionalRepository,
   userRepository,
@@ -28,7 +23,6 @@ class ProfessionalService {
       throw new UserNotFoundError();
     }
 
-    // Check if profile already exists
     const existing = await professionalRepository.findByUserId(userId);
     if (existing) {
       return this.updateProfile(existing.id, profileData);
@@ -63,10 +57,8 @@ class ProfessionalService {
       professionalModel.toJSON(),
     );
 
-    // Update user role
     await userRepository.update(userId, { role: USER_ROLES.PROFESSIONAL });
 
-    // Create availability schedule
     await availabilityRepository.getOrCreate(professional.id);
 
     Logger.logBusinessEvent("professional_created", {
@@ -113,7 +105,6 @@ class ProfessionalService {
       throw new ProfessionalNotApprovedError();
     }
 
-    // Increment profile views
     await professionalRepository.incrementField(
       professionalId,
       "stats.profileViews",

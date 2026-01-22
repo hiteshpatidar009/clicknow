@@ -1,6 +1,5 @@
 /**
  * Enquiry Service
- * Business logic for client enquiries
  */
 
 import {
@@ -11,75 +10,38 @@ import {
 import { EnquiryModel } from "../models/index.js";
 import notificationService from "./notification.service.js";
 import Logger from "../utils/logger.util.js";
-import {
-  ENQUIRY_STATUS,
-  PROFESSIONAL_STATUS,
-} from "../utils/constants.util.js";
-import {
-  EnquiryNotFoundError,
-  EnquiryAlreadyExistsError,
-  ProfessionalNotFoundError,
-  ProfessionalNotApprovedError,
-} from "../utils/errors.util.js";
+import { ENQUIRY_STATUS } from "../utils/constants.util.js";
 
 class EnquiryService {
-  /**
-   * Create enquiry
-   */
   async createEnquiry(clientId, enquiryData) {
-    const {
+    const { professionalId, eventType, eventDate, location, budget, message } =
+      enquiryData;
+
+    const professional = await professionalRepository.findById(professionalId);
+    if (!professional) throw new Error("Professional not found");
+
+    const enquiryModel = new EnquiryModel({
+      clientId,
       professionalId,
       eventType,
       eventDate,
-      eventDetails,
       location,
       budget,
-      requirements,
-      contactPreference,
-    } = enquiryData;
-
-    // Validate professional
-    const professional = await professionalRepository.findById(professionalId);
-    if (!professional) {
-      throw new ProfessionalNotFoundError();
-    }
-
-    if (professional.status !== PROFESSIONAL_STATUS.APPROVED) {
-      throw new ProfessionalNotApprovedError();
-    }
-
-    // Check for existing pending enquiry
-    const hasPending = await enquiryRepository.hasPendingEnquiry(
-      clientId,
-      professionalId,
-    );
-    if (hasPending) {
-      throw new EnquiryAlreadyExistsError();
-    }
-
-    // Create enquiry
-    const enquiryModel = EnquiryModel.forNewEnquiry({
-      clientId,
-      professionalId,
-      eventType,
-      eventDate: eventDate ? new Date(eventDate) : null,
-      eventDetails,
-      location,
-      budget,
-      requirements,
-      contactPreference,
+      message,
+      status: ENQUIRY_STATUS.PENDING,
+      adminApproved: false,
+      profileAccessGranted: false,
     });
 
     const enquiry = await enquiryRepository.create(enquiryModel.toJSON());
 
-    // Notify professional
-    const user = await userRepository.findById(professional.userId);
-    if (user) {
-      await notificationService.sendNewEnquiryNotification(user.id, {
-        enquiryId: enquiry.id,
-        eventType,
-      });
-    }
+    await notificationService.sendNotification(professional.userId, {
+      type: "enquiry",
+      title: "New Enquiry",
+      body: `New ${eventType} enquiry`,
+      data: { enquiryId: enquiry.id, action: "new_enquiry" },
+      channels: ["push", "whatsapp"],
+    });
 
     Logger.logBusinessEvent("enquiry_created", {
       enquiryId: enquiry.id,
@@ -90,119 +52,61 @@ class EnquiryService {
     return enquiry;
   }
 
-  /**
-   * Get enquiry by ID
-   */
   async getById(enquiryId) {
-    const enquiry = await enquiryRepository.findById(enquiryId);
-    if (!enquiry) {
-      throw new EnquiryNotFoundError();
-    }
-    return enquiry;
+    return enquiryRepository.findById(enquiryId);
   }
 
-  /**
-   * Get client enquiries
-   */
   async getClientEnquiries(clientId, options = {}) {
-    return enquiryRepository.findByClientId(clientId, {
-      page: options.page || 1,
-      pageSize: options.pageSize || 20,
-    });
+    return enquiryRepository.findByClientId(clientId, options);
   }
 
-  /**
-   * Get professional enquiries
-   */
   async getProfessionalEnquiries(professionalId, options = {}) {
-    return enquiryRepository.findByProfessionalId(professionalId, {
-      page: options.page || 1,
-      pageSize: options.pageSize || 20,
+    return enquiryRepository.findByProfessionalId(professionalId, options);
+  }
+
+  async getPendingEnquiries(professionalId, options = {}) {
+    return enquiryRepository.findPendingByProfessional(professionalId, options);
+  }
+
+  async respondToEnquiry(enquiryId, userId, note) {
+    const enquiry = await enquiryRepository.findById(enquiryId);
+    if (!enquiry) throw new Error("Enquiry not found");
+
+    const updated = await enquiryRepository.update(enquiryId, {
+      status: ENQUIRY_STATUS.RESPONDED,
+      professionalNote: note,
+      respondedAt: new Date(),
+    });
+
+    await notificationService.sendNotification(enquiry.clientId, {
+      type: "enquiry_response",
+      title: "Enquiry Response",
+      body: "Professional responded to your enquiry",
+      data: { enquiryId, action: "enquiry_response" },
+      channels: ["push"],
+    });
+
+    return updated;
+  }
+
+  async closeEnquiry(enquiryId, note) {
+    return enquiryRepository.update(enquiryId, {
+      status: ENQUIRY_STATUS.CLOSED,
+      closedNote: note,
+      closedAt: new Date(),
     });
   }
 
-  /**
-   * Get pending enquiries for professional
-   */
-  async getPendingEnquiries(professionalId, options = {}) {
-    return enquiryRepository.findPendingByProfessionalId(
-      professionalId,
-      options,
-    );
-  }
-
-  /**
-   * Respond to enquiry
-   */
-  async respondToEnquiry(enquiryId, professionalUserId, note) {
-    const enquiry = await enquiryRepository.findById(enquiryId);
-    if (!enquiry) {
-      throw new EnquiryNotFoundError();
-    }
-
-    // Verify ownership
-    const professional = await professionalRepository.findById(
-      enquiry.professionalId,
-    );
-    if (!professional || professional.userId !== professionalUserId) {
-      throw new Error("Unauthorized");
-    }
-
-    const updated = await enquiryRepository.updateStatus(
-      enquiryId,
-      ENQUIRY_STATUS.RESPONDED,
-      note,
-    );
-
-    Logger.logBusinessEvent("enquiry_responded", { enquiryId });
-
-    return updated;
-  }
-
-  /**
-   * Convert enquiry to booking
-   */
   async convertToBooking(enquiryId, bookingId) {
-    const enquiry = await enquiryRepository.findById(enquiryId);
-    if (!enquiry) {
-      throw new EnquiryNotFoundError();
-    }
-
-    const updated = await enquiryRepository.convertToBooking(
-      enquiryId,
+    return enquiryRepository.update(enquiryId, {
+      status: ENQUIRY_STATUS.CONVERTED,
       bookingId,
-    );
-
-    Logger.logBusinessEvent("enquiry_converted", { enquiryId, bookingId });
-
-    return updated;
+      convertedAt: new Date(),
+    });
   }
 
-  /**
-   * Close enquiry
-   */
-  async closeEnquiry(enquiryId, note) {
-    const enquiry = await enquiryRepository.findById(enquiryId);
-    if (!enquiry) {
-      throw new EnquiryNotFoundError();
-    }
-
-    const updated = await enquiryRepository.updateStatus(
-      enquiryId,
-      ENQUIRY_STATUS.CLOSED,
-      note,
-    );
-
-    Logger.logBusinessEvent("enquiry_closed", { enquiryId });
-
-    return updated;
-  }
-
-  /**
-   * Get enquiry statistics
-   */
-  async getStatistics(filters = {}) {
-    return enquiryRepository.getStatistics(filters);
+  async getStatistics() {
+    return enquiryRepository.getStatistics();
   }
 }
 

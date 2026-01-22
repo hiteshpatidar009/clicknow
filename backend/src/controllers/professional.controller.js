@@ -1,8 +1,3 @@
-/**
- * Professional Controller
- * Handles professional profile endpoints
- */
-
 import {
   professionalService,
   availabilityService,
@@ -185,8 +180,6 @@ class ProfessionalController {
     );
   });
 
-  // Admin endpoints
-
   /**
    * GET /api/v1/admin/professionals/pending
    */
@@ -249,4 +242,4 @@ class ProfessionalController {
   });
 }
 
-export default new ProfessionalController();
+export default ProfessionalController;

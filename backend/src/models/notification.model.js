@@ -1,8 +1,3 @@
-/**
- * Notification Model
- * Defines notification data structure
- */
-
 import { NOTIFICATION_TYPES } from "../utils/constants.util.js";
 
 class NotificationModel {

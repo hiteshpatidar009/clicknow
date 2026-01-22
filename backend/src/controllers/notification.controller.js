@@ -1,8 +1,3 @@
-/**
- * Notification Controller
- * Handles notification endpoints
- */
-
 import { notificationService } from "../services/index.js";
 import ApiResponse from "../utils/response.util.js";
 import { asyncHandler } from "../middlewares/error.middleware.js";
@@ -80,4 +75,4 @@ class NotificationController {
   });
 }
 
-export default new NotificationController();
+export default NotificationController;

@@ -1,8 +1,3 @@
-/**
- * Base Repository
- * Abstract base class for all repositories implementing common CRUD operations
- */
-
 import firebaseDatabase from "../database/firebase.database.js";
 import Logger from "../utils/logger.util.js";
 import { v4 as uuidv4 } from "uuid";
@@ -127,18 +122,15 @@ class BaseRepository {
 
       let query = this.collection;
 
-      // Apply where clauses
       for (const condition of where) {
         const { field, operator, value } = condition;
         query = query.where(field, operator, value);
       }
 
-      // Apply ordering
       if (orderBy) {
         query = query.orderBy(orderBy, orderDirection);
       }
 
-      // Apply pagination cursor
       if (startAfter) {
         const startDoc = await this.collection.doc(startAfter).get();
         if (startDoc.exists) {
@@ -146,7 +138,6 @@ class BaseRepository {
         }
       }
 
-      // Apply limit
       if (limit) {
         query = query.limit(limit);
       }
@@ -184,16 +175,13 @@ class BaseRepository {
 
       let query = this.collection;
 
-      // Apply where clauses
       for (const condition of where) {
         const { field, operator, value } = condition;
         query = query.where(field, operator, value);
       }
 
-      // Apply ordering
       query = query.orderBy(orderBy, orderDirection);
 
-      // Get total count (for non-cursor pagination)
       const countQuery = this.collection;
       let totalCount = 0;
 
@@ -207,7 +195,6 @@ class BaseRepository {
         totalCount = countSnapshot.data().count;
       }
 
-      // Apply cursor or offset
       if (cursor) {
         const cursorDoc = await this.collection.doc(cursor).get();
         if (cursorDoc.exists) {
@@ -218,7 +205,6 @@ class BaseRepository {
         query = query.offset(offset);
       }
 
-      // Apply limit
       query = query.limit(pageSize);
 
       const snapshot = await query.get();
@@ -265,7 +251,6 @@ class BaseRepository {
         updatedAt: this.db.timestamp(),
       };
 
-      // Remove undefined fields
       Object.keys(updateData).forEach((key) => {
         if (updateData[key] === undefined) {
           delete updateData[key];

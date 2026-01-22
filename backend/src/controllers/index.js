@@ -1,16 +1,23 @@
-/**
- * Controllers Index
- * Central export for all controllers
- */
+import AuthController from "./auth.controller.js";
+import UserController from "./user.controller.js";
+import ProfessionalController from "./professional.controller.js";
+import BookingController from "./booking.controller.js";
+import ReviewController from "./review.controller.js";
+import AvailabilityController from "./availability.controller.js";
+import EnquiryController from "./enquiry.controller.js";
+import ChatController from "./chat.controller.js";
+import NotificationController from "./notification.controller.js";
+import SearchController from "./search.controller.js";
+import UploadController from "./upload.controller.js";
 
-export { default as authController } from "./auth.controller.js";
-export { default as userController } from "./user.controller.js";
-export { default as professionalController } from "./professional.controller.js";
-export { default as bookingController } from "./booking.controller.js";
-export { default as reviewController } from "./review.controller.js";
-export { default as availabilityController } from "./availability.controller.js";
-export { default as enquiryController } from "./enquiry.controller.js";
-export { default as chatController } from "./chat.controller.js";
-export { default as notificationController } from "./notification.controller.js";
-export { default as searchController } from "./search.controller.js";
-export { default as uploadController } from "./upload.controller.js";
+export const authController = new AuthController();
+export const userController = new UserController();
+export const professionalController = new ProfessionalController();
+export const bookingController = new BookingController();
+export const reviewController = new ReviewController();
+export const availabilityController = new AvailabilityController();
+export const enquiryController = new EnquiryController();
+export const chatController = new ChatController();
+export const notificationController = new NotificationController();
+export const searchController = new SearchController();
+export const uploadController = new UploadController();

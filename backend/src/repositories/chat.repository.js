@@ -1,8 +1,3 @@
-/**
- * Chat Repository
- * Data access layer for chat conversations and messages
- */
-
 import BaseRepository from "./base.repository.js";
 import { COLLECTIONS } from "../utils/constants.util.js";
 
@@ -101,7 +96,6 @@ class ChatRepository extends BaseRepository {
       throw new Error("Chat not found");
     }
 
-    // Increment unread count for recipient
     const recipientId = chat.participants.find((p) => p !== message.senderId);
     const unreadCount = { ...chat.unreadCount };
     unreadCount[recipientId] = (unreadCount[recipientId] || 0) + 1;
@@ -177,7 +171,6 @@ class ChatRepository extends BaseRepository {
   }
 }
 
-// Message Repository (subcollection)
 class MessageRepository extends BaseRepository {
   constructor() {
     super(COLLECTIONS.MESSAGES);

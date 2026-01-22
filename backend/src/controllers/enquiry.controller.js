@@ -1,8 +1,3 @@
-/**
- * Enquiry Controller
- * Handles enquiry endpoints
- */
-
 import { enquiryService, professionalService } from "../services/index.js";
 import ApiResponse from "../utils/response.util.js";
 import { asyncHandler } from "../middlewares/error.middleware.js";
@@ -25,7 +20,6 @@ class EnquiryController {
   getById = asyncHandler(async (req, res) => {
     const enquiry = await enquiryService.getById(req.params.id);
 
-    // Verify ownership
     const myProfile = await professionalService
       .getByUserId(req.user.userId)
       .catch(() => null);
@@ -111,8 +105,6 @@ class EnquiryController {
     return ApiResponse.success(res, enquiry, "Converted to booking");
   });
 
-  // Admin endpoints
-
   /**
    * GET /api/v1/admin/enquiries/statistics
    */
@@ -122,4 +114,4 @@ class EnquiryController {
   });
 }
 
-export default new EnquiryController();
+export default EnquiryController;

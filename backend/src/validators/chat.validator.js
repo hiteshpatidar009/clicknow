@@ -1,8 +1,3 @@
-/**
- * Chat Validators
- * Joi schemas for chat endpoints
- */
-
 import Joi from "joi";
 
 export const createChatSchema = {

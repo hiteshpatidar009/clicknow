@@ -1,14 +1,8 @@
-/**
- * Logger Utility
- * Winston-based logging with multiple transports
- */
-
 import winston from "winston";
-import { appConfig } from "../config/index.js";
+import env from "../config/env.loader.js";
 
 const { combine, timestamp, printf, colorize, errors } = winston.format;
 
-// Custom log format
 const logFormat = printf(
   ({ level, message, timestamp, stack, ...metadata }) => {
     let log = `${timestamp} [${level}]: ${message}`;
@@ -25,9 +19,8 @@ const logFormat = printf(
   },
 );
 
-// Create logger instance
 const logger = winston.createLogger({
-  level: appConfig.logging.level,
+  level: env.LOG_LEVEL,
   format: combine(
     timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
     errors({ stack: true }),
@@ -35,7 +28,6 @@ const logger = winston.createLogger({
   ),
   defaultMeta: { service: "photography-booking-api" },
   transports: [
-    // Console transport
     new winston.transports.Console({
       format: combine(
         colorize({ all: true }),
@@ -47,23 +39,20 @@ const logger = winston.createLogger({
   exitOnError: false,
 });
 
-// Add file transports in production
-if (appConfig.isProduction()) {
-  // Error log file
+if (env.NODE_ENV === "production") {
   logger.add(
     new winston.transports.File({
       filename: "logs/error.log",
       level: "error",
-      maxsize: 5242880, // 5MB
+      maxsize: 5242880,
       maxFiles: 5,
     }),
   );
 
-  // Combined log file
   logger.add(
     new winston.transports.File({
       filename: "logs/combined.log",
-      maxsize: 5242880, // 5MB
+      maxsize: 5242880,
       maxFiles: 5,
     }),
   );
@@ -74,33 +63,47 @@ if (appConfig.isProduction()) {
  */
 class Logger {
   static info(message, meta = {}) {
-    logger.info(message, meta);
+    const msg =
+      typeof message === "string" ? message.replace(/\n+$/g, "") : message;
+    logger.info(msg, meta);
   }
 
   static warn(message, meta = {}) {
-    logger.warn(message, meta);
+    const msg =
+      typeof message === "string" ? message.replace(/\n+$/g, "") : message;
+    logger.warn(msg, meta);
   }
 
   static error(message, error = null, meta = {}) {
     if (error instanceof Error) {
-      logger.error(message, {
+      const msg =
+        typeof message === "string" ? message.replace(/\n+$/g, "") : message;
+      logger.error(msg, {
         ...meta,
         stack: error.stack,
         errorMessage: error.message,
       });
     } else if (error) {
-      logger.error(message, { ...meta, error });
+      const msg =
+        typeof message === "string" ? message.replace(/\n+$/g, "") : message;
+      logger.error(msg, { ...meta, error });
     } else {
-      logger.error(message, meta);
+      const msg =
+        typeof message === "string" ? message.replace(/\n+$/g, "") : message;
+      logger.error(msg, meta);
     }
   }
 
   static debug(message, meta = {}) {
-    logger.debug(message, meta);
+    const msg =
+      typeof message === "string" ? message.replace(/\n+$/g, "") : message;
+    logger.debug(msg, meta);
   }
 
   static http(message, meta = {}) {
-    logger.http(message, meta);
+    const msg =
+      typeof message === "string" ? message.replace(/\n+$/g, "") : message;
+    logger.http(msg, meta);
   }
 
   /**

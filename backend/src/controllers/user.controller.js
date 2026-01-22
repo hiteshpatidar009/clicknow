@@ -1,8 +1,3 @@
-/**
- * User Controller
- * Handles user profile endpoints
- */
-
 import { userService } from "../services/index.js";
 import ApiResponse from "../utils/response.util.js";
 import { asyncHandler } from "../middlewares/error.middleware.js";
@@ -103,4 +98,4 @@ class UserController {
   });
 }
 
-export default new UserController();
+export default UserController;

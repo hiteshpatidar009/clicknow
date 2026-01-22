@@ -1,22 +1,16 @@
-/**
- * AWS Configuration
- * Configuration for AWS S3 storage
- */
-
-import dotenv from "dotenv";
-dotenv.config();
+import env from "./env.loader.js";
 
 class AWSConfig {
   constructor() {
-    this.region = process.env.AWS_REGION || "us-east-1";
+    this.region = env.AWS_REGION;
     this.credentials = {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      accessKeyId: env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
     };
     this.s3 = {
-      bucketName: process.env.AWS_S3_BUCKET_NAME || "photography-app-bucket",
+      bucketName: env.AWS_S3_BUCKET_NAME,
       signedUrlExpireSeconds: 3600,
-      maxFileSize: 10 * 1024 * 1024, // 10MB
+      maxFileSize: 10 * 1024 * 1024,
       allowedMimeTypes: [
         "image/jpeg",
         "image/png",
@@ -61,4 +55,4 @@ class AWSConfig {
   }
 }
 
-export default new AWSConfig();
+export default AWSConfig;

@@ -1,8 +1,3 @@
-/**
- * Validators Index
- * Central export for all validators
- */
-
 export * as authValidator from "./auth.validator.js";
 export * as userValidator from "./user.validator.js";
 export * as professionalValidator from "./professional.validator.js";

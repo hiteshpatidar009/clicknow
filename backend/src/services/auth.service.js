@@ -1,8 +1,3 @@
-/**
- * Auth Service
- * Handles authentication and authorization logic
- */
-
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { appConfig } from "../config/index.js";
@@ -31,7 +26,6 @@ class AuthService {
   async register(userData) {
     const { email, phone, password, firstName, lastName, role } = userData;
 
-    // Check if user exists
     if (email) {
       const existingUser = await userRepository.findByEmail(email);
       if (existingUser) {
@@ -39,13 +33,11 @@ class AuthService {
       }
     }
 
-    // Hash password if provided
     let hashedPassword = null;
     if (password) {
       hashedPassword = await bcrypt.hash(password, 12);
     }
 
-    // Create user model
     const userModel = UserModel.forRegistration({
       email,
       phone,
@@ -55,12 +47,10 @@ class AuthService {
       role,
     });
 
-    // Save to database
     const user = await userRepository.create(userModel.toJSON());
 
     Logger.logAuth("register", user.id, true, { role });
 
-    // Generate tokens
     const tokens = this.generateTokens(user);
 
     return {
@@ -83,14 +73,12 @@ class AuthService {
       throw new UserInactiveError();
     }
 
-    // Verify password
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
       Logger.logAuth("login", user.id, false, { reason: "invalid_password" });
       throw new AuthenticationError("Invalid credentials");
     }
 
-    // Update last login
     await userRepository.updateLastLogin(user.id);
 
     Logger.logAuth("login", user.id, true);
@@ -114,7 +102,6 @@ class AuthService {
       let user = await userRepository.findByFirebaseUid(decodedToken.uid);
 
       if (!user) {
-        // Create new user from Firebase
         const userModel = UserModel.forRegistration({
           firebaseUid: decodedToken.uid,
           email: decodedToken.email,
@@ -263,4 +250,4 @@ class AuthService {
   }
 }
 
-export default new AuthService();
+export default AuthService;

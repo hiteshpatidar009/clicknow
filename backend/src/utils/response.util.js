@@ -1,8 +1,3 @@
-/**
- * API Response Utility
- * Standardized API response formatting
- */
-
 import { HTTP_STATUS } from "./constants.util.js";
 
 class ApiResponse {
@@ -182,6 +177,13 @@ class ApiResponse {
   }
 
   /**
+   * Validation error wrapper (keeps old API)
+   */
+  static validationError(res, errors = null, message = "Validation failed") {
+    return this.unprocessable(res, message, errors);
+  }
+
+  /**
    * Too many requests response
    * @param {Object} res - Express response object
    * @param {string} message - Error message
@@ -207,6 +209,13 @@ class ApiResponse {
       HTTP_STATUS.INTERNAL_SERVER_ERROR,
       "INTERNAL_ERROR",
     );
+  }
+
+  /**
+   * Server error wrapper (keeps old API)
+   */
+  static serverError(res, message = "Internal server error") {
+    return this.internalError(res, message);
   }
 
   /**

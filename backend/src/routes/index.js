@@ -1,8 +1,3 @@
-/**
- * Routes Index
- * Central route configuration
- */
-
 import { Router } from "express";
 import authRoutes from "./auth.routes.js";
 import userRoutes from "./user.routes.js";
@@ -16,10 +11,11 @@ import notificationRoutes from "./notification.routes.js";
 import searchRoutes from "./search.routes.js";
 import uploadRoutes from "./upload.routes.js";
 import adminRoutes from "./admin.routes.js";
+import feedRoutes from "./feed.routes.js";
+import socialRoutes from "./social.routes.js";
 
 const router = Router();
 
-// API v1 routes
 router.use("/auth", authRoutes);
 router.use("/users", userRoutes);
 router.use("/professionals", professionalRoutes);
@@ -32,8 +28,9 @@ router.use("/notifications", notificationRoutes);
 router.use("/search", searchRoutes);
 router.use("/uploads", uploadRoutes);
 router.use("/admin", adminRoutes);
+router.use("/feed", feedRoutes);
+router.use("/social", socialRoutes);
 
-// Health check
 router.get("/health", (req, res) => {
   res.json({
     success: true,

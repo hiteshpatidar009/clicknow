@@ -1,37 +1,24 @@
-/**
- * Photography App Backend Server
- * Main entry point
- */
-
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
 import morgan from "morgan";
-import dotenv from "dotenv";
+import env from "../config/env.loader.js";
 
-// Load environment variables
-dotenv.config();
+import { appConfig } from "../config/index.js";
+import { firebaseDatabase } from "../database/index.js";
 
-// Config and database
-import { appConfig } from "./config/index.js";
-import { firebaseDatabase } from "./database/index.js";
+import routes from "../routes/index.js";
 
-// Routes
-import routes from "./routes/index.js";
-
-// Middlewares
 import {
   notFoundHandler,
   errorHandler,
   defaultLimiter,
   requestLoggerWithExclusions,
-} from "./middlewares/index.js";
+} from "../middlewares/index.js";
 
-// Utils
-import Logger from "./utils/logger.util.js";
+import Logger from "../utils/logger.util.js";
 
-// Initialize express app
 const app = express();
 
 /**
@@ -39,90 +26,74 @@ const app = express();
  */
 async function initializeServer() {
   try {
-    // Initialize Firebase
-    Logger.info("Initializing Firebase connection...");
-    await firebaseDatabase.initialize();
-    Logger.info("Firebase initialized successfully");
+    Logger.info("> Initializing Firebase connection...");
+    if (
+      env.FIREBASE_PROJECT_ID &&
+      env.FIREBASE_PROJECT_ID !== "photography-app-dev"
+    ) {
+      firebaseDatabase.initialize();
+      Logger.info("✓ Firebase initialized successfully");
+    } else {
+      Logger.warn("!! Firebase not configured - running in mock mode");
+    }
 
-    // Trust proxy (for rate limiting behind reverse proxy)
     app.set("trust proxy", 1);
 
-    // Security middleware
     app.use(
       helmet({
-        contentSecurityPolicy: false, // Disable for API
+        contentSecurityPolicy: false,
         crossOriginEmbedderPolicy: false,
       }),
     );
 
-    // CORS configuration
     app.use(
       cors({
-        origin: appConfig.cors.origins,
+        origin: env.CORS_ORIGIN,
         methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
         credentials: true,
-        maxAge: 86400, // 24 hours
+        maxAge: 86400,
       }),
     );
 
-    // Body parsing
     app.use(express.json({ limit: "10mb" }));
     app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-    // Compression
     app.use(compression());
 
-    // HTTP request logging (development)
-    if (process.env.NODE_ENV !== "production") {
+    if (
+      process.env.NODE_ENV !== "production" &&
+      process.env.SILENT_HTTP_LOGS !== "true"
+    ) {
       app.use(morgan("dev"));
     }
 
-    // Custom request logging
     app.use(requestLoggerWithExclusions(["/api/v1/health"]));
-
-    // Rate limiting
     app.use("/api", defaultLimiter);
-
-    // API routes
     app.use("/api/v1", routes);
 
-    // Root endpoint
     app.get("/", (req, res) => {
-      res.json({
-        success: true,
-        message: "Photography App API",
-        version: "1.0.0",
-        documentation: "/api/v1/docs",
-      });
+      res.type("text/plain").send("Photography App API v1.0.0");
     });
 
-    // Health check endpoint
     app.get("/health", (req, res) => {
-      res.json({
-        success: true,
-        status: "healthy",
-        timestamp: new Date().toISOString(),
-        uptime: process.uptime(),
-        environment: process.env.NODE_ENV || "development",
-      });
+      res
+        .type("text/plain")
+        .send(
+          `healthy | ${process.env.NODE_ENV || "development"} | uptime: ${process.uptime().toFixed(0)}s`,
+        );
     });
 
-    // 404 handler
     app.use(notFoundHandler);
-
-    // Global error handler
     app.use(errorHandler);
 
-    // Start server
-    const PORT = appConfig.port;
+    const PORT = env.PORT;
     const server = app.listen(PORT, () => {
       Logger.info(`Server started on port ${PORT}`);
-      Logger.info(`Environment: ${process.env.NODE_ENV || "development"}`);
+      Logger.info(`Environment: ${env.NODE_ENV}`);
       Logger.info(`API URL: http://localhost:${PORT}/api/v1`);
     });
 
-    // Graceful shutdown
     const gracefulShutdown = (signal) => {
       Logger.info(`${signal} received. Starting graceful shutdown...`);
 
@@ -131,7 +102,6 @@ async function initializeServer() {
         process.exit(0);
       });
 
-      // Force close after 30 seconds
       setTimeout(() => {
         Logger.error("Forced shutdown after timeout");
         process.exit(1);
@@ -141,13 +111,11 @@ async function initializeServer() {
     process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
     process.on("SIGINT", () => gracefulShutdown("SIGINT"));
 
-    // Handle uncaught exceptions
     process.on("uncaughtException", (error) => {
       Logger.error("Uncaught Exception", error);
       process.exit(1);
     });
 
-    // Handle unhandled promise rejections
     process.on("unhandledRejection", (reason, promise) => {
       Logger.error("Unhandled Rejection", { reason, promise });
     });
@@ -159,7 +127,4 @@ async function initializeServer() {
   }
 }
 
-// Start the server
-initializeServer();
-
-export default app;
+export { app, initializeServer };

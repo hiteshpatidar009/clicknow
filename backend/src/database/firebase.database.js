@@ -1,8 +1,3 @@
-/**
- * Firebase Database Connection
- * Singleton class for Firebase Admin SDK initialization
- */
-
 import admin from "firebase-admin";
 import { firebaseConfig } from "../config/index.js";
 import Logger from "../utils/logger.util.js";
@@ -39,7 +34,6 @@ class FirebaseDatabase {
       this.auth = admin.auth();
       this.initialized = true;
 
-      // Firestore settings for better performance
       this.db.settings({
         ignoreUndefinedProperties: true,
       });
@@ -149,7 +143,6 @@ class FirebaseDatabase {
   }
 }
 
-// Singleton instance
 const firebaseDatabase = new FirebaseDatabase();
 
 export default firebaseDatabase;

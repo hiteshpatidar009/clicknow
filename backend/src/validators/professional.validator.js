@@ -1,8 +1,3 @@
-/**
- * Professional Validators
- * Joi schemas for professional endpoints
- */
-
 import Joi from "joi";
 import { PROFESSIONAL_CATEGORIES } from "../utils/constants.util.js";
 
@@ -30,7 +25,7 @@ const pricingSchema = Joi.object({
         name: Joi.string().max(100).required(),
         description: Joi.string().max(500).optional(),
         price: Joi.number().min(0).required(),
-        duration: Joi.number().min(1).required(), // in hours
+        duration: Joi.number().min(1).required(),
         deliverables: Joi.array().items(Joi.string()).optional(),
       }),
     )

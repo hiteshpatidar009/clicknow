@@ -1,8 +1,3 @@
-/**
- * Search Controller
- * Handles search endpoints
- */
-
 import { searchService } from "../services/index.js";
 import ApiResponse from "../utils/response.util.js";
 import { asyncHandler } from "../middlewares/error.middleware.js";
@@ -65,4 +60,4 @@ class SearchController {
   });
 }
 
-export default new SearchController();
+export default SearchController;

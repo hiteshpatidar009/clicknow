@@ -1,8 +1,3 @@
-/**
- * Services Index
- * Central export for all services
- */
-
 export { default as authService } from "./auth.service.js";
 export { default as userService } from "./user.service.js";
 export { default as professionalService } from "./professional.service.js";
@@ -14,3 +9,5 @@ export { default as notificationService } from "./notification.service.js";
 export { default as chatService } from "./chat.service.js";
 export { default as storageService } from "./storage.service.js";
 export { default as searchService } from "./search.service.js";
+export { default as feedService } from "./feed.service.js";
+export { default as socialService } from "./social.service.js";

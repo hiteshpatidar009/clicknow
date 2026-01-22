@@ -1,8 +1,3 @@
-/**
- * User Repository
- * Data access layer for user documents
- */
-
 import BaseRepository from "./base.repository.js";
 import { COLLECTIONS } from "../utils/constants.util.js";
 

@@ -1,8 +1,3 @@
-/**
- * User Service
- * Business logic for user operations
- */
-
 import { userRepository } from "../repositories/index.js";
 import { UserModel } from "../models/index.js";
 import Logger from "../utils/logger.util.js";
@@ -57,14 +52,12 @@ class UserService {
       }
     }
 
-    // Update display name if first/last name changed
     if (filteredData.firstName || filteredData.lastName) {
       const firstName = filteredData.firstName || user.firstName;
       const lastName = filteredData.lastName || user.lastName;
       filteredData.displayName = `${firstName} ${lastName}`.trim();
     }
 
-    // Regenerate search terms
     const userModel = new UserModel({ ...user, ...filteredData });
     filteredData.searchTerms = userModel.generateSearchTerms();
 
@@ -210,4 +203,4 @@ class UserService {
   }
 }
 
-export default new UserService();
+export default UserService;

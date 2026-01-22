@@ -1,8 +1,3 @@
-/**
- * Review Validators
- * Joi schemas for review endpoints
- */
-
 import Joi from "joi";
 
 export const createReviewSchema = {

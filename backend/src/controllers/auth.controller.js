@@ -1,8 +1,3 @@
-/**
- * Auth Controller
- * Handles authentication endpoints
- */
-
 import { authService } from "../services/index.js";
 import ApiResponse from "../utils/response.util.js";
 import { asyncHandler } from "../middlewares/error.middleware.js";
@@ -73,4 +68,4 @@ class AuthController {
   });
 }
 
-export default new AuthController();
+export default AuthController;

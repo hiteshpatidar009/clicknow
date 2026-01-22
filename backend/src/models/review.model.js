@@ -1,8 +1,3 @@
-/**
- * Review Model
- * Defines review data structure
- */
-
 import { REVIEW_STATUS } from "../utils/constants.util.js";
 
 class ReviewModel {
@@ -14,7 +9,7 @@ class ReviewModel {
     this.rating = data.rating || 0;
     this.title = data.title || "";
     this.content = data.content || "";
-    this.response = data.response || null; // Professional's response
+    this.response = data.response || null;
     this.responseAt = data.responseAt || null;
     this.status = data.status || REVIEW_STATUS.PENDING;
     this.moderationReason = data.moderationReason || null;
@@ -179,7 +174,7 @@ class ReviewModel {
   static forNewReview(data) {
     return new ReviewModel({
       ...data,
-      status: REVIEW_STATUS.PENDING, // Auto-approve can be set based on settings
+      status: REVIEW_STATUS.PENDING,
       helpfulCount: 0,
       helpfulVotes: [],
       isReported: false,

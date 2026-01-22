@@ -1,8 +1,3 @@
-/**
- * Availability Validators
- * Joi schemas for availability endpoints
- */
-
 import Joi from "joi";
 
 const timeSlotSchema = Joi.object({
@@ -60,7 +55,7 @@ export const bufferTimeSchema = {
 
 export const bookingSettingsSchema = {
   body: Joi.object({
-    minBookingNotice: Joi.number().integer().min(0).max(168).optional(), // hours
+    minBookingNotice: Joi.number().integer().min(0).max(168).optional(),
     advanceBookingDays: Joi.number().integer().min(1).max(365).optional(),
     autoConfirm: Joi.boolean().optional(),
   }),

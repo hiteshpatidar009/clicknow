@@ -1,10 +1,14 @@
-/**
- * Booking Validators
- * Joi schemas for booking endpoints
- */
-
 import Joi from "joi";
-import { EVENT_TYPES } from "../utils/constants.util.js";
+
+const EVENT_TYPES = [
+  "wedding",
+  "birthday",
+  "corporate",
+  "portrait",
+  "event",
+  "product",
+  "other",
+];
 
 const locationSchema = Joi.object({
   address: Joi.string().max(500).required(),
@@ -53,7 +57,7 @@ export const createBookingSchema = {
       .pattern(/^([01]\d|2[0-3]):([0-5]\d)$/)
       .required(),
     eventType: Joi.string()
-      .valid(...Object.values(EVENT_TYPES))
+      .valid(...EVENT_TYPES)
       .required(),
     eventDetails: eventDetailsSchema.optional(),
     location: locationSchema.required(),

@@ -1,17 +1,10 @@
-/**
- * WhatsApp Configuration
- * Configuration for WhatsApp Business API (Meta)
- */
-
-import dotenv from "dotenv";
-dotenv.config();
+import env from "./env.loader.js";
 
 class WhatsAppConfig {
   constructor() {
-    this.apiUrl =
-      process.env.WHATSAPP_API_URL || "https://graph.facebook.com/v17.0";
-    this.phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
-    this.accessToken = process.env.WHATSAPP_ACCESS_TOKEN;
+    this.apiUrl = env.WHATSAPP_API_URL;
+    this.phoneNumberId = env.WHATSAPP_PHONE_NUMBER_ID;
+    this.accessToken = env.WHATSAPP_ACCESS_TOKEN;
 
     this.templates = {
       bookingConfirmation: "booking_confirmation",
@@ -45,4 +38,4 @@ class WhatsAppConfig {
   }
 }
 
-export default new WhatsAppConfig();
+export default WhatsAppConfig;

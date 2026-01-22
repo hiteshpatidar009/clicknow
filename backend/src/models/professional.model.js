@@ -1,8 +1,3 @@
-/**
- * Professional Model
- * Defines professional (photographer/musician/etc.) profile data structure
- */
-
 import {
   PROFESSIONAL_CATEGORIES,
   PROFESSIONAL_STATUS,
@@ -15,7 +10,7 @@ class ProfessionalModel {
     this.category = data.category || PROFESSIONAL_CATEGORIES.PHOTOGRAPHER;
     this.businessName = data.businessName || "";
     this.bio = data.bio || "";
-    this.experience = data.experience || 0; // Years of experience
+    this.experience = data.experience || 0;
     this.specialties = data.specialties || [];
     this.portfolio = data.portfolio || [];
     this.pricing = data.pricing || this.getDefaultPricing();
@@ -84,7 +79,7 @@ class ProfessionalModel {
       averageRating: 0,
       profileViews: 0,
       responseRate: 100,
-      responseTime: 0, // Average response time in hours
+      responseTime: 0,
     };
   }
 
@@ -93,7 +88,7 @@ class ProfessionalModel {
    */
   getDefaultSettings() {
     return {
-      instantBooking: false, // Requires approval if false
+      instantBooking: false,
       autoAcceptBookings: false,
       showPricing: true,
       showContactInfo: false,
@@ -109,7 +104,7 @@ class ProfessionalModel {
   addPortfolioItem(item) {
     const portfolioItem = {
       id: item.id,
-      type: item.type || "image", // image, video
+      type: item.type || "image",
       url: item.url,
       thumbnailUrl: item.thumbnailUrl || item.url,
       title: item.title || "",
@@ -163,7 +158,7 @@ class ProfessionalModel {
       name: pkg.name,
       description: pkg.description || "",
       price: pkg.price,
-      duration: pkg.duration, // in hours
+      duration: pkg.duration,
       includes: pkg.includes || [],
       isPopular: pkg.isPopular || false,
       order: this.pricing.packages.length,
@@ -275,7 +270,7 @@ class ProfessionalModel {
       bio: this.bio,
       experience: this.experience,
       specialties: this.specialties,
-      portfolio: this.portfolio.slice(0, 10), // Limit portfolio items
+      portfolio: this.portfolio.slice(0, 10),
       pricing: this.settings.showPricing ? this.pricing : null,
       location: {
         city: this.location.city,

@@ -1,8 +1,3 @@
-/**
- * Professional Repository
- * Data access layer for professional (photographer/musician/etc.) profiles
- */
-
 import BaseRepository from "./base.repository.js";
 import { COLLECTIONS } from "../utils/constants.util.js";
 

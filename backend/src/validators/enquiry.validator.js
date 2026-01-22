@@ -1,10 +1,14 @@
-/**
- * Enquiry Validators
- * Joi schemas for enquiry endpoints
- */
-
 import Joi from "joi";
-import { EVENT_TYPES } from "../utils/constants.util.js";
+
+const EVENT_TYPES = [
+  "wedding",
+  "birthday",
+  "corporate",
+  "portrait",
+  "event",
+  "product",
+  "other",
+];
 
 const locationSchema = Joi.object({
   city: Joi.string().max(100).required(),
@@ -22,7 +26,7 @@ export const createEnquirySchema = {
   body: Joi.object({
     professionalId: Joi.string().required(),
     eventType: Joi.string()
-      .valid(...Object.values(EVENT_TYPES))
+      .valid(...EVENT_TYPES)
       .required(),
     eventDate: Joi.date().iso().min("now").optional(),
     eventDetails: Joi.object({

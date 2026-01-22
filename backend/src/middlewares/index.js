@@ -1,52 +1,42 @@
-/**
- * Middlewares Index
- * Central export for all middlewares
- */
+import authMiddleware from "./auth.middleware.js";
+import errorMiddleware from "./error.middleware.js";
+import validationMiddleware from "./validation.middleware.js";
+import rateLimiterMiddleware from "./rateLimiter.middleware.js";
+import uploadMiddleware from "./upload.middleware.js";
+import loggerMiddleware from "./logger.middleware.js";
 
-export {
-  authenticate,
-  optionalAuth,
-  authorize,
-  adminOnly,
-  professionalOnly,
-  verifiedOnly,
-  activeOnly,
-} from "./auth.middleware.js";
+export const authenticate = authMiddleware.authenticate;
+export const optionalAuth = authMiddleware.optionalAuth;
+export const authorize = authMiddleware.authorize;
+export const adminOnly = authMiddleware.adminOnly;
+export const professionalOnly = authMiddleware.professionalOnly;
+export const verifiedOnly = authMiddleware.verifiedOnly;
+export const activeOnly = authMiddleware.activeOnly;
 
-export {
-  asyncHandler,
-  notFoundHandler,
-  errorHandler,
-} from "./error.middleware.js";
+export const asyncHandler = errorMiddleware.asyncHandler;
+export const notFoundHandler = errorMiddleware.notFoundHandler;
+export const errorHandler = errorMiddleware.errorHandler;
 
-export {
-  validate,
-  validateBody,
-  validateQuery,
-  validateParams,
-} from "./validation.middleware.js";
+export const validate = validationMiddleware.validate;
+export const validateBody = validationMiddleware.validateBody;
+export const validateQuery = validationMiddleware.validateQuery;
+export const validateParams = validationMiddleware.validateParams;
 
-export {
-  defaultLimiter,
-  authLimiter,
-  searchLimiter,
-  uploadLimiter,
-  messagingLimiter,
-  createLimiter,
-} from "./rateLimiter.middleware.js";
+export const defaultLimiter = rateLimiterMiddleware.defaultLimiter;
+export const authLimiter = rateLimiterMiddleware.authLimiter;
+export const searchLimiter = rateLimiterMiddleware.searchLimiter;
+export const uploadLimiter = rateLimiterMiddleware.uploadLimiter;
+export const messagingLimiter = rateLimiterMiddleware.messagingLimiter;
+export const createLimiter = rateLimiterMiddleware.createLimiter;
 
-export {
-  uploadImage,
-  uploadImages,
-  uploadVideo,
-  uploadDocument,
-  uploadGeneral,
-  uploadAvatar,
-  uploadPortfolio,
-  handleMulterError,
-} from "./upload.middleware.js";
+export const uploadImage = uploadMiddleware.uploadImage;
+export const uploadImages = uploadMiddleware.uploadImages;
+export const uploadVideo = uploadMiddleware.uploadVideo;
+export const uploadDocument = uploadMiddleware.uploadDocument;
+export const uploadGeneral = uploadMiddleware.uploadGeneral;
+export const uploadAvatar = uploadMiddleware.uploadAvatar;
+export const uploadPortfolio = uploadMiddleware.uploadPortfolio;
+export const handleMulterError = uploadMiddleware.handleMulterError;
 
-export {
-  requestLogger,
-  requestLoggerWithExclusions,
-} from "./logger.middleware.js";
+export const requestLogger = loggerMiddleware.requestLogger;
+export const requestLoggerWithExclusions = loggerMiddleware.requestLoggerWithExclusions;

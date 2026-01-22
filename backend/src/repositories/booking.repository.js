@@ -1,8 +1,3 @@
-/**
- * Booking Repository
- * Data access layer for booking documents
- */
-
 import BaseRepository from "./base.repository.js";
 import { COLLECTIONS, BOOKING_STATUS } from "../utils/constants.util.js";
 
@@ -176,7 +171,6 @@ class BookingRepository extends BaseRepository {
       updateData.statusReason = reason;
     }
 
-    // Set specific timestamps based on status
     switch (status) {
       case BOOKING_STATUS.CONFIRMED:
         updateData.confirmedAt = this.db.timestamp();
@@ -218,7 +212,6 @@ class BookingRepository extends BaseRepository {
         continue;
       }
 
-      // Check for time overlap
       if (
         (startTime >= booking.startTime && startTime < booking.endTime) ||
         (endTime > booking.startTime && endTime <= booking.endTime) ||

@@ -1,8 +1,3 @@
-/**
- * Availability Repository
- * Data access layer for professional availability schedules
- */
-
 import BaseRepository from "./base.repository.js";
 import { COLLECTIONS } from "../utils/constants.util.js";
 
@@ -34,9 +29,9 @@ class AvailabilityRepository extends BaseRepository {
         weeklySchedule: this.getDefaultWeeklySchedule(),
         blockedDates: [],
         specialDates: [],
-        bufferTime: 30, // Default 30 minutes buffer
-        advanceBookingDays: 60, // Default 60 days advance booking
-        minBookingNotice: 24, // Default 24 hours notice
+        bufferTime: 30,
+        advanceBookingDays: 60,
+        minBookingNotice: 24,
         timezone: "UTC",
       });
     }
@@ -141,7 +136,6 @@ class AvailabilityRepository extends BaseRepository {
       throw new Error("Availability not found");
     }
 
-    // Remove existing special date for same date if exists
     const specialDates = availability.specialDates.filter(
       (sd) => sd.date !== specialDate.date,
     );
@@ -235,7 +229,6 @@ class AvailabilityRepository extends BaseRepository {
 
     const dateStr = date.toISOString().split("T")[0];
 
-    // Check if date is blocked
     const isBlocked = availability.blockedDates.some(
       (bd) => bd.date === dateStr,
     );
@@ -244,7 +237,6 @@ class AvailabilityRepository extends BaseRepository {
       return [];
     }
 
-    // Check for special date
     const specialDate = availability.specialDates.find(
       (sd) => sd.date === dateStr,
     );
@@ -253,7 +245,6 @@ class AvailabilityRepository extends BaseRepository {
       return specialDate.slots || [];
     }
 
-    // Get day of week
     const dayNames = [
       "sunday",
       "monday",

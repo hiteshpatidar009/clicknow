@@ -1,8 +1,3 @@
-/**
- * Availability Controller
- * Handles availability management endpoints
- */
-
 import { availabilityService, professionalService } from "../services/index.js";
 import ApiResponse from "../utils/response.util.js";
 import { asyncHandler } from "../middlewares/error.middleware.js";
@@ -148,4 +143,4 @@ class AvailabilityController {
   });
 }
 
-export default new AvailabilityController();
+export default AvailabilityController;

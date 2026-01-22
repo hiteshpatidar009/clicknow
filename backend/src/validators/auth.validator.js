@@ -1,8 +1,3 @@
-/**
- * Auth Validators
- * Joi schemas for auth endpoints
- */
-
 import Joi from "joi";
 
 export const registerSchema = {

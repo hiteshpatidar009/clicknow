@@ -1,8 +1,3 @@
-/**
- * Error Handling Middleware
- * Global error handler and async wrapper
- */
-
 import Logger from "../utils/logger.util.js";
 import ApiResponse from "../utils/response.util.js";
 import {
@@ -13,35 +8,34 @@ import {
   NotFoundError,
 } from "../utils/errors.util.js";
 
-/**
- * Async handler wrapper
- * Catches async errors and passes to error handler
- */
-export const asyncHandler = (fn) => {
+class ErrorMiddleware {
+  /**
+   * Async handler wrapper
+   * Catches async errors and passes to error handler
+   */
+  asyncHandler = (fn) => {
   return (req, res, next) => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };
-};
+  };
 
-/**
- * Not found handler for undefined routes
- */
-export const notFoundHandler = (req, res, next) => {
+  /**
+   * Not found handler for undefined routes
+   */
+  notFoundHandler = (req, res, next) => {
   return ApiResponse.notFound(res, `Route ${req.originalUrl} not found`);
-};
+  };
 
-/**
- * Global error handler
- */
-export const errorHandler = (err, req, res, next) => {
-  // Log error
+  /**
+   * Global error handler
+   */
+  errorHandler = (err, req, res, next) => {
   Logger.error("Unhandled error", err, {
     url: req.originalUrl,
     method: req.method,
     userId: req.user?.userId,
   });
 
-  // Handle known errors
   if (err instanceof ValidationError) {
     return ApiResponse.validationError(res, err.errors, err.message);
   }
@@ -62,7 +56,6 @@ export const errorHandler = (err, req, res, next) => {
     return ApiResponse.error(res, err.statusCode, err.message, err.errorCode);
   }
 
-  // Handle Joi validation errors
   if (err.isJoi) {
     const errors = err.details.map((detail) => ({
       field: detail.path.join("."),
@@ -71,12 +64,10 @@ export const errorHandler = (err, req, res, next) => {
     return ApiResponse.validationError(res, errors, "Validation failed");
   }
 
-  // Handle Firebase errors
   if (err.code && err.code.startsWith("auth/")) {
     return ApiResponse.unauthorized(res, getFirebaseAuthMessage(err.code));
   }
 
-  // Handle JWT errors
   if (err.name === "JsonWebTokenError") {
     return ApiResponse.unauthorized(res, "Invalid token");
   }
@@ -85,7 +76,6 @@ export const errorHandler = (err, req, res, next) => {
     return ApiResponse.unauthorized(res, "Token expired", "AUTH_TOKEN_EXPIRED");
   }
 
-  // Handle Multer errors
   if (err.code === "LIMIT_FILE_SIZE") {
     return ApiResponse.badRequest(res, "File too large");
   }
@@ -98,7 +88,6 @@ export const errorHandler = (err, req, res, next) => {
     return ApiResponse.badRequest(res, "Unexpected file field");
   }
 
-  // Default server error
   const statusCode = err.statusCode || 500;
   const message =
     process.env.NODE_ENV === "production" ?
@@ -106,7 +95,8 @@ export const errorHandler = (err, req, res, next) => {
     : err.message;
 
   return ApiResponse.serverError(res, message);
-};
+  };
+}
 
 /**
  * Get user-friendly Firebase auth error message
@@ -131,8 +121,5 @@ function getFirebaseAuthMessage(code) {
   return messages[code] || "Authentication failed";
 }
 
-export default {
-  asyncHandler,
-  notFoundHandler,
-  errorHandler,
-};
+export default new ErrorMiddleware();
+export const { asyncHandler, notFoundHandler, errorHandler } = new ErrorMiddleware();

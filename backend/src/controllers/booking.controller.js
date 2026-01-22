@@ -1,8 +1,3 @@
-/**
- * Booking Controller
- * Handles booking endpoints
- */
-
 import { bookingService, availabilityService } from "../services/index.js";
 import { professionalService } from "../services/index.js";
 import ApiResponse from "../utils/response.util.js";
@@ -26,7 +21,6 @@ class BookingController {
   getById = asyncHandler(async (req, res) => {
     const booking = await bookingService.getById(req.params.id);
 
-    // Verify ownership
     const myProfile = await professionalService
       .getByUserId(req.user.userId)
       .catch(() => null);
@@ -163,14 +157,12 @@ class BookingController {
     return ApiResponse.success(res, bookings);
   });
 
-  // Admin endpoints
-
   /**
    * GET /api/v1/admin/bookings
    */
   getAllBookings = asyncHandler(async (req, res) => {
     const { status, startDate, endDate, page, pageSize } = req.query;
-    // Implementation would include admin-level access to all bookings
+
     return ApiResponse.success(res, []);
   });
 
@@ -183,4 +175,4 @@ class BookingController {
   });
 }
 
-export default new BookingController();
+export default BookingController;

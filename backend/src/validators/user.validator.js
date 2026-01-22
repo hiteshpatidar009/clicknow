@@ -1,8 +1,3 @@
-/**
- * User Validators
- * Joi schemas for user endpoints
- */
-
 import Joi from "joi";
 
 export const updateProfileSchema = {

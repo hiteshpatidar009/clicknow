@@ -13,6 +13,7 @@ import uploadRoutes from "./upload.routes.js";
 import adminRoutes from "./admin.routes.js";
 import feedRoutes from "./feed.routes.js";
 import socialRoutes from "./social.routes.js";
+import categoryRoutes from "./category.routes.js";
 
 const router = Router();
 
@@ -30,6 +31,7 @@ router.use("/uploads", uploadRoutes);
 router.use("/admin", adminRoutes);
 router.use("/feed", feedRoutes);
 router.use("/social", socialRoutes);
+router.use("/categories", categoryRoutes);
 
 router.get("/health", (req, res) => {
   res.json({

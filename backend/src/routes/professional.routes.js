@@ -13,6 +13,7 @@ import {
   searchSchema,
   availableSlotsSchema,
   professionalIdParamSchema,
+  portfolioGalleryQuerySchema,
   toggleActiveSchema,
 } from "../validators/professional.validator.js";
 
@@ -37,6 +38,11 @@ router.get(
 router.get("/featured", professionalController.getFeatured);
 router.get("/top-rated", professionalController.getTopRated);
 router.get("/category/:category", professionalController.getByCategory);
+router.get(
+  "/:id/gallery",
+  validate({ ...professionalIdParamSchema, ...portfolioGalleryQuerySchema }),
+  professionalController.getPortfolioGallery,
+);
 router.get(
   "/:id",
   validate(professionalIdParamSchema),
@@ -66,35 +72,31 @@ router.post(
 );
 router.get(
   "/me/profile",
-  authenticate,
-  professionalOnly,
+  authenticate,           // any authenticated user (professional, client, admin)
   professionalController.getMyProfile,
 );
 router.put(
   "/me",
-  authenticate,
-  professionalOnly,
+  authenticate,           // steps 2-5: no role restriction (JWT role unchanged after step 1)
   validate(updateProfileSchema),
   professionalController.updateMyProfile,
 );
 router.put(
   "/me/active",
   authenticate,
-  professionalOnly,
+  professionalOnly,       // toggle active is professional/admin only
   validate(toggleActiveSchema),
   professionalController.toggleActive,
 );
 router.post(
   "/me/portfolio",
-  authenticate,
-  professionalOnly,
+  authenticate,           // any authenticated user with a professional profile
   validate(addPortfolioSchema),
   professionalController.addPortfolioItem,
 );
 router.delete(
   "/me/portfolio/:itemId",
   authenticate,
-  professionalOnly,
   professionalController.removePortfolioItem,
 );
 

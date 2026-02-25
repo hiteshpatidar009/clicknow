@@ -8,6 +8,8 @@ import {
   firebaseLoginSchema,
   refreshTokenSchema,
   changePasswordSchema,
+  sendOtpSchema,
+  verifyOtpSchema,
 } from "../validators/auth.validator.js";
 
 const router = Router();
@@ -21,6 +23,19 @@ router.use((req, res, next) => {
   }
   next();
 });
+
+router.post(
+  "/send-otp",
+  authLimiter,
+  validate(sendOtpSchema),
+  authController.sendOtp,
+);
+router.post(
+  "/verify-otp",
+  authLimiter,
+  validate(verifyOtpSchema),
+  authController.verifyOtp,
+);
 
 router.post(
   "/register",

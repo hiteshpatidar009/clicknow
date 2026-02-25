@@ -9,6 +9,7 @@ import ChatController from "./chat.controller.js";
 import NotificationController from "./notification.controller.js";
 import SearchController from "./search.controller.js";
 import UploadController from "./upload.controller.js";
+import settingsController from "./settings.controller.js";
 
 export const authController = new AuthController();
 export const userController = new UserController();
@@ -21,3 +22,5 @@ export const chatController = new ChatController();
 export const notificationController = new NotificationController();
 export const searchController = new SearchController();
 export const uploadController = new UploadController();
+export { settingsController };
+export { default as categoryController } from "./category.controller.js";

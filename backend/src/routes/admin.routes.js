@@ -1,16 +1,19 @@
 import { Router } from "express";
+import adminController from "../controllers/admin.controller.js";
 import {
   professionalController,
   reviewController,
-  userController,
-  bookingController,
   enquiryController,
+  bookingController,
+  settingsController,
 } from "../controllers/index.js";
 import { authenticate, adminOnly } from "../middlewares/index.js";
 import { validate } from "../middlewares/validation.middleware.js";
 import {
   professionalIdParamSchema,
-  rejectSchema,
+  portfolioItemParamSchema,
+  adminUpdateAboutSchema,
+  addPortfolioSchema,
   setFeaturedSchema,
 } from "../validators/professional.validator.js";
 import {
@@ -20,6 +23,10 @@ import {
 
 const router = Router();
 
+// Apply authentication and admin check to all routes
+router.use(authenticate, adminOnly);
+
+// Test Bypass (from original code)
 router.use((req, res, next) => {
   const isPostTest =
     req.method === "POST" && req.body && req.body.test === "API_TEST";
@@ -30,39 +37,54 @@ router.use((req, res, next) => {
   next();
 });
 
-router.use(authenticate, adminOnly);
+// Dashboard & Reports
+router.get("/dashboard", adminController.getDashboardStats);
+router.get("/reports/revenue", adminController.getRevenueReport);
+router.get("/settings", settingsController.getSettings);
+router.put("/settings", settingsController.updateSettings);
 
-router.get("/statistics", async (req, res) => {
-  const [userStats, professionalStats, bookingStats, reviewStats] =
-    await Promise.all([
-      userController.getStatistics(req, res),
-      professionalController.getStatistics(req, res),
-      bookingController.getStatistics(req, res),
-      reviewController.getStatistics(req, res),
-    ]);
-});
+// User Management
+router.get("/users", adminController.getUsers);
 
-router.get(
-  "/professionals/pending",
-  professionalController.getPendingApprovals,
-);
+// Professional Management
+router.get("/professionals", adminController.getAllProfessionals);
+router.get("/professionals/pending", professionalController.getPendingApprovals);
 router.get("/professionals/statistics", professionalController.getStatistics);
+router.put("/professionals/:id/verify", adminController.verifyProfessional);
 router.put(
-  "/professionals/:id/approve",
-  validate(professionalIdParamSchema),
-  professionalController.approve,
+  "/professionals/:id/suspend",
+  adminController.suspendProfessional,
 );
 router.put(
-  "/professionals/:id/reject",
-  validate({ ...professionalIdParamSchema, ...rejectSchema }),
-  professionalController.reject,
+  "/professionals/:id/reactivate",
+  adminController.reactivateProfessional,
 );
 router.put(
   "/professionals/:id/featured",
   validate({ ...professionalIdParamSchema, ...setFeaturedSchema }),
   professionalController.setFeatured,
 );
+router.post(
+  "/professionals/:id/portfolio",
+  validate({ ...professionalIdParamSchema, ...addPortfolioSchema }),
+  adminController.addProfessionalPortfolioItem,
+);
+router.delete(
+  "/professionals/:id/portfolio/:itemId",
+  validate(portfolioItemParamSchema),
+  adminController.removeProfessionalPortfolioItem,
+);
+router.put(
+  "/professionals/:id/about",
+  validate({ ...professionalIdParamSchema, ...adminUpdateAboutSchema }),
+  adminController.updateProfessionalAbout,
+);
 
+// Booking Management
+router.get("/bookings", adminController.getBookings);
+router.get("/bookings/statistics", bookingController.getStatistics);
+
+// Review Management
 router.get("/reviews/pending", reviewController.getPendingReviews);
 router.get("/reviews/reported", reviewController.getReportedReviews);
 router.get("/reviews/statistics", reviewController.getStatistics);
@@ -82,9 +104,8 @@ router.delete(
   reviewController.removeReview,
 );
 
-router.get("/bookings", bookingController.getAllBookings);
-router.get("/bookings/statistics", bookingController.getStatistics);
-
+// Enquiry Management
+router.get("/enquiries", enquiryController.getEnquiries);
 router.get("/enquiries/statistics", enquiryController.getStatistics);
 
 export default router;

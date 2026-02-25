@@ -1,6 +1,8 @@
 import { enquiryService, professionalService } from "../services/index.js";
 import ApiResponse from "../utils/response.util.js";
 import { asyncHandler } from "../middlewares/error.middleware.js";
+import Logger from "../utils/logger.util.js";
+import { ServiceUnavailableError } from "../utils/errors.util.js";
 
 class EnquiryController {
   /**
@@ -112,6 +114,63 @@ class EnquiryController {
     const stats = await enquiryService.getStatistics();
     return ApiResponse.success(res, stats);
   });
+
+  /**
+   * GET /api/v1/enquiries (Admin list)
+   */
+  getEnquiries = asyncHandler(async (req, res) => {
+    const { status, professionalId, clientId, startDate, endDate, page, pageSize, sortBy, sortOrder } = req.query;
+    const parsedPage = parseInt(page) || 1;
+    const parsedPageSize = parseInt(pageSize) || 20;
+
+    try {
+      const result = await enquiryService.getAllEnquiries({
+        status,
+        professionalId,
+        clientId,
+        startDate,
+        endDate,
+        page: parsedPage,
+        pageSize: parsedPageSize,
+        orderBy: sortBy,
+        orderDirection: sortOrder
+      });
+
+      return ApiResponse.paginated(res, result.data, result.pagination);
+    } catch (error) {
+      if (shouldUseDevMockFallback() && isServiceUnavailableError(error)) {
+        Logger.warn("Using mock enquiries due to Firestore unavailability");
+        const mockEnquiries = [
+          { id: "e-1", clientName: "Aarav Shah", professionalName: "Lens Studio", subject: "Wedding package", status: "pending", createdAt: new Date().toISOString() },
+          { id: "e-2", clientName: "Riya Kapoor", professionalName: "Candid Frames", subject: "Engagement shoot", status: "responded", createdAt: new Date().toISOString() },
+        ];
+        return ApiResponse.paginated(res, mockEnquiries, {
+          page: parsedPage,
+          pageSize: parsedPageSize,
+          totalCount: mockEnquiries.length,
+          totalPages: 1,
+          hasMore: false,
+          nextCursor: null,
+        });
+      }
+      throw error;
+    }
+  });
+}
+
+function shouldUseDevMockFallback() {
+  return (
+    process.env.NODE_ENV !== "production" &&
+    (process.env.AUTH_DEV_FALLBACK || "true").toLowerCase() === "true"
+  );
+}
+
+function isServiceUnavailableError(error) {
+  return (
+    error instanceof ServiceUnavailableError ||
+    error?.statusCode === 503 ||
+    (error?.message || "").toLowerCase().includes("quota exceeded")
+  );
 }
 
 export default EnquiryController;

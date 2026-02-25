@@ -13,3 +13,4 @@ export { default as enquiryRepository } from "./enquiry.repository.js";
 export { default as postRepository } from "./post.repository.js";
 export { default as commentRepository } from "./comment.repository.js";
 export { default as followRepository } from "./follow.repository.js";
+export { default as settingsRepository } from "./settings.repository.js";

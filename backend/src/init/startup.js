@@ -23,3 +23,6 @@ logger.silent = false;
 process.env.SILENT_HTTP_LOGS = "false";
 
 Logger.info("✓ Pre-flight tests completed");
+
+// Keep the process alive
+setInterval(() => {}, 1 << 30);

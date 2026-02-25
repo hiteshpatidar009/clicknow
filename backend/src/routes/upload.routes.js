@@ -6,6 +6,7 @@ import {
   professionalOnly,
   uploadAvatar,
   uploadPortfolio,
+  uploadDocument,
   uploadGeneral,
   handleMulterError,
 } from "../middlewares/index.js";
@@ -61,6 +62,14 @@ router.post(
   uploadGeneral.single("file"),
   handleMulterError,
   uploadController.uploadGeneral,
+);
+
+router.post(
+  "/documents",
+  uploadLimiter,
+  uploadDocument.array("files", 10),
+  handleMulterError,
+  uploadController.uploadDocuments,
 );
 
 router.post(

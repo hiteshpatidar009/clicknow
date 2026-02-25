@@ -108,6 +108,42 @@ class EnquiryService {
   async getStatistics() {
     return enquiryRepository.getStatistics();
   }
+
+  async getAllEnquiries(options = {}) {
+    const result = await enquiryRepository.findAllEnquiries(options);
+    
+     // Enrich with names
+    const enrichedData = await Promise.all(result.data.map(async (enquiry) => {
+        let clientName = "Unknown";
+        let professionalName = "Unknown";
+
+        try {
+            if (enquiry.clientId) {
+                const client = await userRepository.findById(enquiry.clientId).catch(() => null);
+                if (client) clientName = client.displayName || client.name || client.email || "Unknown";
+            }
+
+            if (enquiry.professionalId) {
+                const professional = await professionalRepository.findById(enquiry.professionalId).catch(() => null);
+                if (professional && professional.userId) {
+                     const user = await userRepository.findById(professional.userId).catch(() => null);
+                     if (user) professionalName = user.displayName || user.name || user.email || "Unknown";
+                }
+            }
+        } catch (e) {
+            // Keep defaults if error occurs during enrichment
+        }
+        
+        return {
+            ...enquiry,
+            clientName,
+            professionalName
+        };
+    }));
+
+    result.data = enrichedData;
+    return result;
+  }
 }
 
 export default new EnquiryService();

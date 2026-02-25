@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { enquiryController } from "../controllers/index.js";
-import { authenticate, professionalOnly } from "../middlewares/index.js";
+import { authenticate, professionalOnly, adminOnly } from "../middlewares/index.js";
 import { validate } from "../middlewares/validation.middleware.js";
 import {
   createEnquirySchema,
@@ -29,6 +29,21 @@ router.post(
   validate(createEnquirySchema),
   enquiryController.createEnquiry,
 );
+
+router.get(
+  "/",
+  authenticate,
+  (req, res, next) => {
+    // Check if admin
+    if (req.user.role !== 'admin') {
+         return res.status(403).json({ success: false, message: 'Forbidden' });
+    }
+    next();
+  },
+  validate(getEnquiriesSchema),
+  enquiryController.getEnquiries
+);
+
 router.get(
   "/client",
   authenticate,

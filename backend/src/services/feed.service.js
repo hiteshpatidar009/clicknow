@@ -10,8 +10,8 @@ import {
   professionalRepository,
   userRepository,
 } from "../repositories/index.js";
-import PostModel from "../models/post.model.js";
-import CommentModel from "../models/comment.model.js";
+import PostModel from "../models/Post.js";
+import CommentModel from "../models/Comment.js";
 import notificationService from "./notification.service.js";
 import Logger from "../utils/logger.util.js";
 

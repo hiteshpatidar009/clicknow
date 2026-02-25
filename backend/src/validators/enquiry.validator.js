@@ -25,15 +25,13 @@ const budgetSchema = Joi.object({
 export const createEnquirySchema = {
   body: Joi.object({
     professionalId: Joi.string().required(),
-    eventType: Joi.string()
-      .valid(...EVENT_TYPES)
-      .required(),
+    eventType: Joi.string().required(),
     eventDate: Joi.date().iso().min("now").optional(),
     eventDetails: Joi.object({
       description: Joi.string().max(2000).optional(),
       guestCount: Joi.number().integer().min(1).optional(),
       duration: Joi.number().min(1).optional(),
-    }).optional(),
+    }).unknown(true).optional(),
     location: locationSchema.required(),
     budget: budgetSchema.optional(),
     requirements: Joi.string().max(2000).optional(),
@@ -65,7 +63,7 @@ export const getEnquiriesSchema = {
   query: Joi.object({
     page: Joi.number().integer().min(1).default(1),
     pageSize: Joi.number().integer().min(1).max(50).default(20),
-  }),
+  }).unknown(true),
 };
 
 export const enquiryIdParamSchema = {

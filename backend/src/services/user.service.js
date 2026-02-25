@@ -1,8 +1,6 @@
 import { userRepository } from "../repositories/index.js";
-import { UserModel } from "../models/index.js";
 import Logger from "../utils/logger.util.js";
 import { UserNotFoundError } from "../utils/errors.util.js";
-import { cleanObject } from "../utils/helpers.util.js";
 
 class UserService {
   /**
@@ -37,9 +35,7 @@ class UserService {
     }
 
     const allowedFields = [
-      "firstName",
-      "lastName",
-      "displayName",
+      "fullName",
       "avatar",
       "phone",
       "settings",
@@ -52,14 +48,21 @@ class UserService {
       }
     }
 
-    if (filteredData.firstName || filteredData.lastName) {
-      const firstName = filteredData.firstName || user.firstName;
-      const lastName = filteredData.lastName || user.lastName;
-      filteredData.displayName = `${firstName} ${lastName}`.trim();
+    if (filteredData.fullName) {
+      const nameParts = this.resolveNameParts({
+        fullName: filteredData.fullName,
+      });
+      filteredData.firstName = nameParts.firstName;
+      filteredData.lastName = nameParts.lastName;
+      filteredData.displayName = nameParts.fullName;
+      delete filteredData.fullName;
     }
 
-    const userModel = new UserModel({ ...user, ...filteredData });
-    filteredData.searchTerms = userModel.generateSearchTerms();
+    filteredData.searchTerms = this.generateSearchTerms(
+      filteredData.firstName ?? user.firstName,
+      filteredData.lastName ?? user.lastName,
+      user.email,
+    );
 
     const updatedUser = await userRepository.update(userId, filteredData);
 
@@ -114,6 +117,8 @@ class UserService {
     const queryOptions = {
       page: page || 1,
       pageSize: pageSize || 20,
+      orderBy: options.orderBy || options.sortBy || "createdAt",
+      orderDirection: options.orderDirection || options.sortOrder || "desc",
       where: [],
     };
 
@@ -195,12 +200,61 @@ class UserService {
   }
 
   /**
+   * Get user growth stats
+   */
+  async getUserGrowthStats(startDate, endDate, groupBy = 'day') {
+    return userRepository.getUserGrowthOverTime(new Date(startDate), new Date(endDate), groupBy);
+  }
+
+  /**
    * Sanitize user data
    */
   sanitizeUser(user) {
-    const { password, fcmToken, searchTerms, ...sanitized } = user;
-    return sanitized;
+    const { password, fcmToken, searchTerms, firstName, lastName, ...sanitized } = user;
+    return {
+      ...sanitized,
+      fullName: sanitized.displayName || `${firstName || ""} ${lastName || ""}`.trim(),
+    };
+  }
+
+  generateSearchTerms(firstName = "", lastName = "", email = "") {
+    const terms = new Set();
+    const fullName = `${firstName} ${lastName}`.trim().toLowerCase();
+
+    [firstName, lastName, fullName, email]
+      .filter(Boolean)
+      .forEach((value) => {
+        const normalized = String(value).toLowerCase().trim();
+        if (!normalized) return;
+        terms.add(normalized);
+        normalized
+          .split(/\s+/)
+          .filter(Boolean)
+          .forEach((word) => terms.add(word));
+      });
+
+    return Array.from(terms);
+  }
+
+  resolveNameParts({ fullName = "", firstName = "", lastName = "" }) {
+    const normalizedFullName = String(fullName || "").trim().replace(/\s+/g, " ");
+    if (normalizedFullName) {
+      const parts = normalizedFullName.split(" ");
+      return {
+        fullName: normalizedFullName,
+        firstName: parts[0] || "",
+        lastName: parts.slice(1).join(" "),
+      };
+    }
+
+    const normalizedFirstName = String(firstName || "").trim();
+    const normalizedLastName = String(lastName || "").trim();
+    return {
+      fullName: `${normalizedFirstName} ${normalizedLastName}`.trim(),
+      firstName: normalizedFirstName,
+      lastName: normalizedLastName,
+    };
   }
 }
 
-export default UserService;
+export default new UserService();

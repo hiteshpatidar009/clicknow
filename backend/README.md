@@ -64,6 +64,25 @@ backend/
 - **Validation**: Joi
 - **Logging**: Winston
 
+## ▲ Vercel Deployment
+
+This repo now supports Vercel serverless deployment using:
+
+- `api/index.js` (serverless handler)
+- `vercel.json` (route config)
+
+### Deploy Steps
+
+1. Set project root to `backend` in Vercel.
+2. Import all required environment variables from `.env`.
+3. Deploy.
+
+### Notes
+
+- Keep `npm run dev` for local development.
+- `/api/v1/*`, `/health`, and `/` routes are handled by the same Express app on Vercel.
+- Cold starts can increase latency on first request.
+
 ## 📦 Installation
 
 ```bash

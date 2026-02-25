@@ -30,11 +30,34 @@ class ErrorMiddleware {
    * Global error handler
    */
   errorHandler = (err, req, res, next) => {
-  Logger.error("Unhandled error", err, {
+  const logMeta = {
     url: req.originalUrl,
     method: req.method,
     userId: req.user?.userId,
-  });
+  };
+
+  if (isFirestoreQuotaError(err) || err?.statusCode === 503) {
+    Logger.warn("Service unavailable error", {
+      ...logMeta,
+      errorMessage: err?.message,
+      code: err?.code,
+    });
+  } else {
+    Logger.error("Unhandled error", err, logMeta);
+  }
+
+  // Handle Firestore/gRPC connection errors immediately
+  if (err.code === 5 || err.code === "NOT_FOUND") {
+    return ApiResponse.serverError(res, "Database connection failed. Please check Firebase configuration.");
+  }
+  
+  // Handle Firestore quota/rate limit failures explicitly
+  if (isFirestoreQuotaError(err)) {
+    return ApiResponse.serviceUnavailable(
+      res,
+      "Database quota exceeded. Please try again later.",
+    );
+  }
 
   if (err instanceof ValidationError) {
     return ApiResponse.validationError(res, err.errors, err.message);
@@ -53,7 +76,7 @@ class ErrorMiddleware {
   }
 
   if (err instanceof AppError) {
-    return ApiResponse.error(res, err.statusCode, err.message, err.errorCode);
+    return ApiResponse.error(res, err.message, err.statusCode, err.errorCode);
   }
 
   if (err.isJoi) {
@@ -64,7 +87,7 @@ class ErrorMiddleware {
     return ApiResponse.validationError(res, errors, "Validation failed");
   }
 
-  if (err.code && err.code.startsWith("auth/")) {
+  if (err.code && typeof err.code === 'string' && err.code.startsWith("auth/")) {
     return ApiResponse.unauthorized(res, getFirebaseAuthMessage(err.code));
   }
 
@@ -88,14 +111,40 @@ class ErrorMiddleware {
     return ApiResponse.badRequest(res, "Unexpected file field");
   }
 
+  if (err?.code === 11000) {
+    const duplicatedField = Object.keys(err?.keyPattern || {})[0];
+    const message = duplicatedField
+      ? `${duplicatedField} already exists`
+      : "Duplicate value violates unique constraint";
+    return ApiResponse.conflict(res, message, "DUPLICATE_KEY");
+  }
+
+
   const statusCode = err.statusCode || 500;
   const message =
     process.env.NODE_ENV === "production" ?
       "Internal server error"
     : err.message;
 
-  return ApiResponse.serverError(res, message);
+  if (statusCode === 503) {
+    return ApiResponse.serviceUnavailable(res, message);
+  }
+
+  return ApiResponse.error(res, message, statusCode, err.errorCode || "INTERNAL_ERROR");
   };
+}
+
+function isFirestoreQuotaError(err) {
+  const code = err?.code;
+  const message = (err?.message || "").toLowerCase();
+
+  return (
+    code === 8 ||
+    code === "8" ||
+    code === "RESOURCE_EXHAUSTED" ||
+    message.includes("resource_exhausted") ||
+    message.includes("quota exceeded")
+  );
 }
 
 /**

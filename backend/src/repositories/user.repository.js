@@ -1,60 +1,199 @@
-import BaseRepository from "./base.repository.js";
-import { COLLECTIONS } from "../utils/constants.util.js";
+import User from "../models/User.js";
 
-class UserRepository extends BaseRepository {
-  constructor() {
-    super(COLLECTIONS.USERS);
+function toPlain(doc) {
+  if (!doc) return null;
+  const obj = doc.toObject ? doc.toObject() : doc;
+  const { _id, __v, ...rest } = obj;
+  return { id: String(_id), ...rest };
+}
+
+class UserRepository {
+  async create(data) {
+    const doc = await User.create(data);
+    return toPlain(doc);
   }
 
-  /**
-   * Find user by email
-   * @param {string} email - User email
-   * @returns {Promise<Object|null>} User document
-   */
+  async findById(id) {
+    if (!id) return null;
+    try {
+      const doc = await User.findById(id);
+      return toPlain(doc);
+    } catch (e) {
+      // id is not a valid ObjectId (e.g. Firebase UID or dev fallback) — try findOne
+      if (e.name === 'CastError') {
+        const doc = await User.findOne({ _id: id }).catch(() => null);
+        return toPlain(doc);
+      }
+      throw e;
+    }
+  }
+
+  async findByField(field, value) {
+    const doc = await User.findOne({ [field]: value });
+    return toPlain(doc);
+  }
+
   async findByEmail(email) {
-    return this.findByField("email", email.toLowerCase());
+    return this.findByField("email", (email || "").toLowerCase());
   }
 
-  /**
-   * Find user by phone number
-   * @param {string} phone - Phone number
-   * @returns {Promise<Object|null>} User document
-   */
   async findByPhone(phone) {
     return this.findByField("phone", phone);
   }
 
-  /**
-   * Find user by Firebase UID
-   * @param {string} firebaseUid - Firebase Auth UID
-   * @returns {Promise<Object|null>} User document
-   */
   async findByFirebaseUid(firebaseUid) {
     return this.findByField("firebaseUid", firebaseUid);
   }
 
-  /**
-   * Find users by role
-   * @param {string} role - User role
-   * @param {Object} options - Query options
-   * @returns {Promise<Array>} User documents
-   */
-  async findByRole(role, options = {}) {
-    return this.findPaginated({
-      ...options,
-      where: [
-        { field: "role", operator: "==", value: role },
-        { field: "isDeleted", operator: "==", value: false },
-        ...(options.where || []),
-      ],
-    });
+  async update(id, data) {
+    if (!id) return null;
+    try {
+      const doc = await User.findByIdAndUpdate(
+        id,
+        { ...data, updatedAt: new Date() },
+        { returnDocument: 'after' },
+      );
+      return toPlain(doc);
+    } catch (e) {
+      if (e.name === 'CastError') return null;
+      throw e;
+    }
   }
 
-  /**
-   * Find active users
-   * @param {Object} options - Query options
-   * @returns {Promise<Object>} Paginated users
-   */
+  async softDelete(id) {
+    return this.update(id, { isDeleted: true, isActive: false });
+  }
+
+  async findAll(options = {}) {
+    const { where = [], orderBy = null, orderDirection = "asc", limit = null } = options;
+    const query = {};
+
+    for (const condition of where) {
+      const { field, operator, value } = condition;
+      if (operator === "==") {
+        query[field] = value;
+      }
+      if (operator === "array-contains") {
+        query[field] = value;
+      }
+      if (operator === ">=") {
+        query[field] = { ...(query[field] || {}), $gte: value };
+      }
+      if (operator === "<=") {
+        query[field] = { ...(query[field] || {}), $lte: value };
+      }
+    }
+
+    let q = User.find(query);
+    if (orderBy) {
+      q = q.sort({ [orderBy]: orderDirection === "desc" ? -1 : 1 });
+    }
+    if (limit) q = q.limit(limit);
+    const docs = await q;
+    return docs.map(toPlain);
+  }
+
+  async findPaginated(options = {}) {
+    const {
+      where = [],
+      orderBy = "createdAt",
+      orderDirection = "desc",
+      page = 1,
+      pageSize = 20,
+    } = options;
+
+    const query = {};
+    for (const condition of where) {
+      const { field, operator, value } = condition;
+      if (operator === "==") {
+        query[field] = value;
+      }
+      if (operator === "array-contains") {
+        query[field] = value;
+      }
+      if (operator === ">=") {
+        query[field] = { ...(query[field] || {}), $gte: value };
+      }
+      if (operator === "<=") {
+        query[field] = { ...(query[field] || {}), $lte: value };
+      }
+    }
+
+    const skip = Math.max(page - 1, 0) * pageSize;
+    const [docs, totalCount] = await Promise.all([
+      User.find(query)
+        .sort({ [orderBy]: orderDirection === "desc" ? -1 : 1 })
+        .skip(skip)
+        .limit(pageSize),
+      User.countDocuments(query),
+    ]);
+
+    return {
+      data: docs.map(toPlain),
+      pagination: {
+        page,
+        pageSize,
+        totalCount,
+        totalPages: Math.ceil(totalCount / pageSize) || 1,
+        hasMore: skip + docs.length < totalCount,
+        nextCursor: null,
+      },
+    };
+  }
+
+  async count(where = []) {
+    const query = {};
+    for (const condition of where) {
+      const { field, operator, value } = condition;
+      if (operator === "==") {
+        query[field] = value;
+      }
+    }
+    return User.countDocuments(query);
+  }
+
+  async searchByName(searchTerm, options = {}) {
+    const searchLower = (searchTerm || "").toLowerCase();
+    const { page = 1, pageSize = 20, orderBy = "createdAt", orderDirection = "desc", where = [] } = options;
+
+    const baseQuery = { isDeleted: false };
+    for (const condition of where) {
+      const { field, operator, value } = condition;
+      if (operator === "==") baseQuery[field] = value;
+    }
+
+    const query = {
+      ...baseQuery,
+      $or: [
+        { displayName: { $regex: searchLower, $options: "i" } },
+        { firstName: { $regex: searchLower, $options: "i" } },
+        { lastName: { $regex: searchLower, $options: "i" } },
+        { email: { $regex: searchLower, $options: "i" } },
+      ],
+    };
+
+    const skip = Math.max(page - 1, 0) * pageSize;
+    const [docs, totalCount] = await Promise.all([
+      User.find(query)
+        .sort({ [orderBy]: orderDirection === "desc" ? -1 : 1 })
+        .skip(skip)
+        .limit(pageSize),
+      User.countDocuments(query),
+    ]);
+
+    return {
+      data: docs.map(toPlain),
+      pagination: {
+        page,
+        pageSize,
+        totalCount,
+        totalPages: Math.ceil(totalCount / pageSize) || 1,
+        hasMore: skip + docs.length < totalCount,
+        nextCursor: null,
+      },
+    };
+  }
+
   async findActiveUsers(options = {}) {
     return this.findPaginated({
       ...options,
@@ -66,79 +205,28 @@ class UserRepository extends BaseRepository {
     });
   }
 
-  /**
-   * Search users by name
-   * @param {string} searchTerm - Search term
-   * @param {Object} options - Query options
-   * @returns {Promise<Object>} Paginated users
-   */
-  async searchByName(searchTerm, options = {}) {
-    const searchLower = searchTerm.toLowerCase();
-    return this.findPaginated({
-      ...options,
-      where: [
-        {
-          field: "searchTerms",
-          operator: "array-contains",
-          value: searchLower,
-        },
-        { field: "isDeleted", operator: "==", value: false },
-        ...(options.where || []),
-      ],
-    });
-  }
-
-  /**
-   * Update user's last login time
-   * @param {string} id - User ID
-   * @returns {Promise<Object>} Updated user
-   */
   async updateLastLogin(id) {
-    return this.update(id, {
-      lastLoginAt: this.db.timestamp(),
-    });
+    return this.update(id, { lastLoginAt: new Date() });
   }
 
-  /**
-   * Update user's verification status
-   * @param {string} id - User ID
-   * @param {boolean} isVerified - Verification status
-   * @returns {Promise<Object>} Updated user
-   */
   async updateVerificationStatus(id, isVerified) {
     return this.update(id, {
       isVerified,
-      verifiedAt: isVerified ? this.db.timestamp() : null,
+      verifiedAt: isVerified ? new Date() : null,
     });
   }
 
-  /**
-   * Update user's FCM token for push notifications
-   * @param {string} id - User ID
-   * @param {string} fcmToken - FCM token
-   * @returns {Promise<Object>} Updated user
-   */
   async updateFcmToken(id, fcmToken) {
     return this.update(id, { fcmToken });
   }
 
-  /**
-   * Deactivate user account
-   * @param {string} id - User ID
-   * @returns {Promise<Object>} Updated user
-   */
   async deactivateUser(id) {
     return this.update(id, {
       isActive: false,
-      deactivatedAt: this.db.timestamp(),
+      deactivatedAt: new Date(),
     });
   }
 
-  /**
-   * Reactivate user account
-   * @param {string} id - User ID
-   * @returns {Promise<Object>} Updated user
-   */
   async reactivateUser(id) {
     return this.update(id, {
       isActive: true,
@@ -146,35 +234,34 @@ class UserRepository extends BaseRepository {
     });
   }
 
-  /**
-   * Get user statistics
-   * @returns {Promise<Object>} User statistics
-   */
   async getStatistics() {
-    const [totalUsers, activeUsers, clients, professionals] = await Promise.all(
-      [
-        this.count([{ field: "isDeleted", operator: "==", value: false }]),
-        this.count([
-          { field: "isActive", operator: "==", value: true },
-          { field: "isDeleted", operator: "==", value: false },
-        ]),
-        this.count([
-          { field: "role", operator: "==", value: "client" },
-          { field: "isDeleted", operator: "==", value: false },
-        ]),
-        this.count([
-          { field: "role", operator: "==", value: "professional" },
-          { field: "isDeleted", operator: "==", value: false },
-        ]),
-      ],
-    );
+    const [totalUsers, activeUsers, clients, professionals] = await Promise.all([
+      User.countDocuments({ isDeleted: false }),
+      User.countDocuments({ isActive: true, isDeleted: false }),
+      User.countDocuments({ role: "client", isDeleted: false }),
+      User.countDocuments({ role: "professional", isDeleted: false }),
+    ]);
 
-    return {
-      totalUsers,
-      activeUsers,
-      clients,
-      professionals,
-    };
+    return { totalUsers, activeUsers, clients, professionals };
+  }
+
+  async getUserGrowthOverTime(startDate, endDate, groupBy = "day") {
+    const dateFormat = groupBy === "month" ? "%Y-%m" : "%Y-%m-%d";
+    return User.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: startDate, $lte: endDate },
+          isDeleted: false,
+        },
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: dateFormat, date: "$createdAt" } },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
   }
 }
 

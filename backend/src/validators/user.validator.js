@@ -2,9 +2,7 @@ import Joi from "joi";
 
 export const updateProfileSchema = {
   body: Joi.object({
-    firstName: Joi.string().min(2).max(50).optional(),
-    lastName: Joi.string().min(2).max(50).optional(),
-    displayName: Joi.string().min(2).max(100).optional(),
+    fullName: Joi.string().min(2).max(100).optional(),
     avatar: Joi.string().uri().optional(),
     phone: Joi.string()
       .pattern(/^\+?[1-9]\d{1,14}$/)

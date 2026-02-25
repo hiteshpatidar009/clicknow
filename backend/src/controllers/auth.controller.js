@@ -52,6 +52,22 @@ class AuthController {
   });
 
   /**
+   * POST /api/v1/auth/send-otp
+   */
+  sendOtp = asyncHandler(async (req, res) => {
+    const result = await authService.sendOtp(req.body);
+    return ApiResponse.success(res, result, "OTP sent successfully");
+  });
+
+  /**
+   * POST /api/v1/auth/verify-otp
+   */
+  verifyOtp = asyncHandler(async (req, res) => {
+    const result = await authService.verifyOtp(req.body);
+    return ApiResponse.success(res, result, "OTP verified successfully");
+  });
+
+  /**
    * POST /api/v1/auth/logout
    */
   logout = asyncHandler(async (req, res) => {

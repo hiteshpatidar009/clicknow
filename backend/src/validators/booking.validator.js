@@ -1,12 +1,34 @@
 import Joi from "joi";
 
+/**
+ * BOOKING FLOW:
+ *
+ * OPTION A — Direct Booking (customer picks a professional):
+ *   POST /bookings  { professionalId: "xxx", ... }
+ *   → status: PENDING (professional confirms/rejects)
+ *
+ * OPTION B — Open Booking (admin assigns professional):
+ *   POST /bookings  { professionalId: omitted/null, ... }
+ *   → status: PENDING (admin will assign a professional)
+ *   → admin calls PUT /admin/bookings/:id/assign { professionalId: "xxx" }
+ *   → status: PROCESSING (professional then confirms/rejects)
+ */
+
+// All event types supported by the platform
 const EVENT_TYPES = [
   "wedding",
+  "pre_wedding",
   "birthday",
+  "anniversary",
+  "baby_shower",
+  "naming_ceremony",
   "corporate",
-  "portrait",
-  "event",
   "product",
+  "portrait",
+  "graduation",
+  "engagement",
+  "concert",
+  "event",
   "other",
 ];
 
@@ -25,15 +47,27 @@ const locationSchema = Joi.object({
 });
 
 const eventDetailsSchema = Joi.object({
+  description: Joi.string().max(1000).optional(),
   guestCount: Joi.number().integer().min(1).optional(),
   venueName: Joi.string().max(200).optional(),
   venueType: Joi.string().valid("indoor", "outdoor", "both").optional(),
-  specialRequirements: Joi.array().items(Joi.string()).optional(),
+  serviceType: Joi.string().max(200).optional(),
+  shootType: Joi.string().optional(),
+  // ✅ FIX: specialRequirements accepts both a plain string OR an array of strings
+  specialRequirements: Joi.alternatives()
+    .try(
+      Joi.string().max(1000),
+      Joi.array().items(Joi.string().max(500)),
+    )
+    .optional(),
   additionalInfo: Joi.string().max(1000).optional(),
-});
+}).unknown(true);
 
 const pricingSchema = Joi.object({
-  baseAmount: Joi.number().min(0).required(),
+  type: Joi.string().valid("hourly", "package").optional(),
+  packageName: Joi.string().optional(),
+  baseAmount: Joi.number().min(0).optional(),
+  totalAmount: Joi.number().min(0).optional(),
   additionalCharges: Joi.array()
     .items(
       Joi.object({
@@ -48,33 +82,32 @@ const pricingSchema = Joi.object({
 
 export const createBookingSchema = {
   body: Joi.object({
-    professionalId: Joi.string().required(),
+    // ✅ FIX: professionalId is truly optional — allow missing, null, OR empty string
+    professionalId: Joi.string().allow("", null).optional(),
+
     bookingDate: Joi.date().iso().min("now").required(),
-    startTime: Joi.string()
-      .pattern(/^([01]\d|2[0-3]):([0-5]\d)$/)
-      .required(),
-    endTime: Joi.string()
-      .pattern(/^([01]\d|2[0-3]):([0-5]\d)$/)
-      .required(),
-    eventType: Joi.string()
-      .valid(...EVENT_TYPES)
-      .required(),
+    startTime: Joi.string().optional(),
+    endTime: Joi.string().optional(),
+    // ✅ FIX: support duration if endTime is missing
+    duration: Joi.alternatives().try(Joi.number(), Joi.string()).optional(),
+
+    // ✅ FIX: eventType can be dynamic from the new service forms
+    eventType: Joi.string().required(),
+
     eventDetails: eventDetailsSchema.optional(),
     location: locationSchema.required(),
-    pricing: pricingSchema.required(),
+    pricing: pricingSchema.optional(),
     clientNotes: Joi.string().max(1000).optional(),
+    notes: Joi.string().max(1000).optional(), // alias for clientNotes
   }),
 };
 
 export const rescheduleSchema = {
   body: Joi.object({
     bookingDate: Joi.date().iso().min("now").required(),
-    startTime: Joi.string()
-      .pattern(/^([01]\d|2[0-3]):([0-5]\d)$/)
-      .required(),
-    endTime: Joi.string()
-      .pattern(/^([01]\d|2[0-3]):([0-5]\d)$/)
-      .required(),
+    startTime: Joi.string().optional(),
+    endTime: Joi.string().optional(),
+    duration: Joi.alternatives().try(Joi.number(), Joi.string()).optional(),
   }),
 };
 
@@ -90,16 +123,29 @@ export const rejectSchema = {
   }),
 };
 
+export const assignProfessionalSchema = {
+  body: Joi.object({
+    professionalId: Joi.string().required(),
+    notes: Joi.string().max(500).optional(),
+  }),
+};
+
 export const getBookingsSchema = {
   query: Joi.object({
+    // All valid statuses — maps to frontend tabs:
+    // no status = All, pending = Awaiting, processing = Admin Assigned,
+    // confirmed = Confirmed, completed = Past, cancelled = Cancelled
     status: Joi.string()
       .valid(
-        "pending",
-        "confirmed",
-        "completed",
-        "cancelled",
-        "rejected",
-        "rescheduled",
+        "pending",      // just created, awaiting assignment or professional response
+        "open",         // open call
+        "assigned",     // professional assigned (alias)
+        "processing",   // admin assigned, awaiting professional confirm
+        "confirmed",    // professional confirmed
+        "completed",    // job done
+        "cancelled",    // cancelled by client or admin
+        "rejected",     // rejected by professional
+        "rescheduled",  // rescheduled
       )
       .optional(),
     page: Joi.number().integer().min(1).default(1),
@@ -109,7 +155,7 @@ export const getBookingsSchema = {
 
 export const calendarSchema = {
   query: Joi.object({
-    year: Joi.number().integer().min(2020).max(2030).required(),
+    year: Joi.number().integer().min(2020).max(2035).required(),
     month: Joi.number().integer().min(1).max(12).required(),
   }),
 };
@@ -131,6 +177,7 @@ export default {
   rescheduleSchema,
   cancelSchema,
   rejectSchema,
+  assignProfessionalSchema,
   getBookingsSchema,
   calendarSchema,
   bookingIdParamSchema,

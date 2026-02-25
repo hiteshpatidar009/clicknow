@@ -36,6 +36,8 @@ class FirebaseDatabase {
 
       this.db.settings({
         ignoreUndefinedProperties: true,
+        // Avoid gRPC metadata plugin issues on some OpenSSL/Node setups.
+        preferRest: true,
       });
 
       Logger.info("Firebase initialized successfully");

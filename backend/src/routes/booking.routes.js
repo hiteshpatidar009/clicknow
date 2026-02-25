@@ -1,12 +1,13 @@
 import { Router } from "express";
 import { bookingController } from "../controllers/index.js";
-import { authenticate, professionalOnly } from "../middlewares/index.js";
+import { authenticate, professionalOnly, adminOnly } from "../middlewares/index.js";
 import { validate } from "../middlewares/validation.middleware.js";
 import {
   createBookingSchema,
   rescheduleSchema,
   cancelSchema,
   rejectSchema,
+  assignProfessionalSchema,
   getBookingsSchema,
   calendarSchema,
   bookingIdParamSchema,
@@ -104,6 +105,22 @@ router.put(
   authenticate,
   validate({ ...bookingIdParamSchema, ...rescheduleSchema }),
   bookingController.rescheduleBooking,
+);
+
+router.get(
+  "/:id/matches",
+  authenticate,
+  adminOnly, // Admin only
+  validate(bookingIdParamSchema),
+  bookingController.getMatchingProfessionals
+);
+
+router.put(
+  "/:id/assign",
+  authenticate,
+  adminOnly, // Admin only
+  validate({ ...bookingIdParamSchema, ...assignProfessionalSchema }),
+  bookingController.assignProfessional
 );
 
 export default router;

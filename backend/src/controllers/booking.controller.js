@@ -173,6 +173,30 @@ class BookingController {
     const stats = await bookingService.getStatistics();
     return ApiResponse.success(res, stats);
   });
+  /**
+   * GET /api/v1/bookings/:id/matches (Admin)
+   */
+  getMatchingProfessionals = asyncHandler(async (req, res) => {
+    const booking = await bookingService.getById(req.params.id);
+    const matches = await professionalService.findMatchesForBooking(booking);
+    return ApiResponse.success(res, matches);
+  });
+
+  /**
+   * PUT /api/v1/bookings/:id/assign (Admin)
+   */
+  assignProfessional = asyncHandler(async (req, res) => {
+    const { professionalId } = req.body;
+    if (!professionalId) {
+        return ApiResponse.badRequest(res, "Professional ID is required");
+    }
+    const booking = await bookingService.assignProfessional(
+      req.params.id,
+      professionalId,
+      req.user.userId
+    );
+    return ApiResponse.success(res, booking, "Professional assigned successfully");
+  });
 }
 
 export default BookingController;

@@ -1,0 +1,2843 @@
+{
+  "info": {
+    "name": "ClickNow — Full Backend API (Role-Based)",
+    "description": "Complete API collection for ClickNow platform.\n\n FOLDER STRUCTURE (Read This First):\n1.  AUTH — Login, Register, OTP (no token needed)\n2.  CUSTOMER APIs — Browsing, Booking, Profile\n3.  PROFESSIONAL APIs — Onboarding, Dashboard, Earnings\n4.  ADMIN APIs — Users, Approvals, Reports\n5.  SYSTEM — Health, Categories, Search, Uploads\n\n SETUP:\n1. Register or Login\n2. Copy token from response\n3. Set 'token' in Collection Variables\n4. All protected routes use: Authorization: Bearer {{token}}\n\n ROLES:\n- client = Customer\n- professional = Vendor/Professional\n- admin = Admin Panel\n\nAUTH NOTE:\n- Register payload uses fullName (no firstName/lastName).\n- Email OTP uses SMTP provider.\n- Phone OTP supports provider=firebase or provider=mock for testing.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "PASTE_JWT_TOKEN_HERE",
+      "type": "string"
+    },
+    {
+      "key": "refresh_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "professionalId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "bookingId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "reviewId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "enquiryId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "chatId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "itemId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "categorySlug",
+      "value": "photographer",
+      "type": "string"
+    },
+    {
+      "key": "date",
+      "value": "2026-03-15",
+      "type": "string"
+    },
+    {
+      "key": "test_email",
+      "value": "tarun.jain@example.com",
+      "type": "string"
+    },
+    {
+      "key": "test_phone",
+      "value": "+919876543210",
+      "type": "string"
+    },
+    {
+      "key": "otp_provider_phone",
+      "value": "mock",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🔓 AUTH (Public — No Token Required)",
+      "description": "Registration, Login, OTP. No Authorization header needed.",
+      "item": [
+        {
+          "name": "Send OTP (Email Registration)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{test_email}}\",\n  \"role\": \"client\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/send-otp",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "send-otp"
+              ]
+            },
+            "description": "Registration flow: send OTP to user email. Use email + role (no purpose).\n\nMailerSend note: if sending fails with 450/MS42207, verify your sender domain/email and set SMTP_FROM to a verified sender."
+          }
+        },
+        {
+          "name": "Verify OTP (Email Registration)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{test_email}}\",\n  \"otp\": \"123456\",\n  \"role\": \"client\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/verify-otp",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "verify-otp"
+              ]
+            },
+            "description": "Registration flow: verify email OTP."
+          }
+        },
+        {
+          "name": "Register (Everyone — Customer OR Future Professional)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{test_email}}\",\n  \"password\": \"StrongPass@123\",\n  \"phone\": \"{{test_phone}}\",\n  \"fullName\": \"Tarun Jain\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Screen: Registration Screen\n\nONE REGISTER ENDPOINT FOR CUSTOMER + FUTURE PROFESSIONAL.\nAfter register, send and verify OTP on email using auth/send-otp + auth/verify-otp.\nDo not send role in register.\nProfessional role is upgraded later when POST /professionals onboarding starts.\n\nSend fullName in registration payload."
+          },
+          "response": []
+        },
+        {
+          "name": "Login (Email + Password)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{test_email}}\",\n  \"password\": \"StrongPass@123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Screen: Login Screen\nReturns: { token, refreshToken, user: { id, role, email } }\n✅ Copy token → set in Collection Variables"
+          }
+        },
+        {
+          "name": "Login — Google (Firebase)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firebaseToken\": \"FIREBASE_ID_TOKEN\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/firebase",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "firebase"
+              ]
+            },
+            "description": "Screen: Login → Sign up with Google\nPass Firebase ID token from frontend Google Sign-In"
+          }
+        },
+        {
+          "name": "Get My Session (Who Am I)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "description": "Used on app startup. Returns logged-in user info + role."
+          }
+        },
+        {
+          "name": "Refresh Access Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refresh_token}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/refresh",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "refresh"
+              ]
+            },
+            "description": "Call when you receive 401 AUTH_TOKEN_EXPIRED. Returns new access token."
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"StrongPass@123\",\n  \"newPassword\": \"NewPass@456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/change-password",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "change-password"
+              ]
+            },
+            "description": "Screen: Profile → Settings → Change Password\nRole: any authenticated user"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            },
+            "description": "Invalidates session. Call on user logout."
+          }
+        }
+      ]
+    },
+    {
+      "name": "🟢 CUSTOMER APIs",
+      "description": "Role required: client\nAll requests need: Authorization: Bearer {{token}}",
+      "item": [
+        {
+          "name": "Profile",
+          "item": [
+            {
+              "name": "Get My Profile",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/users/profile",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "users",
+                    "profile"
+                  ]
+                },
+                "description": "Screen: My Profile\nReturns: name, email, avatar, settings, stats { bookings, spent, ratings }"
+              }
+            },
+            {
+              "name": "Update My Profile",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"phone\": \"{{test_phone}}\",\n  \"avatar\": \"https://cdn.example.com/avatars/tarun.jpg\",\n  \"fullName\": \"Tarun Jain\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/users/profile",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "users",
+                    "profile"
+                  ]
+                },
+                "description": "Screen: My Profile → Edit"
+              }
+            },
+            {
+              "name": "Update Notification Settings",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"notifications\": {\n    \"push\": true,\n    \"email\": true,\n    \"whatsapp\": true,\n    \"marketing\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/users/notifications/settings",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "users",
+                    "notifications",
+                    "settings"
+                  ]
+                },
+                "description": "Screen: Profile → Settings → Notifications"
+              }
+            },
+            {
+              "name": "Update FCM Push Token",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fcmToken\": \"DEVICE_FCM_TOKEN\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/users/fcm-token",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "users",
+                    "fcm-token"
+                  ]
+                },
+                "description": "Call after login to enable push notifications on device."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Browse Professionals",
+          "item": [
+            {
+              "name": "Get All Categories",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/categories",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "categories"
+                  ]
+                },
+                "description": "Screen: Home → Services Grid\nPublic. Returns: photographer, dj, musician, anchor, videographer..."
+              }
+            },
+            {
+              "name": "Get Featured Professionals",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/professionals/featured?limit=10",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "featured"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                },
+                "description": "Screen: Home → Banner / Our Leading Services"
+              }
+            },
+            {
+              "name": "Get Top Rated Professionals",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/professionals/top-rated?limit=10",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "top-rated"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                },
+                "description": "Screen: Home → Recommended section"
+              }
+            },
+            {
+              "name": "Search Professionals",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/professionals?category=photographer&city=Mumbai&minRating=4&maxPrice=50000&sortBy=rating&page=1&pageSize=20",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals"
+                  ],
+                  "query": [
+                    {
+                      "key": "category",
+                      "value": "photographer",
+                      "description": "photographer|dj|musician|anchor|videographer"
+                    },
+                    {
+                      "key": "city",
+                      "value": "Mumbai"
+                    },
+                    {
+                      "key": "minRating",
+                      "value": "4"
+                    },
+                    {
+                      "key": "maxPrice",
+                      "value": "50000"
+                    },
+                    {
+                      "key": "sortBy",
+                      "value": "rating",
+                      "description": "rating|price|bookings"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "Screen: Search/Filter Screen. All params optional."
+              }
+            },
+            {
+              "name": "Get Professionals by Category",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/professionals/category/{{categorySlug}}?page=1&pageSize=20",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "category",
+                    "{{categorySlug}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "Screen: Home → tap a category card"
+              }
+            },
+            {
+              "name": "Get Professional Public Profile",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/professionals/{{professionalId}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "{{professionalId}}"
+                  ]
+                },
+                "description": "Screen: Service Booking Form (top section)\nReturns: name, bio, pricing, rating, specialties, location"
+              }
+            },
+            {
+              "name": "Get Professional Portfolio Gallery",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/professionals/{{professionalId}}/gallery?page=1&pageSize=20",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "{{professionalId}}",
+                    "gallery"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "Screen: Portfolio Screen → Media Gallery"
+              }
+            },
+            {
+              "name": "Get Professional Reviews",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/professionals/{{professionalId}}/reviews?page=1&pageSize=10",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "{{professionalId}}",
+                    "reviews"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "10"
+                    }
+                  ]
+                },
+                "description": "Screen: Portfolio → Client Experiences"
+              }
+            },
+            {
+              "name": "Get Available Slots",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/professionals/{{professionalId}}/availability/slots?date={{date}}&duration=120",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "{{professionalId}}",
+                    "availability",
+                    "slots"
+                  ],
+                  "query": [
+                    {
+                      "key": "date",
+                      "value": "{{date}}"
+                    },
+                    {
+                      "key": "duration",
+                      "value": "120"
+                    }
+                  ]
+                },
+                "description": "Screen: Booking Form → Date picker\nCheck slots before creating booking"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Bookings",
+          "item": [
+            {
+              "name": "Create Booking (Admin Assigns Professional)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"bookingDate\": \"2026-05-15\",\n  \"startTime\": \"10:00\",\n  \"endTime\": \"18:00\",\n  \"eventType\": \"wedding\",\n  \"eventDetails\": {\n    \"description\": \"Full wedding ceremony and reception\",\n    \"guestCount\": 300,\n    \"serviceType\": \"Full Day Photography\",\n    \"specialRequirements\": \"Drone shots required, candid style preferred\"\n  },\n  \"location\": {\n    \"address\": \"Taj Hotel, Marine Drive\",\n    \"city\": \"Mumbai\",\n    \"state\": \"Maharashtra\",\n    \"pincode\": \"400001\"\n  },\n  \"pricing\": {\n    \"type\": \"package\",\n    \"packageName\": \"Premium Wedding Package\",\n    \"baseAmount\": 45000,\n    \"totalAmount\": 47000,\n    \"currency\": \"INR\"\n  },\n  \"clientNotes\": \"Backup equipment required\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/bookings",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings"
+                  ]
+                },
+                "description": "Screen: Service Booking Form → 'Book This Service' button\nRole: client\n\n✅ FLOW: Admin Assigns Professional\n  1. Customer creates booking (NO professionalId in body)\n  2. Status = PENDING\n  3. Admin views unassigned bookings queue\n  4. Admin calls PUT /admin/bookings/:id/assign { professionalId }\n  5. Status = PROCESSING\n  6. Professional confirms or rejects\n\n❌ FIXED ERRORS:\n  - eventType MUST be lowercase: 'wedding' not 'Wedding'\n  - specialRequirements: send as plain string (NOT an array)\n  - Do NOT send professionalId as empty string (omit it entirely)\n\nValid eventType values:\nwedding | pre_wedding | birthday | anniversary | baby_shower |\nnaming_ceremony | corporate | product | portrait |\ngraduation | engagement | concert | event | other\n\n✅ Copy returned booking 'id' → set in Collection Variable 'bookingId'"
+              },
+              "response": []
+            },
+            {
+              "name": "Create Booking (Direct — Customer Picks Professional)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"professionalId\": \"{{professionalId}}\",\n  \"bookingDate\": \"2026-05-15\",\n  \"startTime\": \"10:00\",\n  \"endTime\": \"18:00\",\n  \"eventType\": \"wedding\",\n  \"eventDetails\": {\n    \"description\": \"Full wedding ceremony and reception\",\n    \"guestCount\": 300,\n    \"serviceType\": \"Full Day Photography\",\n    \"specialRequirements\": \"Drone shots required\"\n  },\n  \"location\": {\n    \"address\": \"Taj Hotel, Marine Drive\",\n    \"city\": \"Mumbai\",\n    \"state\": \"Maharashtra\",\n    \"pincode\": \"400001\"\n  },\n  \"clientNotes\": \"Backup equipment required\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/bookings",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings"
+                  ]
+                },
+                "description": "FLOW: Customer picks specific professional from browse screen\n  1. Customer includes professionalId in body\n  2. Status = PENDING\n  3. Professional confirms or rejects directly\n\n✅ Set professionalId in Collection Variables first"
+              },
+              "response": []
+            },
+            {
+              "name": "My Bookings (All Tabs)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/bookings/client?page=1&pageSize=20",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings",
+                    "client"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "",
+                      "disabled": true,
+                      "description": "REMOVE for ALL bookings. Use per tab:\n→ pending    = Awaiting (just created, no professional yet)\n→ processing = Admin Assigned (professional notified)\n→ confirmed  = Confirmed (professional accepted)\n→ completed  = Past / Done\n→ cancelled  = Cancelled\n→ rejected   = Rejected by professional"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "Screen: My Bookings → All Tabs\n\n⚠️ IMPORTANT: Remove the 'status' param to see ALL bookings.\n\nStatus filter per tab:\n→ (no status)   = All Bookings\n→ pending       = Awaiting / New\n→ processing    = Admin Assigned (waiting professional confirm)\n→ confirmed     = Confirmed ✅\n→ completed     = Past / Done ✅\n→ cancelled     = Cancelled ❌\n→ rejected      = Rejected ❌"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Booking Detail",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/bookings/{{bookingId}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings",
+                    "{{bookingId}}"
+                  ]
+                },
+                "description": "Screen: Booking Detail View\nReturns full booking with professional info, location, pricing, status"
+              }
+            },
+            {
+              "name": "Cancel Booking",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"Change of plans\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/bookings/{{bookingId}}/cancel",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings",
+                    "{{bookingId}}",
+                    "cancel"
+                  ]
+                },
+                "description": "Screen: My Bookings → Cancel action"
+              }
+            },
+            {
+              "name": "Reschedule Booking",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"bookingDate\": \"2026-03-20\",\n  \"startTime\": \"11:00\",\n  \"endTime\": \"19:00\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/bookings/{{bookingId}}/reschedule",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings",
+                    "{{bookingId}}",
+                    "reschedule"
+                  ]
+                },
+                "description": "Screen: My Bookings → Reschedule"
+              }
+            },
+            {
+              "name": "Submit Review",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"bookingId\": \"{{bookingId}}\",\n  \"professionalId\": \"{{professionalId}}\",\n  \"rating\": 5,\n  \"title\": \"Exceptional work!\",\n  \"content\": \"Stunning photography, very professional.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/reviews",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "reviews"
+                  ]
+                },
+                "description": "Screen: Completed Booking → Rate & Review\nOnly works for COMPLETED bookings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Notifications",
+          "item": [
+            {
+              "name": "Get My Notifications",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/notifications?page=1&pageSize=20",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "notifications"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "Returns user's notification feed"
+              }
+            },
+            {
+              "name": "Mark Notification Read",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/notifications/:id/read",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "notifications",
+                    ":id",
+                    "read"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "NOTIFICATION_ID"
+                    }
+                  ]
+                },
+                "description": "Mark a single notification as read"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "🔵 PROFESSIONAL APIs",
+      "description": "Role required: professional\nAll requests need: Authorization: Bearer {{token}}\n\nONBOARDING ORDER:\n1. Register/Login (AUTH section)\n2. Send Phone OTP (role=professional)\n3. Verify Phone OTP\n4. Save Personal Info → POST /professionals\n5. Update Work Details → PUT /professionals/me\n6. Upload Documents → PUT /professionals/me\n7. Set Pricing & Bank → PUT /professionals/me\n8. Add Portfolio → POST /professionals/me/portfolio\n9. Check Status → GET /professionals/me/profile",
+      "item": [
+        {
+          "name": "Onboarding",
+          "item": [
+            {
+              "name": "Step 0A — Send OTP (Professional Phone Verification)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"phone\": \"{{test_phone}}\",\n  \"role\": \"professional\",\n  \"recaptchaToken\": \"FIREBASE_RECAPTCHA_TOKEN_FROM_CLIENT\",\n  \"provider\": \"firebase\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/auth/send-otp",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "send-otp"
+                  ]
+                },
+                "description": "Professional flow: send OTP to phone before onboarding.\n\nIf OTP_PROVIDER_PHONE=firebase, pass recaptchaToken from client app.\n\nUse provider=firebase.\n\nFor testing without Firebase billing/recaptcha, use provider=mock."
+              }
+            },
+            {
+              "name": "Step 0A-alt — Send OTP (Professional Phone Verification Mock)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"phone\": \"{{test_phone}}\",\n  \"role\": \"professional\",\n  \"provider\": \"mock\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/auth/send-otp",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "send-otp"
+                  ]
+                },
+                "description": "Testing flow: force mock phone OTP when Firebase is not available. Response returns devOtp.\n\nFor testing without Firebase billing/recaptcha, use provider=mock."
+              },
+              "response": []
+            },
+            {
+              "name": "Step 0B-alt — Verify OTP (Professional Phone Verification Mock)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"phone\": \"{{test_phone}}\",\n  \"otp\": \"123456\",\n  \"role\": \"professional\",\n  \"provider\": \"mock\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/auth/verify-otp",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "verify-otp"
+                  ]
+                },
+                "description": "Testing flow: verify mock phone OTP. Use the devOtp returned by Send OTP mock request."
+              },
+              "response": []
+            },
+            {
+              "name": "Step 0B — Verify OTP (Professional Phone Verification)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"phone\": \"{{test_phone}}\",\n  \"otp\": \"123456\",\n  \"role\": \"professional\",\n  \"provider\": \"firebase\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/auth/verify-otp",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "verify-otp"
+                  ]
+                },
+                "description": "Professional flow: verify phone OTP before calling /professionals.\n\nUse provider=firebase."
+              }
+            },
+            {
+              "name": "Step 1 — Create Profile (Personal Info)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"category\": \"photographer\",\n  \"businessName\": \"Raj Mehta Photography\",\n  \"bio\": \"Award-winning wedding photographer, 8 years experience.\",\n  \"experience\": 8,\n  \"specialties\": [\"wedding\", \"portrait\", \"corporate\"],\n  \"personalDetails\": {\n    \"gender\": \"male\",\n    \"dob\": \"1994-05-15\",\n    \"languagesKnown\": [\"Hindi\", \"English\"]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/professionals",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals"
+                  ]
+                },
+                "description": "Screen: Tell About Yourself\nRun this only after Step 0A and Step 0B phone verification.\n✅ Save returned 'id' as professionalId variable"
+              }
+            },
+            {
+              "name": "Step 2 — Work Details & Location",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"workDetails\": {\n    \"availableWorkingDays\": [\"monday\",\"tuesday\",\"wednesday\",\"thursday\",\"friday\",\"saturday\"],\n    \"startTime\": \"09:00\",\n    \"endTime\": \"20:00\",\n    \"equipmentDetails\": \"Sony A7IV, DJI Drone, LED Lighting\",\n    \"socialLinks\": {\n      \"instagram\": \"https://instagram.com/rajmehta\",\n      \"website\": \"https://rajmehta.in\"\n    }\n  },\n  \"location\": {\n    \"address\": \"Bandra West\",\n    \"city\": \"Mumbai\",\n    \"state\": \"Maharashtra\",\n    \"country\": \"India\",\n    \"pincode\": \"400050\",\n    \"coordinates\": {\"latitude\": 19.0596, \"longitude\": 72.8295}\n  },\n  \"serviceAreas\": [\"Mumbai\", \"Pune\", \"Nashik\"]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/professionals/me",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "me"
+                  ]
+                },
+                "description": "Screen: Build Your Professional Profile"
+              }
+            },
+            {
+              "name": "Step 3 — KYC Documents",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"documents\": {\n    \"aadharNumber\": \"1234-5678-9012\",\n    \"panNumber\": \"ABCDE1234F\",\n    \"gstNumber\": \"27ABCDE1234F1Z5\",\n    \"aadharFront\": \"https://cdn.example.com/docs/aadhar_front.jpg\",\n    \"aadharBack\": \"https://cdn.example.com/docs/aadhar_back.jpg\",\n    \"panCard\": \"https://cdn.example.com/docs/pan.jpg\",\n    \"policeVerificationCertificate\": \"https://cdn.example.com/docs/pvc.pdf\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/professionals/me",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "me"
+                  ]
+                },
+                "description": "Screen: Legal & Identity Verification\n⚠️ Upload docs first via UPLOAD API, then paste URLs here"
+              }
+            },
+            {
+              "name": "Step 4 — Pricing & Bank Details",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"pricing\": {\n    \"hourlyRate\": 2500,\n    \"minimumHours\": 4,\n    \"currency\": \"INR\",\n    \"packages\": [\n      {\n        \"name\": \"Basic Package\",\n        \"description\": \"4 hours, 100 edited photos\",\n        \"price\": 15000,\n        \"duration\": 4,\n        \"includes\": [\"100 photos\", \"Online gallery\"],\n        \"isPopular\": false,\n        \"order\": 1\n      },\n      {\n        \"name\": \"Premium Wedding\",\n        \"description\": \"Full day, 500 photos + video\",\n        \"price\": 45000,\n        \"duration\": 10,\n        \"includes\": [\"500 photos\", \"Wedding film\", \"Drone\"],\n        \"isPopular\": true,\n        \"order\": 2\n      }\n    ],\n    \"travelFee\": {\"enabled\": true, \"perKm\": 15, \"freeWithinKm\": 30}\n  },\n  \"bankDetails\": {\n    \"accountNumber\": \"1234567890\",\n    \"ifscCode\": \"HDFC0001234\",\n    \"bankName\": \"HDFC Bank\",\n    \"accountHolderName\": \"Raj Mehta\",\n    \"upiId\": \"rajmehta@hdfc\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/professionals/me",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "me"
+                  ]
+                },
+                "description": "Screen: Pricing & Payment Setup"
+              }
+            },
+            {
+              "name": "Step 5 — Add Portfolio Item",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"image\",\n  \"url\": \"https://cdn.example.com/portfolio/img1.jpg\",\n  \"thumbnailUrl\": \"https://cdn.example.com/portfolio/img1_thumb.jpg\",\n  \"title\": \"Royal Wedding Coverage\",\n  \"description\": \"Full day wedding at Taj Hotel Mumbai\",\n  \"category\": \"wedding\",\n  \"order\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/professionals/me/portfolio",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "me",
+                    "portfolio"
+                  ]
+                },
+                "description": "Screen: Services & Specialties → Portfolio\ntype: image|video"
+              }
+            },
+            {
+              "name": "Step 5 — Remove Portfolio Item",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/professionals/me/portfolio/{{itemId}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "me",
+                    "portfolio",
+                    "{{itemId}}"
+                  ]
+                },
+                "description": "Remove a portfolio item by ID"
+              }
+            },
+            {
+              "name": "Step 6 — Check Approval Status",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/professionals/me/profile",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "me",
+                    "profile"
+                  ]
+                },
+                "description": "Screen: Profile Submitted Successfully!\nCheck status field: pending|approved|rejected\nPoll this after submitting all onboarding steps"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Dashboard — My Bookings",
+          "item": [
+            {
+              "name": "Get All My Bookings",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/bookings/professional?page=1&pageSize=20",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings",
+                    "professional"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "Screen: Vendor Dashboard → My Bookings\nAdd ?status=pending|confirmed|completed|cancelled to filter"
+              }
+            },
+            {
+              "name": "Get Upcoming Bookings (Dashboard Widget)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/bookings/professional/upcoming?limit=5",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings",
+                    "professional",
+                    "upcoming"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "5"
+                    }
+                  ]
+                },
+                "description": "Screen: Dashboard home → Upcoming Bookings card"
+              }
+            },
+            {
+              "name": "Get Calendar View",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/bookings/professional/calendar?year=2026&month=3",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings",
+                    "professional",
+                    "calendar"
+                  ],
+                  "query": [
+                    {
+                      "key": "year",
+                      "value": "2026"
+                    },
+                    {
+                      "key": "month",
+                      "value": "3"
+                    }
+                  ]
+                },
+                "description": "Screen: Dashboard → Calendar view"
+              }
+            },
+            {
+              "name": "Confirm Booking",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/bookings/{{bookingId}}/confirm",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings",
+                    "{{bookingId}}",
+                    "confirm"
+                  ]
+                },
+                "description": "Screen: Pending Booking → Confirm\nStatus: pending → confirmed"
+              }
+            },
+            {
+              "name": "Reject Booking",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"Not available on this date\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/bookings/{{bookingId}}/reject",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings",
+                    "{{bookingId}}",
+                    "reject"
+                  ]
+                },
+                "description": "Screen: Pending Booking → Reject"
+              }
+            },
+            {
+              "name": "Mark Booking Complete",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/bookings/{{bookingId}}/complete",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings",
+                    "{{bookingId}}",
+                    "complete"
+                  ]
+                },
+                "description": "Screen: Confirmed Booking → Mark Complete"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Dashboard — My Profile",
+          "item": [
+            {
+              "name": "Get My Professional Profile",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/professionals/me/profile",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "me",
+                    "profile"
+                  ]
+                },
+                "description": "Screen: Vendor Dashboard → My Profile tab\nReturns full profile including bank details, documents status"
+              }
+            },
+            {
+              "name": "Update Contact Info",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"contact\": {\n    \"phone\": \"+919876543211\",\n    \"email\": \"raj@business.com\",\n    \"website\": \"https://rajmehta.in\",\n    \"instagram\": \"@rajmehta_photo\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/professionals/me",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "me"
+                  ]
+                },
+                "description": "Screen: Edit Professional Information → Contact"
+              }
+            },
+            {
+              "name": "Toggle Active Status (Online / Offline)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"isActive\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/professionals/me/active",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "me",
+                    "active"
+                  ]
+                },
+                "description": "Screen: Dashboard → Online/Offline toggle\nisActive: false = hidden from search"
+              }
+            },
+            {
+              "name": "Respond to Review",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"response\": \"Thank you for the kind words! It was a pleasure working with you.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/reviews/{{reviewId}}/respond",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "reviews",
+                    "{{reviewId}}",
+                    "respond"
+                  ]
+                },
+                "description": "Screen: Dashboard → Reviews → Reply\nRole: professional"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Dashboard — Availability",
+          "item": [
+            {
+              "name": "Get My Availability",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/availability/{{professionalId}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "availability",
+                    "{{professionalId}}"
+                  ]
+                },
+                "description": "Screen: Availability & Schedule section"
+              }
+            },
+            {
+              "name": "Set Availability",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"workingHours\": {\n    \"monday\": {\"start\": \"09:00\", \"end\": \"18:00\", \"isAvailable\": true},\n    \"tuesday\": {\"start\": \"09:00\", \"end\": \"18:00\", \"isAvailable\": true},\n    \"wednesday\": {\"start\": \"09:00\", \"end\": \"18:00\", \"isAvailable\": true},\n    \"thursday\": {\"start\": \"09:00\", \"end\": \"18:00\", \"isAvailable\": true},\n    \"friday\": {\"start\": \"09:00\", \"end\": \"18:00\", \"isAvailable\": true},\n    \"saturday\": {\"start\": \"10:00\", \"end\": \"16:00\", \"isAvailable\": true},\n    \"sunday\": {\"start\": \"00:00\", \"end\": \"00:00\", \"isAvailable\": false}\n  },\n  \"blockedDates\": [\"2026-03-10\", \"2026-03-25\"]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/availability",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "availability"
+                  ]
+                },
+                "description": "Screen: Availability & Schedule"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "🔴 ADMIN APIs",
+      "description": "Role required: admin\nAll requests need: Authorization: Bearer {{admin_token}}\n\n⚠️ Admin login uses same /auth/login endpoint\nbut account must have role: admin",
+      "item": [
+        {
+          "name": "Dashboard & Reports",
+          "item": [
+            {
+              "name": "Get Dashboard Stats",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/admin/dashboard",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "dashboard"
+                  ]
+                },
+                "description": "Returns: totalUsers, activeUsers, totalProfessionals, pendingApprovals, totalBookings, revenue, charts"
+              }
+            },
+            {
+              "name": "Revenue Report",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/admin/reports/revenue?startDate=2026-01-01&endDate=2026-03-31&groupBy=month",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "reports",
+                    "revenue"
+                  ],
+                  "query": [
+                    {
+                      "key": "startDate",
+                      "value": "2026-01-01"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2026-03-31"
+                    },
+                    {
+                      "key": "groupBy",
+                      "value": "month",
+                      "description": "day|month"
+                    }
+                  ]
+                },
+                "description": "groupBy: day|month"
+              }
+            },
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/admin/settings",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "settings"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Update Settings",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"platformFeePercent\": 10,\n  \"maintenanceMode\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/settings",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "settings"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "User Management",
+          "item": [
+            {
+              "name": "Get All Users",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/admin/users?role=client&status=active&search=tarun&page=1&pageSize=20",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "users"
+                  ],
+                  "query": [
+                    {
+                      "key": "role",
+                      "value": "client",
+                      "description": "client|professional|admin"
+                    },
+                    {
+                      "key": "status",
+                      "value": "active",
+                      "description": "active|inactive"
+                    },
+                    {
+                      "key": "search",
+                      "value": "tarun"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "All params optional. Returns paginated user list."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Professional Approvals",
+          "item": [
+            {
+              "name": "Get All Professionals",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/admin/professionals?status=pending&category=photographer&search=raj&page=1&pageSize=20",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "professionals"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "pending",
+                      "description": "pending|approved|rejected"
+                    },
+                    {
+                      "key": "category",
+                      "value": "photographer"
+                    },
+                    {
+                      "key": "search",
+                      "value": "raj"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "Admin view of all professionals. Filter by status=pending for approval queue."
+              }
+            },
+            {
+              "name": "Get Pending Approvals",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/admin/professionals/pending?page=1&pageSize=20",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "professionals",
+                    "pending"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "Shortcut for list of professionals waiting for approval"
+              }
+            },
+            {
+              "name": "Approve Professional",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"approved\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/professionals/{{professionalId}}/verify",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "professionals",
+                    "{{professionalId}}",
+                    "verify"
+                  ]
+                },
+                "description": "status: approved — Professional becomes active and searchable"
+              }
+            },
+            {
+              "name": "Reject Professional",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"rejected\",\n  \"reason\": \"Documents not clear. Please re-upload Aadhaar card.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/professionals/{{professionalId}}/verify",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "professionals",
+                    "{{professionalId}}",
+                    "verify"
+                  ]
+                },
+                "description": "status: rejected — Professional notified with reason"
+              }
+            },
+            {
+              "name": "Suspend Professional",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"Repeated complaints from customers. Violation of platform terms.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/professionals/{{professionalId}}/suspend",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "professionals",
+                    "{{professionalId}}",
+                    "suspend"
+                  ]
+                },
+                "description": "Admin Panel: Professional Management → Suspend\n\nWhat happens:\n1. Professional profile status → 'suspended'\n2. isActive → false (hidden from search)\n3. User role → 'client' (DOWNGRADED — loses vendor access)\n4. They can still login and book services as a customer\n\n⚠️ 'reason' field is REQUIRED\n\nReversible via: PUT /admin/professionals/:id/reactivate"
+              },
+              "response": []
+            },
+            {
+              "name": "Reactivate Suspended Professional",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/professionals/{{professionalId}}/reactivate",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "professionals",
+                    "{{professionalId}}",
+                    "reactivate"
+                  ]
+                },
+                "description": "Admin Panel: Professional Management → Reactivate\n\nReverses a suspension:\n1. Professional profile status → 'approved'\n2. isActive → true (visible in search again)\n3. User role → 'professional' (RESTORED — regains vendor access)\n\nNo request body needed."
+              },
+              "response": []
+            },
+            {
+              "name": "Set Featured Professional",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"isFeatured\": true,\n  \"order\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/professionals/{{professionalId}}/featured",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "professionals",
+                    "{{professionalId}}",
+                    "featured"
+                  ]
+                },
+                "description": "Featured professionals appear in home screen banner"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Professional Statistics",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/admin/professionals/statistics",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "professionals",
+                    "statistics"
+                  ]
+                },
+                "description": "Returns counts: total, pending, approved, rejected, suspended"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Booking Management",
+          "item": [
+            {
+              "name": "Get All Bookings",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/admin/bookings?page=1&pageSize=20",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "bookings"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "",
+                      "disabled": true,
+                      "description": "pending|processing|confirmed|completed|cancelled"
+                    },
+                    {
+                      "key": "paymentStatus",
+                      "value": "",
+                      "disabled": true,
+                      "description": "paid|pending"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "Admin view of all platform bookings.\nTip: Filter by status=pending and no professionalId to see unassigned bookings queue."
+              },
+              "response": []
+            },
+            {
+              "name": "Assign Professional to Booking ⭐",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"professionalId\": \"{{professionalId}}\",\n  \"notes\": \"Assigned based on location and availability\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/bookings/{{bookingId}}/assign",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings",
+                    "{{bookingId}}",
+                    "assign"
+                  ]
+                },
+                "description": "Admin Panel: Booking Management → Assign Professional\n\n✅ CORRECT URL: PUT /api/v1/bookings/:id/assign\n   (NOT /admin/bookings — registered in booking.routes.js)\n\nUsed when customer booked WITHOUT choosing a professional.\n\nWhat happens:\n1. Booking professionalId → set to chosen professional\n2. Status → PROCESSING\n3. Professional gets push notification: 'New Booking Assigned'\n4. Customer gets notification: 'Professional assigned to your booking'\n5. Professional then CONFIRMS or REJECTS from their dashboard\n\n✅ Requirements:\n- Admin token in Authorization header\n- bookingId in URL (set in Collection Variables)\n- professionalId in body (must be an APPROVED professional)"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Booking Statistics",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/admin/bookings/statistics",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "bookings",
+                    "statistics"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Review Moderation",
+          "item": [
+            {
+              "name": "Get Pending Reviews",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/admin/reviews/pending",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "reviews",
+                    "pending"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Reported Reviews",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/admin/reviews/reported",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "reviews",
+                    "reported"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Approve Review",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/reviews/{{reviewId}}/approve",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "reviews",
+                    "{{reviewId}}",
+                    "approve"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Reject Review",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"Inappropriate content\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/reviews/{{reviewId}}/reject",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "reviews",
+                    "{{reviewId}}",
+                    "reject"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Delete Review",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/admin/reviews/{{reviewId}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "reviews",
+                    "{{reviewId}}"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Enquiry Management",
+          "item": [
+            {
+              "name": "Get All Enquiries",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/admin/enquiries?page=1&pageSize=20",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "enquiries"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "20"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Enquiry Statistics",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/admin/enquiries/statistics",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "enquiries",
+                    "statistics"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "🔧 SYSTEM & UTILITIES",
+      "description": "Health check, file uploads, categories, global search — used by all roles",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Check if API server is running"
+          }
+        },
+        {
+          "name": "Upload File",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": [],
+                  "description": "Select file to upload"
+                },
+                {
+                  "key": "folder",
+                  "value": "portfolio",
+                  "type": "text",
+                  "description": "portfolio|documents|avatars"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/uploads",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "uploads"
+              ]
+            },
+            "description": "Upload any file. Returns { url, thumbnailUrl, type }\nUse returned URL in portfolio or document fields."
+          }
+        },
+        {
+          "name": "Global Search",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/search?q=wedding photographer mumbai&limit=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "wedding photographer mumbai"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Search across professionals and categories"
+          }
+        },
+        {
+          "name": "Get All Categories (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            },
+            "description": "Public. Returns all active service categories."
+          }
+        },
+        {
+          "name": "Get Category by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/categories/{{categorySlug}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categories",
+                "{{categorySlug}}"
+              ]
+            },
+            "description": "Get single category detail by slug (e.g. photographer, dj)"
+          }
+        }
+      ]
+    }
+  ]
+}

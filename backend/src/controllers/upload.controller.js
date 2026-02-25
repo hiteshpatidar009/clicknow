@@ -71,6 +71,27 @@ class UploadController {
   });
 
   /**
+   * POST /api/v1/uploads/documents
+   * Upload KYC/professional documents to S3
+   */
+  uploadDocuments = asyncHandler(async (req, res) => {
+    if (!req.files || req.files.length === 0) {
+      return ApiResponse.badRequest(res, "No files provided");
+    }
+
+    const results = await storageService.uploadMultiple(req.files, {
+      folder: "documents",
+      userId: req.user.userId,
+    });
+
+    return ApiResponse.success(
+      res,
+      { files: results },
+      "Documents uploaded successfully",
+    );
+  });
+
+  /**
    * DELETE /api/v1/uploads
    */
   deleteFile = asyncHandler(async (req, res) => {
@@ -97,7 +118,11 @@ class UploadController {
    */
   getSignedUrl = asyncHandler(async (req, res) => {
     const { key, expiresIn } = req.query;
-    const url = await storageService.getSignedUrl(key, parseInt(expiresIn));
+    const parsedExpires = Number.parseInt(expiresIn, 10);
+    const url = await storageService.getSignedUrl(
+      key,
+      Number.isFinite(parsedExpires) ? parsedExpires : undefined,
+    );
     return ApiResponse.success(res, { url });
   });
 }

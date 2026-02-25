@@ -9,6 +9,18 @@ function formatJoiErrors(error, source) {
 }
 
 class ValidationMiddleware {
+  applyValidatedValue = (req, key, value) => {
+    if (key === "query") {
+      const target = req.query;
+      Object.keys(target).forEach((k) => {
+        delete target[k];
+      });
+      Object.assign(target, value);
+      return;
+    }
+    req[key] = value;
+  };
+
   validate = (schema) => {
     return (req, res, next) => {
       const errors = [];
@@ -22,7 +34,7 @@ class ValidationMiddleware {
         if (error) {
           errors.push(...formatJoiErrors(error, "body"));
         } else {
-          req.body = value;
+          this.applyValidatedValue(req, "body", value);
         }
       }
 
@@ -35,7 +47,7 @@ class ValidationMiddleware {
         if (error) {
           errors.push(...formatJoiErrors(error, "query"));
         } else {
-          req.query = value;
+          this.applyValidatedValue(req, "query", value);
         }
       }
 
@@ -48,7 +60,7 @@ class ValidationMiddleware {
         if (error) {
           errors.push(...formatJoiErrors(error, "params"));
         } else {
-          req.params = value;
+          this.applyValidatedValue(req, "params", value);
         }
       }
 

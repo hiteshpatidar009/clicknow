@@ -11,3 +11,4 @@ export { default as storageService } from "./storage.service.js";
 export { default as searchService } from "./search.service.js";
 export { default as feedService } from "./feed.service.js";
 export { default as socialService } from "./social.service.js";
+export { default as otpService } from "./otp.service.js";

@@ -53,6 +53,19 @@ class ProfessionalController {
   });
 
   /**
+   * GET /api/v1/professionals/:id/gallery
+   */
+  getPortfolioGallery = asyncHandler(async (req, res) => {
+    const { category, page, pageSize } = req.query;
+    const result = await professionalService.getPortfolioGallery(req.params.id, {
+      category,
+      page,
+      pageSize,
+    });
+    return ApiResponse.success(res, result, "Portfolio gallery retrieved");
+  });
+
+  /**
    * GET /api/v1/professionals
    */
   search = asyncHandler(async (req, res) => {

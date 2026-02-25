@@ -1,7 +1,3 @@
-/**
- * Constants
- */
-
 export const COLLECTIONS = {
   USERS: "users",
   PROFESSIONALS: "professionals",
@@ -15,67 +11,7 @@ export const COLLECTIONS = {
   POSTS: "posts",
   COMMENTS: "comments",
   FOLLOWS: "follows",
-};
-
-export const USER_ROLES = {
-  CLIENT: "client",
-  PROFESSIONAL: "professional",
-  ADMIN: "admin",
-};
-
-export const PROFESSIONAL_STATUS = {
-  PENDING: "pending",
-  APPROVED: "approved",
-  REJECTED: "rejected",
-  SUSPENDED: "suspended",
-};
-
-export const BOOKING_STATUS = {
-  PENDING: "pending",
-  CONFIRMED: "confirmed",
-  REJECTED: "rejected",
-  CANCELLED: "cancelled",
-  COMPLETED: "completed",
-  RESCHEDULED: "rescheduled",
-};
-
-export const REVIEW_STATUS = {
-  PENDING: "pending",
-  APPROVED: "approved",
-  REJECTED: "rejected",
-  REPORTED: "reported",
-};
-
-export const ENQUIRY_STATUS = {
-  PENDING: "pending",
-  RESPONDED: "responded",
-  CONVERTED: "converted",
-  CLOSED: "closed",
-};
-
-export const NOTIFICATION_TYPES = {
-  BOOKING: "booking",
-  REVIEW: "review",
-  CHAT: "chat",
-  SYSTEM: "system",
-  MARKETING: "marketing",
-  POST_LIKE: "post_like",
-  POST_COMMENT: "post_comment",
-  NEW_FOLLOWER: "new_follower",
-  JOB_MATCH: "job_match",
-};
-
-export const PROFESSIONAL_CATEGORIES = {
-  PHOTOGRAPHER: "photographer",
-  VIDEOGRAPHER: "videographer",
-  GUITARIST: "guitarist",
-  MUSICIAN: "musician",
-  MAGICIAN: "magician",
-  DJ: "dj",
-  DANCER: "dancer",
-  MAKEUP_ARTIST: "makeup_artist",
-  DECORATOR: "decorator",
-  CATERER: "caterer",
+  CATEGORIES: "categories",
 };
 
 export const HTTP_STATUS = {
@@ -93,14 +29,58 @@ export const HTTP_STATUS = {
   SERVICE_UNAVAILABLE: 503,
 };
 
-export default {
-  COLLECTIONS,
-  USER_ROLES,
-  PROFESSIONAL_STATUS,
-  BOOKING_STATUS,
-  REVIEW_STATUS,
-  ENQUIRY_STATUS,
-  NOTIFICATION_TYPES,
-  PROFESSIONAL_CATEGORIES,
-  HTTP_STATUS,
+export const USER_ROLES = {
+  ADMIN: "admin",
+  PROFESSIONAL: "professional",
+  CLIENT: "client",
+};
+
+export const PROFESSIONAL_STATUS = {
+  PENDING: 'pending',
+  APPROVED: 'approved',
+  REJECTED: 'rejected',
+  SUSPENDED: 'suspended', // Admin suspended — user role downgraded to client
+};
+
+
+export const PROFESSIONAL_CATEGORIES = {
+  PHOTOGRAPHER: "photographer",
+  VIDEOGRAPHER: "videographer",
+  CINEMATOGRAPHER: "cinematographer",
+  EDITOR: "editor",
+};
+
+export const BOOKING_STATUS = {
+  PENDING: "pending",
+  OPEN: "open",
+  ASSIGNED: "assigned",
+  PROCESSING: "processing",
+  CONFIRMED: "confirmed",
+  REJECTED: "rejected",
+  CANCELLED: "cancelled",
+  COMPLETED: "completed",
+  RESCHEDULED: "rescheduled",
+};
+
+export const ENQUIRY_STATUS = {
+  PENDING: "pending",
+  RESPONDED: "responded",
+  CONVERTED: "converted",
+  CLOSED: "closed",
+};
+
+export const REVIEW_STATUS = {
+  PENDING: "pending",
+  APPROVED: "approved",
+  REJECTED: "rejected",
+  REPORTED: "reported",
+};
+
+export const NOTIFICATION_TYPES = {
+  BOOKING: "booking",
+  REVIEW: "review",
+  ENQUIRY: "enquiry",
+  REMINDER: "reminder",
+  SYSTEM: "system",
+  MARKETING: "marketing",
 };

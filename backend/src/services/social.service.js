@@ -8,7 +8,7 @@ import {
   userRepository,
   professionalRepository,
 } from "../repositories/index.js";
-import FollowModel from "../models/follow.model.js";
+import FollowModel from "../models/Follow.js";
 import notificationService from "./notification.service.js";
 import Logger from "../utils/logger.util.js";
 

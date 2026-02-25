@@ -39,7 +39,13 @@ const logger = winston.createLogger({
   exitOnError: false,
 });
 
-if (env.NODE_ENV === "production") {
+const isVercel = String(process.env.VERCEL || "").toLowerCase() === "true";
+const isServerless =
+  isVercel ||
+  Boolean(process.env.AWS_LAMBDA_FUNCTION_NAME) ||
+  Boolean(process.env.FUNCTION_TARGET);
+
+if (env.NODE_ENV === "production" && !isServerless) {
   logger.add(
     new winston.transports.File({
       filename: "logs/error.log",

@@ -43,6 +43,8 @@ const env = {
   SMTP_USER: '',
   SMTP_PASS: '',
   SMTP_FROM: '',
+  MAILERSEND_API_KEY: '',
+  MAILERSEND_API_URL: '',
   
   DEFAULT_PAGE_SIZE: 0,
   MAX_PAGE_SIZE: 0,

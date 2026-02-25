@@ -96,6 +96,9 @@ function loadEnv() {
   env.SMTP_USER = process.env.SMTP_USER || "";
   env.SMTP_PASS = process.env.SMTP_PASS || "";
   env.SMTP_FROM = process.env.SMTP_FROM || "";
+  env.MAILERSEND_API_KEY = process.env.MAILERSEND_API_KEY || "";
+  env.MAILERSEND_API_URL =
+    process.env.MAILERSEND_API_URL || "https://api.mailersend.com/v1/email";
 
   env.DEFAULT_PAGE_SIZE = parseInt(process.env.DEFAULT_PAGE_SIZE, 10) || 20;
   env.MAX_PAGE_SIZE = parseInt(process.env.MAX_PAGE_SIZE, 10) || 100;

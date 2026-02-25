@@ -32,6 +32,27 @@ function maskEmail(email) {
   return `${visiblePrefix}***@${domainPart}`;
 }
 
+function parseFromAddress(value) {
+  const from = String(value || "").trim();
+  if (!from) {
+    return { name: "", email: "" };
+  }
+
+  const match = from.match(/^(.*)<([^>]+)>$/);
+  if (match) {
+    return {
+      name: match[1].trim().replace(/^"|"$/g, ""),
+      email: match[2].trim(),
+    };
+  }
+
+  if (from.includes("@")) {
+    return { name: "", email: from };
+  }
+
+  return { name: from, email: "" };
+}
+
 class OtpService {
   constructor() {
     this.store = new Map();
@@ -75,7 +96,7 @@ class OtpService {
     }
 
     const allowedByChannel = {
-      email: new Set(["smtp", "mock"]),
+      email: new Set(["smtp", "mailersend", "mock"]),
       phone: new Set(["firebase", "mock"]),
     };
     if (!allowedByChannel[channel]?.has(provider)) {
@@ -176,6 +197,16 @@ class OtpService {
         message: "OTP sent successfully",
         channel: "email",
         provider: "smtp",
+        expiresIn: this.getExpirySeconds(),
+      };
+    }
+
+    if (provider === "mailersend") {
+      await this.sendOtpByMailerSendApi(normalizedEmail, otp);
+      return {
+        message: "OTP sent successfully",
+        channel: "email",
+        provider: "mailersend",
         expiresIn: this.getExpirySeconds(),
       };
     }
@@ -387,6 +418,75 @@ class OtpService {
       });
       throw new ServiceUnavailableError(
         "OTP email delivery failed. Check SMTP sender/domain verification and credentials.",
+      );
+    }
+  }
+
+  getMailerSendConfig() {
+    const apiKey = env.MAILERSEND_API_KEY || process.env.MAILERSEND_API_KEY || "";
+    const apiUrl =
+      env.MAILERSEND_API_URL ||
+      process.env.MAILERSEND_API_URL ||
+      "https://api.mailersend.com/v1/email";
+    const { name: fromName, email: fromEmail } = parseFromAddress(env.SMTP_FROM);
+
+    if (!apiKey) {
+      throw new ServiceUnavailableError(
+        "MailerSend API is not configured. Set MAILERSEND_API_KEY.",
+      );
+    }
+
+    if (!fromEmail) {
+      throw new ServiceUnavailableError(
+        "Valid sender is required. Set SMTP_FROM like: ClickNow <no-reply@your-domain.tld>.",
+      );
+    }
+
+    return { apiKey, apiUrl, fromName, fromEmail };
+  }
+
+  async sendOtpByMailerSendApi(email, otp) {
+    const { apiKey, apiUrl, fromName, fromEmail } = this.getMailerSendConfig();
+    const expiryMinutes = env.OTP_EXPIRY_MINUTES || 10;
+    const subject = "Your ClickNow verification code";
+    const text = `Your OTP is ${otp}. It will expire in ${expiryMinutes} minutes.`;
+    const html = `<p>Your OTP is <b>${otp}</b>.</p><p>It expires in ${expiryMinutes} minutes.</p>`;
+
+    try {
+      const { status, data } = await axios.post(
+        apiUrl,
+        {
+          from: {
+            email: fromEmail,
+            ...(fromName ? { name: fromName } : {}),
+          },
+          to: [{ email }],
+          subject,
+          text,
+          html,
+        },
+        {
+          timeout: parseNumber(process.env.MAILERSEND_API_TIMEOUT, 15000),
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      Logger.info("MailerSend OTP email sent", {
+        to: maskEmail(email),
+        status,
+        messageId: data?.id || data?.message_id,
+      });
+    } catch (error) {
+      Logger.error("MailerSend API send failed", error, {
+        to: maskEmail(email),
+        status: error?.response?.status,
+        data: error?.response?.data,
+      });
+      throw new ServiceUnavailableError(
+        "OTP email delivery failed via MailerSend API. Check API key and sender domain verification.",
       );
     }
   }

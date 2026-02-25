@@ -62,8 +62,10 @@ const connectDB = async () => {
     return true;
   } catch (error) {
     const isVercel = String(process.env.VERCEL || "").toLowerCase() === "true";
+    const isDevelopment = String(process.env.NODE_ENV || "").toLowerCase() !== "production";
     const allowWithoutMongo = (
-      process.env.ALLOW_START_WITHOUT_MONGO || (isVercel ? "true" : "false")
+      process.env.ALLOW_START_WITHOUT_MONGO ||
+      (isVercel || isDevelopment ? "true" : "false")
     )
       .toLowerCase()
       .trim() === "true";

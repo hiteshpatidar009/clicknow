@@ -7,6 +7,31 @@ import {
   AuthenticationError,
 } from "../utils/errors.util.js";
 
+function parseBoolean(value) {
+  const normalized = String(value ?? "")
+    .toLowerCase()
+    .trim();
+  if (!normalized) {
+    return null;
+  }
+  return ["1", "true", "yes", "y", "on"].includes(normalized);
+}
+
+function parseNumber(value, fallback) {
+  const parsed = Number.parseInt(value, 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+function maskEmail(email) {
+  const normalized = String(email || "").trim();
+  const [localPart = "", domainPart = ""] = normalized.split("@");
+  if (!localPart || !domainPart) {
+    return normalized;
+  }
+  const visiblePrefix = localPart.slice(0, 2);
+  return `${visiblePrefix}***@${domainPart}`;
+}
+
 class OtpService {
   constructor() {
     this.store = new Map();
@@ -261,13 +286,70 @@ class OtpService {
     }
     const nodemailer = nodemailerModule.default || nodemailerModule;
 
-    const secure = String(env.SMTP_SECURE) === "true";
-    this.smtpTransporter = nodemailer.createTransport({
+    const port = parseNumber(env.SMTP_PORT, 587);
+    const explicitSecure = parseBoolean(env.SMTP_SECURE);
+    const secure = explicitSecure === null ? port === 465 : explicitSecure;
+
+    const transportConfig = {
       host,
-      port: env.SMTP_PORT || (secure ? 465 : 587),
+      port,
       secure,
       auth: { user, pass },
+      pool: true,
+      maxConnections: 2,
+      maxMessages: 100,
+      connectionTimeout: parseNumber(process.env.SMTP_CONNECTION_TIMEOUT, 15000),
+      greetingTimeout: parseNumber(process.env.SMTP_GREETING_TIMEOUT, 10000),
+      socketTimeout: parseNumber(process.env.SMTP_SOCKET_TIMEOUT, 20000),
+      requireTLS: !secure,
+      tls: {
+        minVersion: "TLSv1.2",
+        servername: host,
+      },
+    };
+
+    Logger.info("Initializing SMTP transporter", {
+      provider: "smtp",
+      host,
+      port,
+      secure,
+      requireTLS: transportConfig.requireTLS,
+      hasAuthUser: Boolean(user),
+      hasAuthPass: Boolean(pass),
+      fromConfigured: Boolean(from),
+      nodeEnv: env.NODE_ENV,
     });
+
+    this.smtpTransporter = nodemailer.createTransport({
+      ...transportConfig,
+    });
+
+    try {
+      await this.smtpTransporter.verify();
+      Logger.info("SMTP transporter verified successfully", {
+        host,
+        port,
+        secure,
+      });
+    } catch (error) {
+      Logger.error(
+        "SMTP transporter verification failed",
+        error,
+        {
+          host,
+          port,
+          secure,
+          code: error?.code,
+          command: error?.command,
+          responseCode: error?.responseCode,
+          response: error?.response,
+        },
+      );
+      this.smtpTransporter = null;
+      throw new ServiceUnavailableError(
+        "SMTP connection failed. Check SMTP credentials, sender, and TLS settings.",
+      );
+    }
 
     return this.smtpTransporter;
   }
@@ -279,13 +361,34 @@ class OtpService {
     const text = `Your OTP is ${otp}. It will expire in ${env.OTP_EXPIRY_MINUTES || 10} minutes.`;
     const html = `<p>Your OTP is <b>${otp}</b>.</p><p>It expires in ${env.OTP_EXPIRY_MINUTES || 10} minutes.</p>`;
 
-    await transporter.sendMail({
-      from,
-      to: email,
-      subject,
-      text,
-      html,
-    });
+    try {
+      const info = await transporter.sendMail({
+        from,
+        to: email,
+        subject,
+        text,
+        html,
+      });
+
+      Logger.info("SMTP OTP email sent", {
+        to: maskEmail(email),
+        messageId: info?.messageId,
+        accepted: info?.accepted,
+        rejected: info?.rejected,
+        response: info?.response,
+      });
+    } catch (error) {
+      Logger.error("SMTP sendMail failed", error, {
+        to: maskEmail(email),
+        code: error?.code,
+        command: error?.command,
+        responseCode: error?.responseCode,
+        response: error?.response,
+      });
+      throw new ServiceUnavailableError(
+        "OTP email delivery failed. Check SMTP sender/domain verification and credentials.",
+      );
+    }
   }
 
   async sendFirebasePhoneOtp(phoneNumber, recaptchaToken) {

@@ -90,7 +90,9 @@ function loadEnv() {
 
   env.SMTP_HOST = process.env.SMTP_HOST || "";
   env.SMTP_PORT = parseInt(process.env.SMTP_PORT, 10) || 587;
-  env.SMTP_SECURE = (process.env.SMTP_SECURE || "false").toLowerCase().trim();
+  env.SMTP_SECURE = process.env.SMTP_SECURE
+    ? process.env.SMTP_SECURE.toLowerCase().trim()
+    : "";
   env.SMTP_USER = process.env.SMTP_USER || "";
   env.SMTP_PASS = process.env.SMTP_PASS || "";
   env.SMTP_FROM = process.env.SMTP_FROM || "";

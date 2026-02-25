@@ -19,6 +19,9 @@ class AWSConfig {
         "video/mp4",
         "video/quicktime",
         "video/x-msvideo",
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       ],
     };
   }

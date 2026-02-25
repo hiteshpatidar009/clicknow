@@ -160,7 +160,12 @@ async function initializeInfrastructure() {
 
   const allowDegradedMode = (
     process.env.ALLOW_START_WITHOUT_MONGO ||
-    (String(process.env.VERCEL || "").toLowerCase() === "true" ? "true" : "false")
+    (
+      String(process.env.VERCEL || "").toLowerCase() === "true" ||
+      String(process.env.NODE_ENV || "").toLowerCase() !== "production"
+        ? "true"
+        : "false"
+    )
   )
     .toLowerCase()
     .trim() === "true";

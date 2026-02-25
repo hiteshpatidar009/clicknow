@@ -1,7 +1,6 @@
-import { getVercelApp } from "../src/init/server.js";
-
 export default async function handler(req, res) {
   try {
+    const { getVercelApp } = await import("../src/init/server.js");
     const app = await getVercelApp();
     return app(req, res);
   } catch (error) {

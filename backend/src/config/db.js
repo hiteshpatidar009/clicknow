@@ -50,7 +50,12 @@ const connectDB = async () => {
       throw new Error("MONGODB_URI is not set");
     }
 
-    const conn = await mongoose.connect(process.env.MONGODB_URI);
+    const conn = await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 5000,
+      connectTimeoutMS: 5000,
+      socketTimeoutMS: 10000,
+      maxPoolSize: 5,
+    });
     await ensureFirebaseUidIndex();
 
     console.log(`MongoDB Connected: ${conn.connection.host}`);

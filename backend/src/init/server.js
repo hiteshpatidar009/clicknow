@@ -158,6 +158,13 @@ async function initializeInfrastructure() {
     return;
   }
 
+  const allowDegradedMode = (
+    process.env.ALLOW_START_WITHOUT_MONGO ||
+    (String(process.env.VERCEL || "").toLowerCase() === "true" ? "true" : "false")
+  )
+    .toLowerCase()
+    .trim() === "true";
+
   try {
     Logger.info("> Initializing MongoDB connection...");
     const isMongoConnected = await connectDB();
@@ -178,6 +185,14 @@ async function initializeInfrastructure() {
     }
     infrastructureInitialized = true;
   } catch (error) {
+    if (allowDegradedMode) {
+      Logger.warn("Infrastructure init failed, continuing in degraded mode", {
+        message: error?.message,
+      });
+      infrastructureInitialized = true;
+      return;
+    }
+
     Logger.error("Failed to initialize infrastructure", error);
     throw error;
   }

@@ -185,14 +185,13 @@ class OtpService {
     });
     const expiresAt = Date.now() + this.defaultExpiryMs;
 
-    this.store.set(key, {
-      provider,
-      otp,
-      expiresAt,
-    });
-
     if (provider === "smtp") {
       await this.sendOtpBySmtp(normalizedEmail, otp);
+      this.store.set(key, {
+        provider,
+        otp,
+        expiresAt,
+      });
       return {
         message: "OTP sent successfully",
         channel: "email",
@@ -203,6 +202,11 @@ class OtpService {
 
     if (provider === "mailersend") {
       await this.sendOtpByMailerSendApi(normalizedEmail, otp);
+      this.store.set(key, {
+        provider,
+        otp,
+        expiresAt,
+      });
       return {
         message: "OTP sent successfully",
         channel: "email",
@@ -211,6 +215,11 @@ class OtpService {
       };
     }
 
+    this.store.set(key, {
+      provider,
+      otp,
+      expiresAt,
+    });
     Logger.info(
       `[MOCK] Sending OTP ${otp} to email: ${normalizedEmail} for role: ${role}`,
     );
@@ -480,11 +489,21 @@ class OtpService {
         messageId: data?.id || data?.message_id,
       });
     } catch (error) {
+      const status = error?.response?.status;
+      const providerMessage = String(error?.response?.data?.message || "");
+
       Logger.error("MailerSend API send failed", error, {
         to: maskEmail(email),
-        status: error?.response?.status,
+        status,
         data: error?.response?.data,
       });
+
+      if (status === 422 && providerMessage.includes("MS42225")) {
+        throw new ValidationError(
+          "MailerSend trial recipient limit reached (MS42225). Use an already-approved recipient, add recipient in MailerSend, or upgrade your MailerSend plan.",
+        );
+      }
+
       throw new ServiceUnavailableError(
         "OTP email delivery failed via MailerSend API. Check API key and sender domain verification.",
       );

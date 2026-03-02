@@ -6,6 +6,7 @@ import {
   registerSchema,
   loginSchema,
   firebaseLoginSchema,
+  googleLoginSchema,
   refreshTokenSchema,
   changePasswordSchema,
   sendOtpSchema,
@@ -49,6 +50,12 @@ router.post(
   authLimiter,
   validate(firebaseLoginSchema),
   authController.firebaseLogin,
+);
+router.post(
+  "/google",
+  authLimiter,
+  validate(googleLoginSchema),
+  authController.googleLogin,
 );
 router.post(
   "/refresh",

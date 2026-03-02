@@ -9,6 +9,7 @@ const apiTests = [
   { method: "POST", path: "/auth/register", name: "Auth - Register" },
   { method: "POST", path: "/auth/login", name: "Auth - Login" },
   { method: "POST", path: "/auth/firebase", name: "Auth - Firebase Login" },
+  { method: "POST", path: "/auth/google", name: "Auth - Google Login" },
   { method: "POST", path: "/auth/refresh", name: "Auth - Refresh Token" },
   { method: "GET", path: "/auth/me", name: "Auth - Get Me" },
   { method: "GET", path: "/users/profile", name: "User - Get Profile" },

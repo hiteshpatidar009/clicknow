@@ -78,6 +78,9 @@ class OtpService {
   }
 
   generateOtp() {
+    if (env.OTP_TEST_MODE === "true" && env.OTP_TEST_CODE) {
+      return env.OTP_TEST_CODE;
+    }
     const min = 10 ** (this.otpLength - 1);
     const max = 10 ** this.otpLength - 1;
     return String(Math.floor(Math.random() * (max - min + 1)) + min);

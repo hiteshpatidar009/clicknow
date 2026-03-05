@@ -36,6 +36,8 @@ const env = {
   OTP_PROVIDER_PHONE: '',
   OTP_EXPIRY_MINUTES: 0,
   OTP_ALLOW_MOCK_FALLBACK: '',
+  OTP_TEST_MODE: '',
+  OTP_TEST_CODE: '',
 
   SMTP_HOST: '',
   SMTP_PORT: 0,

@@ -87,6 +87,10 @@ function loadEnv() {
   )
     .toLowerCase()
     .trim();
+  env.OTP_TEST_MODE = (process.env.OTP_TEST_MODE || "false")
+    .toLowerCase()
+    .trim();
+  env.OTP_TEST_CODE = process.env.OTP_TEST_CODE || "123456";
 
   env.SMTP_HOST = process.env.SMTP_HOST || "";
   env.SMTP_PORT = parseInt(process.env.SMTP_PORT, 10) || 587;

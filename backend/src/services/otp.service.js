@@ -96,7 +96,7 @@ class OtpService {
     }
 
     const allowedByChannel = {
-      email: new Set(["smtp", "mailersend", "mock"]),
+      email: new Set(["smtp", "mailersend", "sendgrid", "mock"]),
       phone: new Set(["firebase", "mock"]),
     };
     if (!allowedByChannel[channel]?.has(provider)) {
@@ -211,6 +211,21 @@ class OtpService {
         message: "OTP sent successfully",
         channel: "email",
         provider: "mailersend",
+        expiresIn: this.getExpirySeconds(),
+      };
+    }
+
+    if (provider === "sendgrid") {
+      await this.sendOtpBySendGrid(normalizedEmail, otp);
+      this.store.set(key, {
+        provider,
+        otp,
+        expiresAt,
+      });
+      return {
+        message: "OTP sent successfully",
+        channel: "email",
+        provider: "sendgrid",
         expiresIn: this.getExpirySeconds(),
       };
     }
@@ -565,6 +580,69 @@ class OtpService {
       const firebaseMessage =
         error?.response?.data?.error?.message || "Invalid OTP";
       throw new AuthenticationError(firebaseMessage);
+    }
+  }
+
+  async sendOtpBySendGrid(email, otp) {
+    const apiKey = env.SENDGRID_API_KEY;
+    const apiUrl = env.SENDGRID_API_URL || "https://api.sendgrid.com/v3/mail/send";
+    const { name: fromName, email: fromEmail } = parseFromAddress(env.SMTP_FROM);
+
+    if (!apiKey) {
+      throw new ServiceUnavailableError(
+        "SendGrid API is not configured. Set SENDGRID_API_KEY.",
+      );
+    }
+
+    if (!fromEmail) {
+      throw new ServiceUnavailableError(
+        "Valid sender is required. Set SMTP_FROM.",
+      );
+    }
+
+    const expiryMinutes = env.OTP_EXPIRY_MINUTES || 10;
+    const subject = "Your ClickNow verification code";
+    const text = `Your OTP is ${otp}. It will expire in ${expiryMinutes} minutes.`;
+    const html = `<p>Your OTP is <b>${otp}</b>.</p><p>It expires in ${expiryMinutes} minutes.</p>`;
+
+    try {
+      const { status, data } = await axios.post(
+        apiUrl,
+        {
+          personalizations: [{ to: [{ email }] }],
+          from: {
+            email: fromEmail,
+            ...(fromName ? { name: fromName } : {}),
+          },
+          subject,
+          content: [
+            { type: "text/plain", value: text },
+            { type: "text/html", value: html },
+          ],
+        },
+        {
+          timeout: 15000,
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      Logger.info("SendGrid OTP email sent", {
+        to: maskEmail(email),
+        status,
+      });
+    } catch (error) {
+      Logger.error("SendGrid API send failed", error, {
+        to: maskEmail(email),
+        status: error?.response?.status,
+        data: error?.response?.data,
+      });
+
+      throw new ServiceUnavailableError(
+        "OTP email delivery failed via SendGrid. Check API key and sender verification.",
+      );
     }
   }
 }

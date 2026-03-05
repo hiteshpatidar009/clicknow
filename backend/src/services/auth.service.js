@@ -39,7 +39,7 @@ class AuthService {
     const { email, password, /** phone, fullName */} = userData;
     // role is always 'client' — never accepted from request body
     const role = 'client';
-    const nameParts = this.resolveNameParts({ fullName });
+    // const nameParts = this.resolveNameParts({ fullName });
 
     if (email) {
       const existingUser = await userRepository.findByEmail(email);

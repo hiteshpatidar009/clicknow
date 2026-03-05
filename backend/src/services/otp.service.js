@@ -310,6 +310,12 @@ class OtpService {
       throw new AuthenticationError("OTP expired or not found");
     }
 
+    // Allow test OTP in test mode
+    if (env.OTP_TEST_MODE === "true" && otp === env.OTP_TEST_CODE) {
+      this.store.delete(key);
+      return { verified: true, channel, provider: record.provider };
+    }
+
     if (record.otp !== otp) {
       throw new AuthenticationError("Invalid OTP");
     }

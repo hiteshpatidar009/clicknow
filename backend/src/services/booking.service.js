@@ -29,7 +29,7 @@ class BookingService {
    */
   async createBooking(clientId, bookingData) {
     const {
-      professionalId,
+      professionalId: requestedProfessionalId,
       bookingDate,
       startTime,
       endTime,
@@ -54,35 +54,13 @@ class BookingService {
       parsedDuration = this.calculateDuration(startTime, endTime);
     }
 
-    // Only validate professional if one was specified
-    let professional = null;
-    if (professionalId) {
-      professional = await professionalRepository.findById(professionalId);
-      if (!professional) {
-        throw new ProfessionalNotFoundError();
-      }
-
-      if (professional.status !== PROFESSIONAL_STATUS.APPROVED) {
-        throw new ProfessionalNotApprovedError();
-      }
-
-      const hasConflict = await bookingRepository.hasTimeSlotConflict(
-        professionalId,
-        new Date(bookingDate),
-        startTime,
-        computedEndTime || endTime,
-      );
-
-      if (hasConflict) {
-        throw new BookingSlotUnavailableError();
-      }
-    }
+    // Direct booking is disabled: professional assignment must happen via admin.
 
     // Build booking data directly — BookingModel is a plain Mongoose model
     // with no static factory methods.
     const bookingData_ = {
       clientId,
-      professionalId: professionalId || null,
+      professionalId: null,
       bookingDate: new Date(bookingDate),
       startTime,
       endTime: computedEndTime || endTime,
@@ -98,23 +76,12 @@ class BookingService {
 
     const booking = await bookingRepository.create(bookingData_);
 
-    // Notify professional if directly assigned
-    if (professional) {
-      const user = await userRepository.findById(professional.userId);
-      if (user) {
-        await notificationService.sendNewBookingNotification(user.id, {
-          bookingId: booking.id,
-          eventType,
-          bookingDate,
-        });
-      }
-    }
-
     Logger.logBusinessEvent("booking_created", {
       bookingId: booking.id,
       clientId,
-      professionalId: professionalId || null,
-      hasDirectProfessional: !!professionalId,
+      professionalId: null,
+      hasDirectProfessional: false,
+      requestedProfessionalId: requestedProfessionalId || null,
     });
 
     return booking;
@@ -182,8 +149,8 @@ class BookingService {
       throw new BookingNotFoundError();
     }
 
-    if (booking.status !== BOOKING_STATUS.PENDING) {
-      throw new Error("Booking is not pending");
+    if (booking.status !== BOOKING_STATUS.PROCESSING) {
+      throw new Error("Only admin-assigned bookings can be confirmed");
     }
 
     const updated = await bookingRepository.updateStatus(
@@ -219,8 +186,8 @@ class BookingService {
       throw new BookingNotFoundError();
     }
 
-    if (booking.status !== BOOKING_STATUS.PENDING) {
-      throw new Error("Booking is not pending");
+    if (booking.status !== BOOKING_STATUS.PROCESSING) {
+      throw new Error("Only admin-assigned bookings can be rejected");
     }
 
     const updated = await bookingRepository.updateStatus(

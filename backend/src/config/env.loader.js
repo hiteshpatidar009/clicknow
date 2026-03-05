@@ -99,6 +99,9 @@ function loadEnv() {
   env.MAILERSEND_API_KEY = process.env.MAILERSEND_API_KEY || "";
   env.MAILERSEND_API_URL =
     process.env.MAILERSEND_API_URL || "https://api.mailersend.com/v1/email";
+  env.SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || "";
+  env.SENDGRID_API_URL =
+    process.env.SENDGRID_API_URL || "https://api.sendgrid.com/v3/mail/send";
 
   env.DEFAULT_PAGE_SIZE = parseInt(process.env.DEFAULT_PAGE_SIZE, 10) || 20;
   env.MAX_PAGE_SIZE = parseInt(process.env.MAX_PAGE_SIZE, 10) || 100;

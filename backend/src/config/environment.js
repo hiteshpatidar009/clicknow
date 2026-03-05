@@ -45,6 +45,8 @@ const env = {
   SMTP_FROM: '',
   MAILERSEND_API_KEY: '',
   MAILERSEND_API_URL: '',
+  SENDGRID_API_KEY: '',
+  SENDGRID_API_URL: '',
   
   DEFAULT_PAGE_SIZE: 0,
   MAX_PAGE_SIZE: 0,

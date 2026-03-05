@@ -26,7 +26,7 @@ class ValidationMiddleware {
       const errors = [];
 
       if (schema.body) {
-        const { error, value } = schema.body.validate(req.body, {
+        const { error, value } = schema.body.validate(req.body || {}, {
           abortEarly: false,
           stripUnknown: true,
         });

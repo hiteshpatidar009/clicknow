@@ -26,12 +26,6 @@ export const firebaseLoginSchema = {
   }),
 };
 
-export const googleLoginSchema = {
-  body: Joi.object({
-    googleToken: Joi.string().required(),
-  }),
-};
-
 export const refreshTokenSchema = {
   body: Joi.object({
     refreshToken: Joi.string().required(),
@@ -52,7 +46,7 @@ export const sendOtpSchema = {
       .pattern(/^\+?[1-9]\d{1,14}$/) // E.164 format
       .optional(),
     recaptchaToken: Joi.string().optional(),
-    provider: Joi.string().valid("mock", "firebase", "smtp", "mailersend").optional(),
+    provider: Joi.string().valid("mock", "firebase", "smtp").optional(),
     purpose: Joi.string().valid("registration", "login", "reset").optional(),
     role: Joi.string().valid("client", "professional").default("client"),
   }).or("email", "phone"),
@@ -65,7 +59,7 @@ export const verifyOtpSchema = {
       .pattern(/^\+?[1-9]\d{1,14}$/)
       .optional(),
     otp: Joi.string().length(6).required(),
-    provider: Joi.string().valid("mock", "firebase", "smtp", "mailersend").optional(),
+    provider: Joi.string().valid("mock", "firebase", "smtp").optional(),
     purpose: Joi.string().valid("registration", "login", "reset").optional(),
     role: Joi.string().valid("client", "professional").default("client"),
   }).or("email", "phone"),
@@ -75,7 +69,6 @@ export default {
   registerSchema,
   loginSchema,
   firebaseLoginSchema,
-  googleLoginSchema,
   refreshTokenSchema,
   changePasswordSchema,
 };

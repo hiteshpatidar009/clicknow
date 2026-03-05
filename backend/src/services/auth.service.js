@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import axios from "axios";
 import { appConfig } from "../config/index.js";
 import { firebaseDatabase } from "../database/index.js";
 import { userRepository } from "../repositories/index.js";
@@ -196,66 +195,6 @@ class AuthService {
     };
   }
 
-  async loginWithGoogle(googleToken) {
-    if (!googleToken) {
-      throw new AuthenticationError("Google token is required");
-    }
-
-    const googleProfile = await this.verifyGoogleToken(googleToken);
-    const googleUid = `google:${googleProfile.sub}`;
-    const email = (googleProfile.email || "").toLowerCase();
-
-    let user = await userRepository.findByFirebaseUid(googleUid);
-
-    if (!user && email) {
-      user = await userRepository.findByEmail(email);
-      if (user) {
-        const updatePayload = { isVerified: true };
-        if (!user.firebaseUid) {
-          updatePayload.firebaseUid = googleUid;
-        }
-        user = await userRepository.update(user.id, {
-          ...updatePayload,
-        });
-      }
-    }
-
-    if (!user) {
-      const firstName =
-        googleProfile.given_name ||
-        googleProfile.name?.split(" ").filter(Boolean)[0] ||
-        (email ? email.split("@")[0] : "User");
-      const lastName =
-        googleProfile.family_name ||
-        googleProfile.name?.split(" ").slice(1).join(" ") ||
-        "";
-
-      user = await userRepository.create(
-        this.buildUserPayload({
-          email,
-          firstName,
-          lastName,
-          role: "client",
-          isVerified: true,
-          isActive: true,
-          firebaseUid: googleUid,
-        }),
-      );
-    }
-
-    if (!user.isActive) {
-      throw new UserInactiveError();
-    }
-
-    await userRepository.updateLastLogin(user.id);
-    const tokens = this.generateTokens(user);
-
-    return {
-      user: this.sanitizeUser(user),
-      ...tokens,
-    };
-  }
-
   /**
    * Send OTP
    */
@@ -322,30 +261,6 @@ class AuthService {
     }
 
     // Scenario C: Email OTP verified but user not found
-    // Allow professional sign-up/login via email OTP (same as phone OTP flow).
-    if (!user && email && role === "professional") {
-      const emailValue = String(email).toLowerCase().trim();
-      const firstName = emailValue.split("@")[0] || "Professional";
-      const userDataToSave = this.buildUserPayload({
-        email: emailValue,
-        firstName,
-        lastName: "",
-        role: "professional",
-        isVerified: true,
-        isActive: true,
-      });
-      user = await userRepository.create(userDataToSave);
-      Logger.logAuth("register_email_otp", user.id, true, { role: "professional" });
-
-      const tokens = this.generateTokens(user);
-      return {
-        user: this.sanitizeUser(user),
-        ...tokens,
-        isNewUser: true,
-        message: "Email verified. User created.",
-      };
-    }
-
     return {
       success: false,
       message: "User not found for verification.",
@@ -639,44 +554,6 @@ class AuthService {
       ...tokens,
       fallback: "dev_auth",
     };
-  }
-
-  async verifyGoogleToken(googleToken) {
-    try {
-      const { data } = await axios.get(
-        "https://oauth2.googleapis.com/tokeninfo",
-        {
-          params: { id_token: googleToken },
-          timeout: 10000,
-        },
-      );
-
-      const expectedAudiences = [
-        process.env.GOOGLE_CLIENT_ID,
-        process.env.WEB_GOOGLE_CLIENT_ID,
-      ].filter(Boolean);
-
-      if (
-        expectedAudiences.length > 0 &&
-        !expectedAudiences.includes(data?.aud)
-      ) {
-        throw new AuthenticationError("Google token audience mismatch");
-      }
-
-      if (!data?.sub || !data?.email || String(data?.email_verified) !== "true") {
-        throw new AuthenticationError("Google account email is not verified");
-      }
-
-      return data;
-    } catch (error) {
-      if (error instanceof AuthenticationError) {
-        throw error;
-      }
-      Logger.warn("Google token verification failed", {
-        message: error?.message,
-      });
-      throw new AuthenticationError("Invalid Google token");
-    }
   }
 }
 

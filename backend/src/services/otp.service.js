@@ -306,12 +306,25 @@ class OtpService {
     const key = this.buildKey({ channel, identifier, role });
     const record = this.store.get(key);
 
+    Logger.info("Verifying OTP", {
+      channel,
+      identifier: maskEmail(identifier),
+      role,
+      providedOtp: otp,
+      storedOtp: record?.otp,
+      hasRecord: !!record,
+      isExpired: record ? record.expiresAt < Date.now() : null,
+      testMode: env.OTP_TEST_MODE,
+      testCode: env.OTP_TEST_CODE,
+    });
+
     if (!record || record.expiresAt < Date.now()) {
       throw new AuthenticationError("OTP expired or not found");
     }
 
     // Allow test OTP in test mode
     if (env.OTP_TEST_MODE === "true" && otp === env.OTP_TEST_CODE) {
+      Logger.info("Test OTP accepted", { otp });
       this.store.delete(key);
       return { verified: true, channel, provider: record.provider };
     }

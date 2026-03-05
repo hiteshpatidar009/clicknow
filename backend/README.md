@@ -126,7 +126,6 @@ WHATSAPP_ACCESS_TOKEN=<token>
 - `POST /api/v1/auth/register` - Register user
 - `POST /api/v1/auth/login` - Login
 - `POST /api/v1/auth/firebase` - Firebase login
-- `POST /api/v1/auth/google` - Google login/signup
 - `POST /api/v1/auth/refresh` - Refresh token
 - `GET /api/v1/auth/me` - Get current user
 

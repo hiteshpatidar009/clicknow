@@ -30,15 +30,6 @@ class AuthController {
   });
 
   /**
-   * POST /api/v1/auth/google
-   */
-  googleLogin = asyncHandler(async (req, res) => {
-    const { googleToken } = req.body;
-    const result = await authService.loginWithGoogle(googleToken);
-    return ApiResponse.success(res, result, "Google login successful");
-  });
-
-  /**
    * POST /api/v1/auth/refresh
    */
   refreshToken = asyncHandler(async (req, res) => {

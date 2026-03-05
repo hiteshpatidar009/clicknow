@@ -226,7 +226,7 @@
                                                                },
                                                       "body":  {
                                                                    "mode":  "raw",
-                                                                   "raw":  "{\"email\":\"aarav.shah@example.com\",\"password\":\"StrongPass@123\",\"fullName\":\"Aarav Shah\",\"phone\":\"+919876543210\"}"
+                                                                   "raw":  "{\"email\":\"aarav.shah@example.com\",\"password\":\"StrongPass@123\"}"
                                                                }
                                                   }
                                   },

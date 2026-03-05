@@ -172,7 +172,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"{{test_email}}\",\n  \"password\": \"StrongPass@123\",\n  \"phone\": \"{{test_phone}}\",\n  \"fullName\": \"Tarun Jain\"\n}",
+              "raw": "{\n  \"email\": \"{{test_email}}\",\n  \"password\": \"StrongPass@123\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -189,7 +189,7 @@
                 "register"
               ]
             },
-            "description": "Screen: Registration Screen\n\nONE REGISTER ENDPOINT FOR CUSTOMER + FUTURE PROFESSIONAL.\nAfter register, send and verify OTP on email using auth/send-otp + auth/verify-otp.\nDo not send role in register.\nProfessional role is upgraded later when POST /professionals onboarding starts.\n\nSend fullName in registration payload."
+            "description": "Screen: Registration Screen\n\nONE REGISTER ENDPOINT FOR CUSTOMER + FUTURE PROFESSIONAL.\nAfter register, send and verify OTP on email using auth/send-otp + auth/verify-otp.\nDo not send role in register.\nProfessional role is upgraded later when POST /professionals onboarding starts."
           },
           "response": []
         },

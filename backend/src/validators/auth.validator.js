@@ -4,10 +4,6 @@ export const registerSchema = {
   body: Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string().min(8).max(100).required(),
-    fullName: Joi.string().min(2).max(100).required(),
-    phone: Joi.string()
-      .pattern(/^\+?[1-9]\d{1,14}$/)
-      .optional(),
     // ❌ role is NOT accepted at registration.
     // Everyone registers as 'client'. Role upgrades happen via onboarding.
   }),

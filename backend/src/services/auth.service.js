@@ -36,7 +36,7 @@ class AuthService {
    * Admin can SUSPEND a professional, which downgrades role back to 'client'.
    */
   async register(userData) {
-    const { email, phone, password, fullName } = userData;
+    const { email, password, /** phone, fullName */} = userData;
     // role is always 'client' — never accepted from request body
     const role = 'client';
     const nameParts = this.resolveNameParts({ fullName });
@@ -55,11 +55,11 @@ class AuthService {
 
     const userDataToSave = this.buildUserPayload({
       email,
-      phone,
+      // phone,
       password: hashedPassword,
-      fullName: nameParts.fullName,
-      firstName: nameParts.firstName,
-      lastName: nameParts.lastName,
+      // fullName: nameParts.fullName,
+      // firstName: nameParts.firstName,
+      // lastName: nameParts.lastName,
       role, // always 'client'
     });
 

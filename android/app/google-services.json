@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "245525941263",
+    "project_id": "clicknow-b660b",
+    "storage_bucket": "clicknow-b660b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:245525941263:android:90365b8167bb7ec287e77a",
+        "android_client_info": {
+          "package_name": "com.example.clicknow"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "245525941263-gs6dptqaagqjol9bfl7usbqjeevv2ief.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.clicknow",
+            "certificate_hash": "6465397d5394734acf30d1dcf6bb625e5e7aa994"
+          }
+        },
+        {
+          "client_id": "245525941263-7n34a4vmqjgoppv5tk1rkr26bn1jsis8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARJsEdmUDrWq--sQ-IigyY6l_-pzTAzaY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "245525941263-7n34a4vmqjgoppv5tk1rkr26bn1jsis8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "245525941263-oc0ut3643sgc03i8okg20bg21evqhlv2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.clicknow"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

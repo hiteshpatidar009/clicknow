@@ -45,7 +45,7 @@ export const sendOtpSchema = {
   body: Joi.object({
     email: Joi.string().email().optional(),
     phone: Joi.string()
-      .pattern(/^\+?[1-9]\d{1,14}$/) // E.164 format
+      .pattern(/^\+?\d{10,15}$/) // Accept E.164 or 10-15 digits
       .optional(),
     recaptchaToken: Joi.string().optional(),
     provider: Joi.string().valid("mock", "twilio", "smtp").optional(),
@@ -58,7 +58,7 @@ export const verifyOtpSchema = {
   body: Joi.object({
     email: Joi.string().email().optional(),
     phone: Joi.string()
-      .pattern(/^\+?[1-9]\d{1,14}$/)
+      .pattern(/^\+?\d{10,15}$/)
       .optional(),
     otp: Joi.string().length(6).required(),
     provider: Joi.string().valid("mock", "twilio", "smtp").optional(),

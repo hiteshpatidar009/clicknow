@@ -1,9 +1,0 @@
-export { default as UserModel } from "./User.js";
-export { default as ProfessionalModel } from "./Professional.js";
-export { default as BookingModel } from "./Booking.js";
-export { default as ReviewModel } from "./Review.js";
-export { default as EnquiryModel } from "./Enquiry.js";
-export { default as PostModel } from "./Post.js";
-export { default as CommentModel } from "./Comment.js";
-export { default as FollowModel } from "./Follow.js";
-export { default as CategoryModel } from "./Category.js";

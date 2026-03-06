@@ -208,10 +208,6 @@ class AuthService {
   async verifyOtp({ email, phone, otp, role, provider }) {
     // await otpService.verifyOtp({ email, phone, otp, role, provider });
 
-    if (otp != 123456) {
-      throw new AuthenticationError("Invalid OTP");
-    }
-
     // Check if user exists
     let user = null;
     if (email) {

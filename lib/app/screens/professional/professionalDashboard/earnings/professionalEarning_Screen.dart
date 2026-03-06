@@ -18,9 +18,7 @@ class ProfessionalEarningsScreen extends StatelessWidget {
     return Container(
       height: double.maxFinite,
       width: double.maxFinite,
-      decoration: BoxDecoration(
-        gradient: AppColors.primaryGradient,
-      ),
+      decoration: BoxDecoration(gradient: AppColors.primaryGradient),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: SafeArea(
@@ -72,49 +70,51 @@ class _StatsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => Column(
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: _EarningsStatCard(
-                label: 'Total Revenue.',
-                value: controller.totalRevenue.value,
-                scale: scale,
+    return Obx(
+      () => Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: _EarningsStatCard(
+                  label: 'Total Revenue.',
+                  value: controller.totalRevenue.value,
+                  scale: scale,
+                ),
               ),
-            ),
-            SizedBox(width: scale.getScaledWidth(12)),
-            Expanded(
-              child: _EarningsStatCard(
-                label: 'This Monthly Revenue.',
-                value: controller.thisMonthRevenue.value,
-                scale: scale,
+              SizedBox(width: scale.getScaledWidth(12)),
+              Expanded(
+                child: _EarningsStatCard(
+                  label: 'This Monthly Revenue.',
+                  value: controller.thisMonthRevenue.value,
+                  scale: scale,
+                ),
               ),
-            ),
-          ],
-        ),
-        SizedBox(height: scale.getScaledHeight(12)),
-        Row(
-          children: [
-            Expanded(
-              child: _EarningsStatCard(
-                label: 'Pending Payout.',
-                value: controller.pendingPayout.value,
-                scale: scale,
+            ],
+          ),
+          SizedBox(height: scale.getScaledHeight(12)),
+          Row(
+            children: [
+              Expanded(
+                child: _EarningsStatCard(
+                  label: 'Pending Payout.',
+                  value: controller.pendingPayout.value,
+                  scale: scale,
+                ),
               ),
-            ),
-            SizedBox(width: scale.getScaledWidth(12)),
-            Expanded(
-              child: _EarningsStatCard(
-                label: 'Settled Amount.',
-                value: controller.settledAmount.value,
-                scale: scale,
+              SizedBox(width: scale.getScaledWidth(12)),
+              Expanded(
+                child: _EarningsStatCard(
+                  label: 'Settled Amount.',
+                  value: controller.settledAmount.value,
+                  scale: scale,
+                ),
               ),
-            ),
-          ],
-        ),
-      ],
-    ));
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -148,8 +148,11 @@ class _EarningsStatCard extends StatelessWidget {
             children: [
               const Padding(
                 padding: EdgeInsets.only(top: 1),
-                child: Icon(Icons.phone_in_talk,
-                    color: Color(0xffBF00FF), size: 15),
+                child: Icon(
+                  Icons.phone_in_talk,
+                  color: Color(0xffBF00FF),
+                  size: 15,
+                ),
               ),
               SizedBox(width: scale.getScaledWidth(6)),
               Expanded(
@@ -209,56 +212,57 @@ class _CommissionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: scale.getScaledHeight(14),
-      ),
-      decoration: BoxDecoration(
-        color: Color(0xff1C1736).withValues(alpha: 0.8),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Color(0xff1E2939)),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.phone_in_talk,
-              color: Color(0xffBF00FF), size: 15),
-          SizedBox(width: scale.getScaledWidth(8)),
-          Expanded(
-            child: Text(
-              'Commission Paid',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: scale.getScaledFont(13),
-                fontWeight: FontWeight.bold,
+    return Obx(
+      () => Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: scale.getScaledHeight(14),
+        ),
+        decoration: BoxDecoration(
+          color: Color(0xff1C1736).withValues(alpha: 0.8),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Color(0xff1E2939)),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.phone_in_talk, color: Color(0xffBF00FF), size: 15),
+            SizedBox(width: scale.getScaledWidth(8)),
+            Expanded(
+              child: Text(
+                'Commission Paid',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: scale.getScaledFont(13),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ),
-          RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: controller.commissionPaid.value,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: scale.getScaledFont(14),
-                    fontWeight: FontWeight.bold,
+            RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: controller.commissionPaid.value,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: scale.getScaledFont(14),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const TextSpan(
-                  text: 'Rs.',
-                  style: TextStyle(
-                    color: Color(0xffBF00FF),
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
+                  const TextSpan(
+                    text: 'Rs.',
+                    style: TextStyle(
+                      color: Color(0xffBF00FF),
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ));
+    );
   }
 }
 
@@ -266,8 +270,7 @@ class _CommissionRow extends StatelessWidget {
 class _MonthlyOverviewCard extends StatelessWidget {
   final ProfessionalEarningsController controller;
   final ScalingUtility scale;
-  const _MonthlyOverviewCard(
-      {required this.controller, required this.scale});
+  const _MonthlyOverviewCard({required this.controller, required this.scale});
 
   @override
   Widget build(BuildContext context) {
@@ -309,9 +312,17 @@ class _MonthlyOverviewCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _LegendItem(color: const Color(0xff5B5BFF), label: 'Revenue', scale: scale),
+              _LegendItem(
+                color: const Color(0xff5B5BFF),
+                label: 'Revenue',
+                scale: scale,
+              ),
               SizedBox(width: scale.getScaledWidth(20)),
-              _LegendItem(color: const Color(0xff00C896), label: 'Payout', scale: scale),
+              _LegendItem(
+                color: const Color(0xff00C896),
+                label: 'Payout',
+                scale: scale,
+              ),
             ],
           ),
         ],
@@ -352,16 +363,18 @@ class _BarChart extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: yLabels.reversed
-                  .map((l) => Padding(
-                padding: const EdgeInsets.only(right: 6),
-                child: Text(
-                  l,
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.5),
-                    fontSize: scale.getScaledFont(9),
-                  ),
-                ),
-              ))
+                  .map(
+                    (l) => Padding(
+                      padding: const EdgeInsets.only(right: 6),
+                      child: Text(
+                        l,
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.5),
+                          fontSize: scale.getScaledFont(9),
+                        ),
+                      ),
+                    ),
+                  )
                   .toList(),
             ),
           ),
@@ -379,8 +392,7 @@ class _BarChart extends StatelessWidget {
                       children: data.map((d) {
                         final revH =
                             (d.revenue / maxValue) * (chartHeight - 20);
-                        final payH =
-                            (d.payout / maxValue) * (chartHeight - 20);
+                        final payH = (d.payout / maxValue) * (chartHeight - 20);
                         return SizedBox(
                           width: barGroupWidth,
                           child: Row(
@@ -422,17 +434,19 @@ class _BarChart extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: data
-                        .map((d) => SizedBox(
-                      width: barGroupWidth,
-                      child: Text(
-                        d.month,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.6),
-                          fontSize: scale.getScaledFont(9),
-                        ),
-                      ),
-                    ))
+                        .map(
+                          (d) => SizedBox(
+                            width: barGroupWidth,
+                            child: Text(
+                              d.month,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.6),
+                                fontSize: scale.getScaledFont(9),
+                              ),
+                            ),
+                          ),
+                        )
                         .toList(),
                   ),
                 ],
@@ -450,7 +464,7 @@ class _GridPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white.withOpacity(0.08)
+      ..color = Colors.white.withValues(alpha: 0.08)
       ..strokeWidth = 1;
 
     const int lines = 5;
@@ -471,8 +485,11 @@ class _LegendItem extends StatelessWidget {
   final Color color;
   final String label;
   final ScalingUtility scale;
-  const _LegendItem(
-      {required this.color, required this.label, required this.scale});
+  const _LegendItem({
+    required this.color,
+    required this.label,
+    required this.scale,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -503,8 +520,10 @@ class _LegendItem extends StatelessWidget {
 class _ViewPaymentHistoryButton extends StatelessWidget {
   final ProfessionalEarningsController controller;
   final ScalingUtility scale;
-  const _ViewPaymentHistoryButton(
-      {required this.controller, required this.scale});
+  const _ViewPaymentHistoryButton({
+    required this.controller,
+    required this.scale,
+  });
 
   @override
   Widget build(BuildContext context) {

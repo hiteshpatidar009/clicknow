@@ -43,9 +43,18 @@ class CustomerBookingsController extends GetxController {
 
   // All tabs
   final tabs = [
-    CustomerBookingTab(label: 'Upcoming', status: CustomerBookingStatus.upcoming),
-    CustomerBookingTab(label: 'Completed', status: CustomerBookingStatus.completed),
-    CustomerBookingTab(label: 'Canceled', status: CustomerBookingStatus.canceled),
+    CustomerBookingTab(
+      label: 'Upcoming',
+      status: CustomerBookingStatus.upcoming,
+    ),
+    CustomerBookingTab(
+      label: 'Completed',
+      status: CustomerBookingStatus.completed,
+    ),
+    CustomerBookingTab(
+      label: 'Canceled',
+      status: CustomerBookingStatus.canceled,
+    ),
   ];
 
   // All bookings
@@ -70,9 +79,7 @@ class CustomerBookingsController extends GetxController {
     isLoading.value = true;
     try {
       final bookings = await _bookingService.getClientBookings();
-      _allBookings.assignAll(
-        bookings.map(_mapToCustomerBooking).toList(),
-      );
+      _allBookings.assignAll(bookings.map(_mapToCustomerBooking).toList());
     } catch (error) {
       _allBookings.clear();
       Get.snackbar("Error", error.toString());
@@ -99,16 +106,26 @@ class CustomerBookingsController extends GetxController {
   }
 
   Color bookingStatusColor(String title) {
-    if (title.toLowerCase().contains('confirmed')) return const Color(0xFF00C853);
+    if (title.toLowerCase().contains('confirmed')) {
+      return const Color(0xFF00C853);
+    }
     if (title.toLowerCase().contains('pending')) return const Color(0xFFB8860B);
-    if (title.toLowerCase().contains('canceled')) return const Color(0xFFCC3300);
+    if (title.toLowerCase().contains('canceled')) {
+      return const Color(0xFFCC3300);
+    }
     return Colors.white;
   }
 
   Color bookingStatusBgColor(String title) {
-    if (title.toLowerCase().contains('confirmed')) return const Color(0xFF00C853).withOpacity(0.12);
-    if (title.toLowerCase().contains('pending')) return const Color(0xFFB8860B).withOpacity(0.18);
-    if (title.toLowerCase().contains('canceled')) return const Color(0xFFCC3300).withOpacity(0.18);
+    if (title.toLowerCase().contains('confirmed')) {
+      return const Color(0xFF00C853).withValues(alpha: 0.12);
+    }
+    if (title.toLowerCase().contains('pending')) {
+      return const Color(0xFFB8860B).withValues(alpha: 0.18);
+    }
+    if (title.toLowerCase().contains('canceled')) {
+      return const Color(0xFFCC3300).withValues(alpha: 0.18);
+    }
     return Colors.transparent;
   }
 
@@ -162,8 +179,7 @@ class CustomerBookingsController extends GetxController {
   }
 
   List<String> _resolveServiceTypes(BookingApiModel booking) {
-    final serviceType =
-        booking.eventDetails?["serviceType"]?.toString().trim();
+    final serviceType = booking.eventDetails?["serviceType"]?.toString().trim();
     if (serviceType != null && serviceType.isNotEmpty) {
       return [serviceType];
     }
@@ -174,11 +190,7 @@ class CustomerBookingsController extends GetxController {
     return ["Service"];
   }
 
-  String _formatDateTime(
-    DateTime date,
-    String? startTime,
-    String? endTime,
-  ) {
+  String _formatDateTime(DateTime date, String? startTime, String? endTime) {
     final dateLabel = DateFormat("MMM d, yyyy").format(date);
     if (startTime != null && endTime != null) {
       return "$dateLabel • $startTime to $endTime";

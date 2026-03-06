@@ -6,12 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-void main() async{
+void main() async {
   /// initialize firebase
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await GetStorage.init();
 
   Get.put(AuthController(), permanent: true);
@@ -31,4 +29,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

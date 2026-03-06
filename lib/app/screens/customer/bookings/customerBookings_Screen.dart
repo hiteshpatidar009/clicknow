@@ -83,10 +83,9 @@ class _FilterTabs extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: scale.getScaledWidth(16)),
-      child: Obx(() => Row(
-        children: List.generate(
-          controller.tabs.length,
-              (i) {
+      child: Obx(
+        () => Row(
+          children: List.generate(controller.tabs.length, (i) {
             final isSelected = controller.selectedTabIndex.value == i;
             return Expanded(
               child: GestureDetector(
@@ -107,9 +106,7 @@ class _FilterTabs extends StatelessWidget {
                         : Color(0xff1C1736).withValues(alpha: 0.8),
                     borderRadius: BorderRadius.circular(25),
                     border: Border.all(
-                      color: isSelected
-                          ? Color(0xffBF00FF)
-                          : Color(0xff1E2939),
+                      color: isSelected ? Color(0xffBF00FF) : Color(0xff1E2939),
                     ),
                   ),
                   child: Center(
@@ -129,9 +126,9 @@ class _FilterTabs extends StatelessWidget {
                 ),
               ),
             );
-          },
+          }),
         ),
-      )),
+      ),
     );
   }
 }
@@ -171,15 +168,9 @@ class _BookingsList extends StatelessWidget {
       }
 
       return ListView.separated(
-        padding: EdgeInsets.fromLTRB(
-          16,
-          0,
-          16,
-          scale.getScaledHeight(24),
-        ),
+        padding: EdgeInsets.fromLTRB(16, 0, 16, scale.getScaledHeight(24)),
         itemCount: bookings.length,
-        separatorBuilder: (_, __) =>
-            SizedBox(height: scale.getScaledHeight(14)),
+        separatorBuilder: (_, _) => SizedBox(height: scale.getScaledHeight(14)),
         itemBuilder: (_, i) => _BookingCard(
           booking: bookings[i],
           controller: controller,
@@ -308,7 +299,7 @@ class _BookingCard extends StatelessWidget {
 
                 // Sub-bullet service types
                 ...booking.serviceTypes.map(
-                      (s) => Padding(
+                  (s) => Padding(
                     padding: EdgeInsets.only(
                       left: scale.getScaledWidth(14),
                       top: scale.getScaledHeight(4),

@@ -11,7 +11,6 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthController extends GetxController {
-
   static AuthController get instance => Get.find();
 
   /// Separate Form Keys
@@ -70,8 +69,7 @@ class AuthController extends GetxController {
     if (trimmed.isEmpty) {
       return "Email is required";
     }
-    final emailRegex =
-        RegExp(r"^[\w\.\-]+@([\w\-]+\.)+[\w\-]{2,}$");
+    final emailRegex = RegExp(r"^[\w\.\-]+@([\w\-]+\.)+[\w\-]{2,}$");
     if (!emailRegex.hasMatch(trimmed)) {
       return "Enter a valid email address";
     }
@@ -120,7 +118,10 @@ class AuthController extends GetxController {
       );
       final pendingEmail = emailController.text.trim();
       await _storage.setPendingEmail(pendingEmail);
-      Get.offAllNamed(AppRoutes.emailOTPVerificationRoute, arguments: pendingEmail);
+      Get.offAllNamed(
+        AppRoutes.emailOTPVerificationRoute,
+        arguments: pendingEmail,
+      );
       Get.snackbar("Success", message);
     } catch (error) {
       Get.snackbar("Error", error.toString());
@@ -196,8 +197,9 @@ class AuthController extends GetxController {
         idToken: googleAuth.idToken,
       );
 
-      final userCredential =
-          await FirebaseAuth.instance.signInWithCredential(credential);
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
 
       final firebaseUser = userCredential.user;
       final idToken = await firebaseUser?.getIdToken();

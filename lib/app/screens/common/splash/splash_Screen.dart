@@ -13,7 +13,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   @override
   void initState() {
     // TODO: implement initState
@@ -22,12 +21,10 @@ class _SplashScreenState extends State<SplashScreen> {
       const Duration(seconds: 2),
       () => AuthController.instance.handleStartupNavigation(),
     );
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     /// -- Scaling Utility
     final scale = ScalingUtility(context: context);
     scale.setCurrentDeviceSize();
@@ -35,12 +32,11 @@ class _SplashScreenState extends State<SplashScreen> {
     return Container(
       height: double.maxFinite,
       width: double.maxFinite,
-      decoration: BoxDecoration(
-        gradient: AppColors.primaryGradient,
-      ),
-     child: Scaffold(
+      decoration: BoxDecoration(gradient: AppColors.primaryGradient),
+      child: Scaffold(
         backgroundColor: AppColors.transparent,
         resizeToAvoidBottomInset: true,
+
         /// -- Logo
         body: Center(
           child: SizedBox(
@@ -59,14 +55,39 @@ class _SplashScreenState extends State<SplashScreen> {
                   ),
                   child: Center(
                     child: Padding(
-                    padding: scale.getPadding(all: 8),
-                    child: Text("CN", style: TextStyle(fontSize: scale.getScaledFont(32), color: AppColors.purple3, fontWeight: FontWeight.bold),),
-                  )),
+                      padding: scale.getPadding(all: 8),
+                      child: Text(
+                        "CN",
+                        style: TextStyle(
+                          fontSize: scale.getScaledFont(32),
+                          color: AppColors.purple3,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
 
                 /// -- ClickNow
                 SizedBox(width: scale.getScaledWidth(8)),
-                Text('ClickNow', style: TextStyle(fontSize: scale.getScaledFont(38), fontWeight: FontWeight.bold, color: AppColors.white, height: 1),),
+                Text(
+                  'Click',
+                  style: TextStyle(
+                    fontSize: scale.getScaledFont(38),
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.white,
+                    height: 1,
+                  ),
+                ),
+                Text(
+                  'Now',
+                  style: TextStyle(
+                    fontSize: scale.getScaledFont(38),
+                    fontWeight: FontWeight.w100,
+                    color: AppColors.white,
+                    height: 1,
+                  ),
+                ),
               ],
             ),
           ),

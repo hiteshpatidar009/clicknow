@@ -70,9 +70,7 @@ class ProfessionalBookingsController extends GetxController {
     isLoading.value = true;
     try {
       final bookings = await _bookingService.getProfessionalBookings();
-      _allBookings.assignAll(
-        bookings.map(_mapToBookingItem).toList(),
-      );
+      _allBookings.assignAll(bookings.map(_mapToBookingItem).toList());
     } catch (error) {
       _allBookings.clear();
       Get.snackbar("Error", error.toString());
@@ -120,13 +118,13 @@ class ProfessionalBookingsController extends GetxController {
   Color statusBgColor(BookingStatus status) {
     switch (status) {
       case BookingStatus.confirmed:
-        return const Color(0xFF00C853).withOpacity(0.12);
+        return const Color(0xFF00C853).withValues(alpha: 0.12);
       case BookingStatus.pending:
-        return const Color(0xFFB8860B).withOpacity(0.18);
+        return const Color(0xFFB8860B).withValues(alpha: 0.18);
       case BookingStatus.completed:
-        return const Color(0xFFBF00FF).withOpacity(0.12);
+        return const Color(0xFFBF00FF).withValues(alpha: 0.12);
       case BookingStatus.canceled:
-        return const Color(0xFFCC3300).withOpacity(0.18);
+        return const Color(0xFFCC3300).withValues(alpha: 0.18);
     }
   }
 
@@ -171,8 +169,7 @@ class ProfessionalBookingsController extends GetxController {
   }
 
   String _resolveServiceType(BookingApiModel booking) {
-    final serviceType =
-        booking.eventDetails?["serviceType"]?.toString().trim();
+    final serviceType = booking.eventDetails?["serviceType"]?.toString().trim();
     if (serviceType != null && serviceType.isNotEmpty) {
       return serviceType;
     }
@@ -183,11 +180,7 @@ class ProfessionalBookingsController extends GetxController {
     return "Service";
   }
 
-  String _formatDateTime(
-    DateTime date,
-    String? startTime,
-    String? endTime,
-  ) {
+  String _formatDateTime(DateTime date, String? startTime, String? endTime) {
     final dateLabel = DateFormat("MMM d, yyyy").format(date);
     if (startTime != null && endTime != null) {
       return "$dateLabel • $startTime to $endTime";

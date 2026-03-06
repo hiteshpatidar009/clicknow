@@ -14,9 +14,10 @@ class StepOneBodyScreen extends StatefulWidget {
 }
 
 class _StepOneBodyScreenState extends State<StepOneBodyScreen> {
-
   final _formKey = GlobalKey<FormState>();
-  final professionalRegController = Get.put(Professionalregistrationcontroller());
+  final professionalRegController = Get.put(
+    Professionalregistrationcontroller(),
+  );
   final stepperController = Get.put(StepperController());
 
   @override
@@ -41,7 +42,6 @@ class _StepOneBodyScreenState extends State<StepOneBodyScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   /// HEADER
                   const Padding(
                     padding: EdgeInsets.fromLTRB(10, 10, 10, 4),
@@ -58,10 +58,7 @@ class _StepOneBodyScreenState extends State<StepOneBodyScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Text(
                       "We use your phone number for booking confirmations and security.",
-                      style: TextStyle(
-                        color: Colors.white60,
-                        fontSize: 12,
-                      ),
+                      style: TextStyle(color: Colors.white60, fontSize: 12),
                     ),
                   ),
 
@@ -72,15 +69,15 @@ class _StepOneBodyScreenState extends State<StepOneBodyScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-
                         /// PHONE LABEL
                         Row(
                           children: const [
-                            Text("Phone Number",
-                                style: TextStyle(color: Colors.white)),
+                            Text(
+                              "Phone Number",
+                              style: TextStyle(color: Colors.white),
+                            ),
                             SizedBox(width: 4),
-                            Text("*",
-                                style: TextStyle(color: Colors.red)),
+                            Text("*", style: TextStyle(color: Colors.red)),
                           ],
                         ),
 
@@ -91,21 +88,25 @@ class _StepOneBodyScreenState extends State<StepOneBodyScreen> {
                           children: [
                             Container(
                               height: scale.getScaledHeight(44),
-                              padding: const EdgeInsets.symmetric(horizontal: 12),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                              ),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: const Color(0xff1C1736)
-                                    .withValues(alpha: 0.5),
+                                color: const Color(
+                                  0xff1C1736,
+                                ).withValues(alpha: 0.5),
                                 border: Border.all(
-                                    color: const Color(0xff1E2939)),
+                                  color: const Color(0xff1E2939),
+                                ),
                               ),
                               child: Center(
                                 child: Text(
                                   "+91",
                                   style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize:
-                                      scale.getScaledFont(12)),
+                                    color: Colors.white,
+                                    fontSize: scale.getScaledFont(12),
+                                  ),
                                 ),
                               ),
                             ),
@@ -117,34 +118,25 @@ class _StepOneBodyScreenState extends State<StepOneBodyScreen> {
                                 height: scale.getScaledHeight(44),
                                 child: TextFormField(
                                   controller:
-                                  professionalRegController
-                                      .phoneController,
+                                      professionalRegController.phoneController,
                                   keyboardType: TextInputType.phone,
                                   inputFormatters: [
-                                    FilteringTextInputFormatter
-                                        .digitsOnly,
-                                    LengthLimitingTextInputFormatter(
-                                        10),
+                                    FilteringTextInputFormatter.digitsOnly,
+                                    LengthLimitingTextInputFormatter(10),
                                   ],
-                                  style: const TextStyle(
-                                      color: Colors.white),
+                                  style: const TextStyle(color: Colors.white),
                                   decoration: InputDecoration(
                                     filled: true,
                                     fillColor: const Color(
-                                        0xff1C1736)
-                                        .withValues(alpha: 0.8),
-                                    hintText:
-                                    "Enter your phone number",
+                                      0xff1C1736,
+                                    ).withValues(alpha: 0.8),
+                                    hintText: "Enter your phone number",
                                     hintStyle: TextStyle(
-                                        color:
-                                        Colors.white54,
-                                        fontSize: scale
-                                            .getScaledFont(12)),
-                                    border:
-                                    OutlineInputBorder(
-                                      borderRadius:
-                                      BorderRadius
-                                          .circular(10),
+                                      color: Colors.white54,
+                                      fontSize: scale.getScaledFont(12),
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                   ),
                                 ),
@@ -157,8 +149,7 @@ class _StepOneBodyScreenState extends State<StepOneBodyScreen> {
 
                         /// REQUEST OTP BUTTON (HIDDEN AFTER VERIFIED)
                         Obx(() {
-                          if (professionalRegController
-                              .isPhoneVerified.value) {
+                          if (professionalRegController.isPhoneVerified.value) {
                             return const SizedBox();
                           }
 
@@ -166,32 +157,21 @@ class _StepOneBodyScreenState extends State<StepOneBodyScreen> {
                             height: scale.getScaledHeight(40),
                             width: double.infinity,
                             child: ElevatedButton(
-                              onPressed:
-                              professionalRegController
-                                  .requestOtp,
-                              style:
-                              ElevatedButton.styleFrom(
-                                backgroundColor:
-                                const Color(
-                                    0xff360248),
-                                shape:
-                                RoundedRectangleBorder(
-                                  borderRadius:
-                                  BorderRadius
-                                      .circular(10),
+                              onPressed: professionalRegController.requestOtp,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xff360248),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
                               child: Text(
-                                professionalRegController
-                                    .isOtpSent.value
+                                professionalRegController.isOtpSent.value
                                     ? "OTP Sent"
                                     : "Request OTP",
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontWeight:
-                                  FontWeight.bold,
-                                  fontSize: scale
-                                      .getScaledFont(14),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: scale.getScaledFont(14),
                                 ),
                               ),
                             ),
@@ -200,68 +180,46 @@ class _StepOneBodyScreenState extends State<StepOneBodyScreen> {
 
                         /// OTP SECTION
                         Obx(() {
-                          if (professionalRegController
-                              .isOtpSent.value &&
+                          if (professionalRegController.isOtpSent.value &&
                               !professionalRegController
                                   .isPhoneVerified
                                   .value) {
                             return Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-
-                                SizedBox(
-                                    height: scale
-                                        .getScaledHeight(
-                                        16)),
+                                SizedBox(height: scale.getScaledHeight(16)),
 
                                 const Text(
                                   "Enter OTP",
                                   style: TextStyle(
-                                      color:
-                                      Colors.white,
-                                      fontWeight:
-                                      FontWeight
-                                          .bold),
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
 
                                 const SizedBox(height: 10),
 
                                 TextFormField(
                                   controller:
-                                  professionalRegController
-                                      .otpController,
-                                  keyboardType:
-                                  TextInputType
-                                      .number,
+                                      professionalRegController.otpController,
+                                  keyboardType: TextInputType.number,
                                   maxLength: 6,
-                                  style: const TextStyle(
-                                      color:
-                                      Colors.white),
+                                  style: const TextStyle(color: Colors.white),
                                   inputFormatters: [
-                                    FilteringTextInputFormatter
-                                        .digitsOnly,
+                                    FilteringTextInputFormatter.digitsOnly,
                                   ],
-                                  decoration:
-                                  InputDecoration(
+                                  decoration: InputDecoration(
                                     counterText: "",
                                     filled: true,
                                     fillColor: const Color(
-                                        0xff1C1736)
-                                        .withValues(
-                                        alpha: 0.8),
-                                    hintText:
-                                    "Enter 6-digit OTP",
-                                    hintStyle:
-                                    const TextStyle(
-                                        color: Colors
-                                            .white54),
-                                    border:
-                                    OutlineInputBorder(
-                                      borderRadius:
-                                      BorderRadius
-                                          .circular(
-                                          10),
+                                      0xff1C1736,
+                                    ).withValues(alpha: 0.8),
+                                    hintText: "Enter 6-digit OTP",
+                                    hintStyle: const TextStyle(
+                                      color: Colors.white54,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                   ),
                                 ),
@@ -269,39 +227,23 @@ class _StepOneBodyScreenState extends State<StepOneBodyScreen> {
                                 const SizedBox(height: 10),
 
                                 SizedBox(
-                                  height: scale
-                                      .getScaledHeight(
-                                      40),
-                                  width:
-                                  double.infinity,
-                                  child:
-                                  ElevatedButton(
+                                  height: scale.getScaledHeight(40),
+                                  width: double.infinity,
+                                  child: ElevatedButton(
                                     onPressed:
-                                    professionalRegController
-                                        .verifyOtp,
-                                    style: ElevatedButton
-                                        .styleFrom(
-                                      backgroundColor:
-                                      const Color(
-                                          0xff360248),
-                                      shape:
-                                      RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius
-                                            .circular(
-                                            10),
+                                        professionalRegController.verifyOtp,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xff360248),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
                                     ),
-                                    child:
-                                    const Text(
+                                    child: const Text(
                                       "Verify OTP",
-                                      style:
-                                      TextStyle(
-                                          color: Colors
-                                              .white,
-                                          fontWeight:
-                                          FontWeight
-                                              .bold),
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -310,28 +252,25 @@ class _StepOneBodyScreenState extends State<StepOneBodyScreen> {
 
                                 Center(
                                   child:
-                                  professionalRegController
-                                      .canResendOtp
-                                      .value
+                                      professionalRegController
+                                          .canResendOtp
+                                          .value
                                       ? TextButton(
-                                    onPressed:
-                                    professionalRegController
-                                        .resendOtp,
-                                    child:
-                                    const Text(
-                                      "Resend OTP",
-                                      style: TextStyle(
-                                          color:
-                                          Colors.purpleAccent),
-                                    ),
-                                  )
+                                          onPressed: professionalRegController
+                                              .resendOtp,
+                                          child: const Text(
+                                            "Resend OTP",
+                                            style: TextStyle(
+                                              color: Colors.purpleAccent,
+                                            ),
+                                          ),
+                                        )
                                       : Text(
-                                    "Resend OTP in ${professionalRegController.secondsRemaining.value}s",
-                                    style:
-                                    const TextStyle(
-                                        color:
-                                        Colors.grey),
-                                  ),
+                                          "Resend OTP in ${professionalRegController.secondsRemaining.value}s",
+                                          style: const TextStyle(
+                                            color: Colors.grey,
+                                          ),
+                                        ),
                                 ),
                               ],
                             );
@@ -346,22 +285,37 @@ class _StepOneBodyScreenState extends State<StepOneBodyScreen> {
                             return Container(
                               margin: const EdgeInsets.only(top: 16),
                               padding: const EdgeInsets.all(12),
-                              decoration:
-                              BoxDecoration(
+                              decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 color: Color(0xff192738).withValues(alpha: 0.5),
                                 border: Border.all(color: Color(0xff12513E)),
                               ),
                               child: Row(
                                 children: [
-                                  const Icon(Icons.check_circle, color: Color(0xff00C950)),
+                                  const Icon(
+                                    Icons.check_circle,
+                                    color: Color(0xff00C950),
+                                  ),
                                   const SizedBox(width: 10),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Text("Phone Verified Successfully.", style: const TextStyle(color: Color(0xff66FF00), fontWeight: FontWeight.bold),),
-                                        Text("+91 ${professionalRegController.phoneController.text}", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                                        Text(
+                                          "Phone Verified Successfully.",
+                                          style: const TextStyle(
+                                            color: Color(0xff66FF00),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          "+91 ${professionalRegController.phoneController.text}",
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -380,7 +334,9 @@ class _StepOneBodyScreenState extends State<StepOneBodyScreen> {
                           width: double.infinity,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: const Color(0xff1C1736).withValues(alpha: 0.5),
+                            color: const Color(
+                              0xff1C1736,
+                            ).withValues(alpha: 0.5),
                             border: Border.all(color: const Color(0xff1E2939)),
                           ),
                           child: Padding(
@@ -391,19 +347,39 @@ class _StepOneBodyScreenState extends State<StepOneBodyScreen> {
                                 Row(
                                   children: [
                                     // -- Icon
-                                    Icon(Icons.shield_outlined, color: Color(0xff9235B1), size: 22,),
-                                    SizedBox(width: scale.getScaledWidth(8),),
+                                    Icon(
+                                      Icons.shield_outlined,
+                                      color: Color(0xff9235B1),
+                                      size: 22,
+                                    ),
+                                    SizedBox(width: scale.getScaledWidth(8)),
                                     // -- Title
-                                    Text("Security Verification", style: TextStyle(color: Colors.white, fontSize: scale.getScaledFont(14), fontWeight: FontWeight.bold),),
+                                    Text(
+                                      "Security Verification",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: scale.getScaledFont(14),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                   ],
                                 ),
 
                                 /// -- Description
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 28.0, right: 8.0, top: 6.0),
+                                  padding: const EdgeInsets.only(
+                                    left: 28.0,
+                                    right: 8.0,
+                                    top: 6.0,
+                                  ),
                                   child: Text(
                                     "Your phone number is encrypted and used only for booking confirmations and account security.",
-                                    style: TextStyle(color: Color(0xff5B6274), fontSize: scale.getScaledFont(12), fontWeight: FontWeight.w500),),
+                                    style: TextStyle(
+                                      color: Color(0xff5B6274),
+                                      fontSize: scale.getScaledFont(12),
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
@@ -414,18 +390,21 @@ class _StepOneBodyScreenState extends State<StepOneBodyScreen> {
                   ),
 
                   /// -- back and Continue Buttons
-                  const Divider(color: Color(0xff1E2939), height: 2,),
+                  const Divider(color: Color(0xff1E2939), height: 2),
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(10),
-                          bottomRight: Radius.circular(10)
+                        bottomLeft: Radius.circular(10),
+                        bottomRight: Radius.circular(10),
                       ),
                       color: const Color(0xff101425),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0,
+                        vertical: 20.0,
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -434,20 +413,34 @@ class _StepOneBodyScreenState extends State<StepOneBodyScreen> {
                             child: SizedBox(
                               height: scale.getScaledHeight(40),
                               child: ElevatedButton(
-                                onPressed: ()=> Get.offAllNamed(AppRoutes.loginRoute),
+                                onPressed: () =>
+                                    Get.offAllNamed(AppRoutes.loginRoute),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Color(0xff13182C),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadiusGeometry.circular(10),
+                                    borderRadius: BorderRadiusGeometry.circular(
+                                      10,
+                                    ),
                                     side: BorderSide(color: Color(0xff1E2939)),
                                   ),
                                 ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.arrow_back, color: Colors.white, size: 22,),
-                                    SizedBox(width: scale.getScaledWidth(8),),
-                                    Text("Back", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: scale.getScaledFont(14)),),
+                                    Icon(
+                                      Icons.arrow_back,
+                                      color: Colors.white,
+                                      size: 22,
+                                    ),
+                                    SizedBox(width: scale.getScaledWidth(8)),
+                                    Text(
+                                      "Back",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: scale.getScaledFont(14),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -461,17 +454,33 @@ class _StepOneBodyScreenState extends State<StepOneBodyScreen> {
                               height: scale.getScaledHeight(40),
                               child: ElevatedButton(
                                 onPressed: () {
-                                  if (!professionalRegController.isPhoneVerified.value) {
-                                    Get.snackbar("Error", "Please verify your phone number");
+                                  if (!professionalRegController
+                                      .isPhoneVerified
+                                      .value) {
+                                    Get.snackbar(
+                                      "Error",
+                                      "Please verify your phone number",
+                                    );
                                     return;
                                   }
                                   stepperController.nextStep();
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Color(0xff360248),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(10)),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadiusGeometry.circular(
+                                      10,
+                                    ),
+                                  ),
                                 ),
-                                child: Text("Continue", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: scale.getScaledFont(14)),),
+                                child: Text(
+                                  "Continue",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: scale.getScaledFont(14),
+                                  ),
+                                ),
                               ),
                             ),
                           ),

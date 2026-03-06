@@ -2,7 +2,7 @@ class ApiConstants {
   ApiConstants._();
 
   /// -- Base URL
-  static const String base_ApiUrl = "http://192.168.1.21:3000/api/v1";
+  static const String base_ApiUrl = "https://clicknow.onrender.com/api/v1";
 
   /// -- Authentication
   static const String register_Api = "/auth/register";
@@ -26,5 +26,6 @@ class ApiConstants {
   static const String bookings_Api = "/bookings";
   static const String bookingsClient_Api = "/bookings/client";
   static const String bookingsProfessional_Api = "/bookings/professional";
-  static const String bookingsProfessionalUpcoming_Api = "/bookings/professional/upcoming";
+  static const String bookingsProfessionalUpcoming_Api =
+      "/bookings/professional/upcoming";
 }

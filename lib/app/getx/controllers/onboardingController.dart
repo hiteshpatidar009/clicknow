@@ -3,13 +3,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-class OnBoardingController extends GetxController{
+class OnBoardingController extends GetxController {
   /// -- Show onboarding Screen Only once through out the life time of the application.
   final storage = GetStorage();
   bool get hasSeenOnboarding => storage.read('hasSeenOnboarding') ?? false;
   void completeOnboarding() {
     storage.write('hasSeenOnboarding', true);
-    print("DEBUG - hasSeenOnboarding = ${hasSeenOnboarding.toString()}");
+    debugPrint("DEBUG - hasSeenOnboarding = ${hasSeenOnboarding.toString()}");
   }
 
   /// -- Getter Function for onboarding controller object
@@ -22,32 +22,33 @@ class OnBoardingController extends GetxController{
   /// --- Member Functions
 
   // Update current Index when Page Scroll
-  void updatePageIndicator(index) => currentPageIndex.value = index;
+  Future<void> updatePageIndicator(int index) async =>
+      currentPageIndex.value = index;
 
   // Jump to specific dot selected page
-  void dotNavigationClick(index){
+  Future<void> dotNavigationClick(int index) async {
     currentPageIndex.value = index;
     pageController.jumpToPage(index);
   }
 
   // Update current Index & Jump to next page
-  void nextPage(){
-    if(currentPageIndex.value == 3){
+  void nextPage() {
+    if (currentPageIndex.value == 3) {
       // last page appeared
       authPage();
-    }else{
+    } else {
       int page = currentPageIndex.value + 1; // move to next page
       pageController.jumpToPage(page);
     }
   }
 
   // Update current Index & Jump to last page
-  void skipPage(){
+  void skipPage() {
     currentPageIndex.value = 3; // 0 index based pages (total 4 pages)
     pageController.jumpToPage(3);
   }
 
-  void authPage(){
+  void authPage() {
     //completeOnboarding();
     Get.offNamed(AppRoutes.loginRoute);
   }

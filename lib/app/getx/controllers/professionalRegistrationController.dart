@@ -1,17 +1,17 @@
 import 'dart:async';
+import 'package:clicknow/app/getx/controllers/emailOtpController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:clicknow/app/getx/controllers/authController.dart';
 import 'package:clicknow/app/services/auth_service.dart';
 
-
 class Professionalregistrationcontroller extends GetxController {
   static Professionalregistrationcontroller get instance => Get.find();
 
   /// -- Form Keys
   final GlobalKey<FormState> professionalRegistrationFormKey =
-  GlobalKey<FormState>();
+      GlobalKey<FormState>();
 
   /// -- Textfield Controllers
   final TextEditingController genderController = TextEditingController();
@@ -26,9 +26,19 @@ class Professionalregistrationcontroller extends GetxController {
   final List<String> genderOptions = ["Male", "Female", "Other"];
   RxString selectedGender = "".obs;
   Rx<DateTime?> selectedDob = Rx<DateTime?>(null);
-  final List<String> languageOptions = ["English", "Hindi", "Tamil", "Telugu", "Kannada", "Malayalam", "Bengali", "Marathi"];
+  final List<String> languageOptions = [
+    "English",
+    "Hindi",
+    "Tamil",
+    "Telugu",
+    "Kannada",
+    "Malayalam",
+    "Bengali",
+    "Marathi",
+  ];
   RxList<String> selectedLanguages = <String>[].obs;
-  final TextEditingController permanentAddressController = TextEditingController();
+  final TextEditingController permanentAddressController =
+      TextEditingController();
 
   /// -- Step 3 States
   RxBool isWorkExpanded = false.obs;
@@ -61,7 +71,7 @@ class Professionalregistrationcontroller extends GetxController {
     "1-5 Members",
     "5-10 Members",
     "10-20 Members",
-    "20+ Members"
+    "20+ Members",
   ];
 
   RxString selectedTeamSize = "".obs;
@@ -91,8 +101,6 @@ class Professionalregistrationcontroller extends GetxController {
     }
   }
 
-
-
   Future<void> pickAadharFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -115,7 +123,6 @@ class Professionalregistrationcontroller extends GetxController {
     }
   }
 
-
   /// Toggle Sections
   void toggleWork() {
     isWorkExpanded.toggle();
@@ -132,7 +139,10 @@ class Professionalregistrationcontroller extends GetxController {
   /// Work Information
   final TextEditingController workCityController = TextEditingController();
   final TextEditingController shortBioController = TextEditingController();
-  final List<String> experienceOptions = List.generate(11, (index) => "$index Years");
+  final List<String> experienceOptions = List.generate(
+    11,
+    (index) => "$index Years",
+  );
   RxString selectedExperience = "".obs;
 
   final List<String> workingDaysOptions = [
@@ -142,7 +152,7 @@ class Professionalregistrationcontroller extends GetxController {
     "Thursday",
     "Friday",
     "Saturday",
-    "Sunday"
+    "Sunday",
   ];
   RxList<String> selectedWorkingDays = <String>[].obs;
 
@@ -155,23 +165,16 @@ class Professionalregistrationcontroller extends GetxController {
   }
 
   /// Profile Links
-  final TextEditingController googleDriveController =
-  TextEditingController();
-  final TextEditingController instagramController =
-  TextEditingController();
-  final TextEditingController websiteController =
-  TextEditingController();
+  final TextEditingController googleDriveController = TextEditingController();
+  final TextEditingController instagramController = TextEditingController();
+  final TextEditingController websiteController = TextEditingController();
 
   /// Additional Details
-  final TextEditingController companyNameController =
-  TextEditingController();
-  final TextEditingController equipmentController =
-  TextEditingController();
+  final TextEditingController companyNameController = TextEditingController();
+  final TextEditingController equipmentController = TextEditingController();
   final TextEditingController clientExperienceController =
-  TextEditingController();
-  final TextEditingController awardsController =
-  TextEditingController();
-
+      TextEditingController();
+  final TextEditingController awardsController = TextEditingController();
 
   /// Toggle Language Selection
   void toggleLanguage(String language) {
@@ -202,10 +205,7 @@ class Professionalregistrationcontroller extends GetxController {
     isOtpLoading.value = true;
     try {
       final phone = "+91${phoneController.text}";
-      await _authService.sendOtp(
-        phone: phone,
-        role: "professional",
-      );
+      await _authService.sendOtp(phone: phone, role: "professional");
       isOtpSent.value = true;
       isPhoneVerified.value = false;
       startTimer();

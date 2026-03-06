@@ -5,8 +5,7 @@ import 'package:clicknow/app/utils/device_constants/apiConstants.dart';
 
 class AuthService {
   AuthService({ApiClient? client})
-      : _client = client ??
-            ApiClient(baseUrl: ApiConstants.base_ApiUrl);
+    : _client = client ?? ApiClient(baseUrl: ApiConstants.base_ApiUrl);
 
   final ApiClient _client;
 
@@ -16,10 +15,7 @@ class AuthService {
   }) async {
     final response = await _client.post(
       ApiConstants.register_Api,
-      body: {
-        "email": email.trim(),
-        "password": password,
-      },
+      body: {"email": email.trim(), "password": password},
     );
 
     final api = ApiResponse.fromJson(
@@ -40,10 +36,7 @@ class AuthService {
   }) async {
     final response = await _client.post(
       ApiConstants.login_Api,
-      body: {
-        "email": email.trim().toLowerCase(),
-        "password": password,
-      },
+      body: {"email": email.trim().toLowerCase(), "password": password},
     );
 
     final api = ApiResponse.fromJson(
@@ -62,14 +55,10 @@ class AuthService {
     await _client.post(ApiConstants.logout_Api, authRequired: true);
   }
 
-  Future<AuthSession> loginWithFirebase({
-    required String idToken,
-  }) async {
+  Future<AuthSession> loginWithFirebase({required String idToken}) async {
     final response = await _client.post(
       ApiConstants.firebaseLogin_Api,
-      body: {
-        "idToken": idToken,
-      },
+      body: {"idToken": idToken},
     );
 
     final api = ApiResponse.fromJson(
@@ -90,10 +79,7 @@ class AuthService {
     required String otp,
     String role = "client",
   }) async {
-    final body = <String, dynamic>{
-      "otp": otp,
-      "role": role,
-    };
+    final body = <String, dynamic>{"otp": otp, "role": role};
     if (email != null && email.isNotEmpty) {
       body["email"] = email.trim().toLowerCase();
     }
@@ -101,10 +87,7 @@ class AuthService {
       body["phone"] = phone.trim();
     }
 
-    final response = await _client.post(
-      ApiConstants.verifyOtp_Api,
-      body: body,
-    );
+    final response = await _client.post(ApiConstants.verifyOtp_Api, body: body);
 
     final api = ApiResponse.fromJson(
       response,
@@ -123,9 +106,7 @@ class AuthService {
     String? phone,
     String role = "client",
   }) async {
-    final body = <String, dynamic>{
-      "role": role,
-    };
+    final body = <String, dynamic>{"role": role};
     if (email != null && email.isNotEmpty) {
       body["email"] = email.trim().toLowerCase();
     }
@@ -133,9 +114,6 @@ class AuthService {
       body["phone"] = phone.trim();
     }
 
-    await _client.post(
-      ApiConstants.sendOtp_Api,
-      body: body,
-    );
+    await _client.post(ApiConstants.sendOtp_Api, body: body);
   }
 }

@@ -1,0 +1,52 @@
+{
+    "name": "photography-booking-backend",
+    "version": "1.0.0",
+    "description": "Scalable backend server for photographer booking mobile application",
+    "main": "server.js",
+    "type": "module",
+    "scripts": {
+        "start": "node src/index.js",
+        "dev": "node src/index.js",
+        "lint": "eslint src/",
+        "lint:fix": "eslint src/ --fix",
+        "seed": "node src/scripts/seed.js"
+    },
+    "keywords": [
+        "photography",
+        "booking",
+        "nodejs",
+        "express",
+        "firebase"
+    ],
+    "author": "Photography Booking Team",
+    "license": "ISC",
+    "dependencies": {
+        "@aws-sdk/client-s3": "^3.972.0",
+        "@aws-sdk/s3-request-presigner": "^3.972.0",
+        "axios": "^1.6.2",
+        "bcryptjs": "^3.0.3",
+        "compression": "^1.7.4",
+        "cors": "^2.8.5",
+        "dotenv": "^17.2.3",
+        "express": "^5.2.1",
+        "express-rate-limit": "^8.2.1",
+        "firebase-admin": "^13.6.0",
+        "helmet": "^8.1.0",
+        "joi": "^18.0.2",
+        "jsonwebtoken": "^9.0.2",
+        "mongoose": "^9.2.1",
+        "morgan": "^1.10.0",
+        "multer": "^2.0.1",
+        "nodemailer": "^8.0.1",
+        "twilio": "^5.12.2",
+        "uuid": "^13.0.0",
+        "winston": "^3.11.0"
+    },
+    "devDependencies": {
+        "eslint": "^9.39.2",
+        "jest": "^30.2.0"
+    },
+    "engines": {
+        "node": ">=18.0.0"
+    }
+}

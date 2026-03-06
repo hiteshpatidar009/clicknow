@@ -1,0 +1,1568 @@
+﻿{
+    "info":  {
+                 "name":  "ClickNow Backend API - Source Aligned",
+                 "description":  "Production-ready Postman collection generated from mounted Express routes, middleware guards, validators, and controller behavior.",
+                 "schema":  "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+             },
+    "auth":  {
+                 "type":  "bearer",
+                 "bearer":  [
+                                {
+                                    "key":  "token",
+                                    "value":  "{{token}}",
+                                    "type":  "string"
+                                }
+                            ]
+             },
+    "variable":  [
+                     {
+                         "key":  "base_url",
+                         "value":  "http://localhost:5000",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "token",
+                         "value":  "",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "refresh_token",
+                         "value":  "",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "user_id",
+                         "value":  "67c808d4f9f85f2f3a8a0011",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "professional_id",
+                         "value":  "67c808d4f9f85f2f3a8a0022",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "booking_id",
+                         "value":  "67c808d4f9f85f2f3a8a0033",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "review_id",
+                         "value":  "67c808d4f9f85f2f3a8a0044",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "enquiry_id",
+                         "value":  "67c808d4f9f85f2f3a8a0055",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "chat_id",
+                         "value":  "67c808d4f9f85f2f3a8a0066",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "message_id",
+                         "value":  "f2e31de8-3226-4d95-85d4-cf4a7b4c7001",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "notification_id",
+                         "value":  "f2e31de8-3226-4d95-85d4-cf4a7b4c7002",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "post_id",
+                         "value":  "f2e31de8-3226-4d95-85d4-cf4a7b4c7003",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "item_id",
+                         "value":  "f2e31de8-3226-4d95-85d4-cf4a7b4c7004",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "category_id",
+                         "value":  "67c808d4f9f85f2f3a8a0077",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "category_slug",
+                         "value":  "photographer",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "date",
+                         "value":  "2026-04-10",
+                         "type":  "string"
+                     }
+                 ],
+    "item":  [
+                 {
+                     "name":  "System",
+                     "item":  [
+                                  {
+                                      "name":  "/",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/",
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/health",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/health",
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/health",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/health",
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               }
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Auth",
+                     "item":  [
+                                  {
+                                      "name":  "/auth/change-password",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/auth/change-password",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"currentPassword\":\"StrongPass@123\",\"newPassword\":\"StrongerPass@456\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/auth/firebase",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/auth/firebase",
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               },
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"firebaseToken\":\"eyJhbGciOiJSUzI1NiIsImtpZCI6Im1vY2sifQ.firebase.id.token\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/auth/google",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/auth/google",
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               },
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"googleToken\":\"ya29.a0AfH6SMCEXAMPLE_GOOGLE_ID_TOKEN\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/auth/login",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/auth/login",
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               },
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"email\":\"aarav.shah@example.com\",\"password\":\"StrongPass@123\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/auth/logout",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/auth/logout"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/auth/me",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/auth/me"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/auth/refresh",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/auth/refresh",
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               },
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"refreshToken\":\"{{refresh_token}}\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/auth/register",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/auth/register",
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               },
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"email\":\"aarav.shah@example.com\",\"password\":\"StrongPass@123\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/auth/send-otp",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/auth/send-otp",
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               },
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"email\":\"aarav.shah@example.com\",\"provider\":\"mock\",\"purpose\":\"registration\",\"role\":\"client\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/auth/verify-otp",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/auth/verify-otp",
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               },
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"email\":\"aarav.shah@example.com\",\"otp\":\"123456\",\"provider\":\"mock\",\"purpose\":\"registration\",\"role\":\"client\"}"
+                                                               }
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Users",
+                     "item":  [
+                                  {
+                                      "name":  "/users",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/users"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/users/:id",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/users/{{user_id}}"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/users/:id",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "url":  "{{base_url}}/api/v1/users/{{user_id}}"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/users/:id/activate",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/users/{{user_id}}/activate"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/users/:id/deactivate",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/users/{{user_id}}/deactivate"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/users/fcm-token",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/users/fcm-token",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"fcmToken\":\"fcm_device_token_android_33b2a9\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/users/notifications/settings",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/users/notifications/settings",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"push\":true,\"email\":true,\"whatsapp\":true,\"bookingUpdates\":true,\"promotions\":false,\"reminders\":true}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/users/profile",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/users/profile"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/users/profile",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/users/profile",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"fullName\":\"Aarav Shah\",\"avatar\":\"https://cdn.clicknow.app/avatars/aarav.jpg\",\"phone\":\"+919876543210\",\"settings\":{\"language\":\"en\",\"currency\":\"INR\",\"notifications\":{\"push\":true,\"email\":true,\"whatsapp\":true}}}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/users/statistics",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/users/statistics"
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Professionals",
+                     "item":  [
+                                  {
+                                      "name":  "/professionals",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/professionals",
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/professionals",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/professionals",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"category\":\"photographer\",\"businessName\":\"Lens Studio Mumbai\",\"bio\":\"Wedding and candid photography studio with 8+ years experience.\",\"experience\":8,\"specialties\":[\"wedding\",\"candid\",\"portrait\"],\"location\":{\"address\":\"MG Road, Fort\",\"city\":\"Mumbai\",\"state\":\"Maharashtra\",\"country\":\"India\",\"pincode\":\"400001\"},\"serviceAreas\":[\"Mumbai\",\"Thane\",\"Navi Mumbai\"],\"contact\":{\"email\":\"lensstudio@example.com\",\"phone\":\"+919811112223\",\"whatsapp\":\"+919811112223\"},\"pricing\":{\"hourlyRate\":5000,\"minimumHours\":2,\"currency\":\"INR\"}}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/professionals/:id",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/professionals/{{professional_id}}",
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/professionals/:id/availability",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/professionals/{{professional_id}}/availability",
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/professionals/:id/availability/slots",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/professionals/{{professional_id}}/availability/slots",
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/professionals/:id/gallery",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/professionals/{{professional_id}}/gallery",
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/professionals/:id/reviews",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/professionals/{{professional_id}}/reviews",
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/professionals/category/:category",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/professionals/category/{{category_slug}}",
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/professionals/featured",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/professionals/featured",
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/professionals/me",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/professionals/me",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"bio\":\"Premium wedding and event photography with cinematic storytelling.\",\"specialties\":[\"wedding\",\"pre_wedding\",\"fashion\"],\"workDetails\":{\"availableWorkingDays\":[\"monday\",\"tuesday\",\"wednesday\",\"thursday\",\"friday\",\"saturday\"],\"startTime\":\"09:00\",\"endTime\":\"20:00\"},\"documents\":{\"aadharNumber\":\"1234 5678 9123\",\"panNumber\":\"ABCDE1234F\",\"aadharFront\":\"https://cdn.clicknow.app/docs/aadhar-front.jpg\",\"aadharBack\":\"https://cdn.clicknow.app/docs/aadhar-back.jpg\",\"panCard\":\"https://cdn.clicknow.app/docs/pan.jpg\"}}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/professionals/me/active",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/professionals/me/active",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"isActive\":true}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/professionals/me/portfolio",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/professionals/me/portfolio",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"type\":\"image\",\"url\":\"https://cdn.clicknow.app/portfolio/wedding-shot-01.jpg\",\"thumbnailUrl\":\"https://cdn.clicknow.app/portfolio/wedding-shot-01-thumb.jpg\",\"title\":\"Royal Wedding Highlights\",\"description\":\"Bride and groom candid portraits\",\"category\":\"wedding\",\"order\":1}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/professionals/me/portfolio/:itemId",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "url":  "{{base_url}}/api/v1/professionals/me/portfolio/{{item_id}}"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/professionals/me/profile",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/professionals/me/profile"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/professionals/top-rated",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/professionals/top-rated",
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               }
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Bookings",
+                     "item":  [
+                                  {
+                                      "name":  "/bookings",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/bookings",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"professionalId\":\"{{professional_id}}\",\"bookingDate\":\"2026-04-10T10:00:00.000Z\",\"startTime\":\"10:00\",\"duration\":180,\"eventType\":\"wedding\",\"eventDetails\":{\"description\":\"Day wedding coverage\",\"guestCount\":250,\"specialRequirements\":[\"Drone coverage\",\"Couple teaser reel\"]},\"location\":{\"address\":\"The Grand Palace, MG Road\",\"city\":\"Mumbai\",\"state\":\"Maharashtra\",\"pincode\":\"400001\",\"landmark\":\"Near CST Station\"},\"pricing\":{\"type\":\"package\",\"packageName\":\"Wedding Gold\",\"baseAmount\":45000,\"totalAmount\":50000,\"currency\":\"INR\"},\"clientNotes\":\"Need teaser delivery within 48 hours.\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/bookings/:id",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/bookings/{{booking_id}}"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/bookings/:id/assign",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/bookings/{{booking_id}}/assign",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"professionalId\":\"{{professional_id}}\",\"notes\":\"Closest location and highest rating match.\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/bookings/:id/cancel",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/bookings/{{booking_id}}/cancel",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"reason\":\"Event postponed by family due to medical emergency.\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/bookings/:id/complete",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/bookings/{{booking_id}}/complete"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/bookings/:id/confirm",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/bookings/{{booking_id}}/confirm"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/bookings/:id/matches",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/bookings/{{booking_id}}/matches"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/bookings/:id/reject",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/bookings/{{booking_id}}/reject",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"reason\":\"Selected date clashes with a confirmed booking.\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/bookings/:id/reschedule",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/bookings/{{booking_id}}/reschedule",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"bookingDate\":\"2026-04-15T10:00:00.000Z\",\"startTime\":\"11:00\",\"duration\":180}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/bookings/client",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/bookings/client"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/bookings/date/:date",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/bookings/date/{{date}}"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/bookings/professional",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/bookings/professional"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/bookings/professional/calendar",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/bookings/professional/calendar"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/bookings/professional/upcoming",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/bookings/professional/upcoming"
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Reviews",
+                     "item":  [
+                                  {
+                                      "name":  "/reviews",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/reviews",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"bookingId\":\"{{booking_id}}\",\"rating\":5,\"title\":\"Exceptional wedding coverage\",\"content\":\"The team was punctual, professional, and delivered amazing candid moments throughout the event.\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/reviews/:id",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/reviews/{{review_id}}",
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/reviews/:id/helpful",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/reviews/{{review_id}}/helpful"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/reviews/:id/report",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/reviews/{{review_id}}/report",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"reason\":\"fake\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/reviews/:id/response",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/reviews/{{review_id}}/response",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"response\":\"Thank you for your feedback. We are glad we could capture your special day beautifully.\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/reviews/my",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/reviews/my"
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Availability",
+                     "item":  [
+                                  {
+                                      "name":  "/availability",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/availability"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/availability/blocked-dates",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/availability/blocked-dates",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"date\":\"2026-04-20T00:00:00.000Z\",\"reason\":\"Outstation event booking\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/availability/blocked-dates/:date",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "url":  "{{base_url}}/api/v1/availability/blocked-dates/{{date}}"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/availability/buffer-time",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/availability/buffer-time",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"bufferTime\":30}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/availability/calendar",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/availability/calendar"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/availability/check",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/availability/check"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/availability/schedule",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/availability/schedule",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"monday\":{\"isAvailable\":true,\"slots\":[{\"start\":\"09:00\",\"end\":\"13:00\"},{\"start\":\"14:00\",\"end\":\"18:00\"}]},\"tuesday\":{\"isAvailable\":true,\"slots\":[{\"start\":\"10:00\",\"end\":\"17:00\"}]}}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/availability/settings",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/availability/settings",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"minBookingNotice\":24,\"advanceBookingDays\":90,\"autoConfirm\":false}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/availability/slots",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/availability/slots"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/availability/special-dates",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/availability/special-dates",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"date\":\"2026-04-21T00:00:00.000Z\",\"slots\":[{\"start\":\"07:00\",\"end\":\"09:00\"},{\"start\":\"20:00\",\"end\":\"22:00\"}],\"reason\":\"Custom sunrise and evening shoots\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/availability/special-dates/:date",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "url":  "{{base_url}}/api/v1/availability/special-dates/{{date}}"
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Enquiries",
+                     "item":  [
+                                  {
+                                      "name":  "/enquiries",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/enquiries",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"professionalId\":\"{{professional_id}}\",\"eventType\":\"wedding\",\"eventDate\":\"2026-05-10T00:00:00.000Z\",\"eventDetails\":{\"description\":\"Need full-day candid + cinematic coverage\",\"guestCount\":300,\"duration\":10},\"location\":{\"city\":\"Mumbai\",\"state\":\"Maharashtra\",\"area\":\"Andheri East\"},\"budget\":{\"min\":35000,\"max\":70000,\"currency\":\"INR\"},\"requirements\":\"Require teaser within 72 hours and full album in 30 days.\",\"contactPreference\":\"chat\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/enquiries",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/enquiries"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/enquiries/:id",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/enquiries/{{enquiry_id}}"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/enquiries/:id/close",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/enquiries/{{enquiry_id}}/close",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"note\":\"Client finalized another vendor.\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/enquiries/:id/convert",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/enquiries/{{enquiry_id}}/convert",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"bookingId\":\"{{booking_id}}\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/enquiries/:id/respond",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/enquiries/{{enquiry_id}}/respond",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"note\":\"Available on your date. Please share expected timeline and location pin.\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/enquiries/client",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/enquiries/client"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/enquiries/professional",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/enquiries/professional"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/enquiries/professional/pending",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/enquiries/professional/pending"
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Chats",
+                     "item":  [
+                                  {
+                                      "name":  "/chats",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/chats"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/chats",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/chats",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"recipientId\":\"{{user_id}}\",\"bookingId\":\"{{booking_id}}\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/chats/:chatId/messages/:messageId",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "url":  "{{base_url}}/api/v1/chats/{{chat_id}}/messages/{{message_id}}"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/chats/:id",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/chats/{{chat_id}}"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/chats/:id/archive",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/chats/{{chat_id}}/archive"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/chats/:id/messages",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/chats/{{chat_id}}/messages"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/chats/:id/messages",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/chats/{{chat_id}}/messages",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"text\":\"Hello, sharing the finalized event timeline and requirements.\",\"type\":\"text\",\"attachments\":[{\"url\":\"https://cdn.clicknow.app/chat/itinerary.pdf\",\"type\":\"document\",\"name\":\"Event-Itinerary.pdf\",\"size\":245760}]}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/chats/:id/read",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/chats/{{chat_id}}/read"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/chats/unread-count",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/chats/unread-count"
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Notifications",
+                     "item":  [
+                                  {
+                                      "name":  "/notifications",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/notifications"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/notifications/:id",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "url":  "{{base_url}}/api/v1/notifications/{{notification_id}}"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/notifications/:id/read",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/notifications/{{notification_id}}/read"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/notifications/read-all",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/notifications/read-all"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/notifications/statistics",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/notifications/statistics"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/notifications/unread",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/notifications/unread"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/notifications/unread-count",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/notifications/unread-count"
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Search",
+                     "item":  [
+                                  {
+                                      "name":  "/search/autocomplete",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/search/autocomplete",
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/search/professionals",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/search/professionals",
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               }
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Uploads",
+                     "item":  [
+                                  {
+                                      "name":  "/uploads",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "url":  "{{base_url}}/api/v1/uploads",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"key\":\"general/{{user_id}}/1741177800000-final-poster.jpg\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/uploads/avatar",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/uploads/avatar",
+                                                      "body":  {
+                                                                   "mode":  "formdata",
+                                                                   "formdata":  [
+                                                                                    {
+                                                                                        "key":  "avatar",
+                                                                                        "type":  "file",
+                                                                                        "src":  ""
+                                                                                    }
+                                                                                ]
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/uploads/chat",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/uploads/chat",
+                                                      "body":  {
+                                                                   "mode":  "formdata",
+                                                                   "formdata":  [
+                                                                                    {
+                                                                                        "key":  "file",
+                                                                                        "type":  "file",
+                                                                                        "src":  ""
+                                                                                    }
+                                                                                ]
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/uploads/documents",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/uploads/documents",
+                                                      "body":  {
+                                                                   "mode":  "formdata",
+                                                                   "formdata":  [
+                                                                                    {
+                                                                                        "key":  "files",
+                                                                                        "type":  "file",
+                                                                                        "src":  ""
+                                                                                    },
+                                                                                    {
+                                                                                        "key":  "files",
+                                                                                        "type":  "file",
+                                                                                        "src":  ""
+                                                                                    }
+                                                                                ]
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/uploads/general",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/uploads/general",
+                                                      "body":  {
+                                                                   "mode":  "formdata",
+                                                                   "formdata":  [
+                                                                                    {
+                                                                                        "key":  "file",
+                                                                                        "type":  "file",
+                                                                                        "src":  ""
+                                                                                    },
+                                                                                    {
+                                                                                        "key":  "folder",
+                                                                                        "type":  "text",
+                                                                                        "value":  "general"
+                                                                                    }
+                                                                                ]
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/uploads/portfolio",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/uploads/portfolio",
+                                                      "body":  {
+                                                                   "mode":  "formdata",
+                                                                   "formdata":  [
+                                                                                    {
+                                                                                        "key":  "files",
+                                                                                        "type":  "file",
+                                                                                        "src":  ""
+                                                                                    },
+                                                                                    {
+                                                                                        "key":  "files",
+                                                                                        "type":  "file",
+                                                                                        "src":  ""
+                                                                                    }
+                                                                                ]
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/uploads/presigned-url",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/uploads/presigned-url",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"fileName\":\"wedding-cover.jpg\",\"contentType\":\"image/jpeg\",\"folder\":\"portfolio\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/uploads/signed-url",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/uploads/signed-url"
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Admin",
+                     "item":  [
+                                  {
+                                      "name":  "/admin/bookings",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/admin/bookings"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/admin/bookings/statistics",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/admin/bookings/statistics"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/admin/dashboard",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/admin/dashboard"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/admin/enquiries",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/admin/enquiries"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/admin/enquiries/statistics",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/admin/enquiries/statistics"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/admin/professionals",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/admin/professionals"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/admin/professionals/:id/about",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/admin/professionals/{{professional_id}}/about",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"businessName\":\"Lens Studio Mumbai\",\"bio\":\"Verified premium wedding and event studio.\",\"specialties\":[\"wedding\",\"pre_wedding\",\"fashion\"],\"experience\":9,\"category\":\"photographer\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/admin/professionals/:id/featured",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/admin/professionals/{{professional_id}}/featured",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"isFeatured\":true,\"order\":2}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/admin/professionals/:id/portfolio",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/admin/professionals/{{professional_id}}/portfolio",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"type\":\"image\",\"url\":\"https://cdn.clicknow.app/portfolio/wedding-shot-01.jpg\",\"thumbnailUrl\":\"https://cdn.clicknow.app/portfolio/wedding-shot-01-thumb.jpg\",\"title\":\"Royal Wedding Highlights\",\"description\":\"Bride and groom candid portraits\",\"category\":\"wedding\",\"order\":1}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/admin/professionals/:id/portfolio/:itemId",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "url":  "{{base_url}}/api/v1/admin/professionals/{{professional_id}}/portfolio/{{item_id}}"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/admin/professionals/:id/reactivate",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/admin/professionals/{{professional_id}}/reactivate"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/admin/professionals/:id/suspend",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/admin/professionals/{{professional_id}}/suspend",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"reason\":\"Repeated cancellation policy violations.\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/admin/professionals/:id/verify",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/admin/professionals/{{professional_id}}/verify",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"status\":\"approved\",\"reason\":\"All submitted KYC documents are verified and valid.\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/admin/professionals/pending",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/admin/professionals/pending"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/admin/professionals/statistics",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/admin/professionals/statistics"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/admin/reports/revenue",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/admin/reports/revenue"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/admin/reviews/:id",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "url":  "{{base_url}}/api/v1/admin/reviews/{{review_id}}",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"reason\":\"Removed due to policy violation.\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/admin/reviews/:id/approve",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/admin/reviews/{{review_id}}/approve"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/admin/reviews/:id/reject",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/admin/reviews/{{review_id}}/reject",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"reason\":\"Review contains abusive language and unverified claims.\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/admin/reviews/pending",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/admin/reviews/pending"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/admin/reviews/reported",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/admin/reviews/reported"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/admin/reviews/statistics",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/admin/reviews/statistics"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/admin/settings",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/admin/settings"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/admin/settings",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/admin/settings",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"commission\":{\"globalRate\":15},\"tax\":{\"gstRate\":18,\"serviceTax\":0},\"policies\":{\"cancellationWindow\":48,\"rescheduleLimit\":2,\"refundDays\":7},\"maintenanceMode\":false,\"version\":\"1.0.0\",\"portfolioContent\":{\"aboutTitle\":\"About ClickNow\",\"aboutText\":\"India\u0027s trusted marketplace for event and photography professionals.\",\"missionTitle\":\"Our Mission\",\"missionText\":\"Help customers discover verified professionals quickly and safely.\"}}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/admin/users",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/admin/users"
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Feed",
+                     "item":  [
+                                  {
+                                      "name":  "/feed",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/feed"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/feed/posts",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/feed/posts",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"caption\":\"Cinematic highlights from last weekend wedding in Udaipur.\",\"media\":[{\"type\":\"image\",\"url\":\"https://cdn.clicknow.app/feed/udaipur-wedding-01.jpg\",\"thumbnail\":\"https://cdn.clicknow.app/feed/udaipur-wedding-01-thumb.jpg\"}],\"category\":\"wedding\",\"tags\":[\"wedding\",\"candid\",\"udaipur\"],\"location\":{\"city\":\"Udaipur\",\"coordinates\":{\"lat\":24.5854,\"lng\":73.7125}}}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/feed/posts/:id",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/feed/posts/{{post_id}}"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/feed/posts/:id",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "url":  "{{base_url}}/api/v1/feed/posts/{{post_id}}"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/feed/posts/:id/comments",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/feed/posts/{{post_id}}/comments",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"text\":\"Amazing storytelling and color grading. Great work!\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/feed/posts/:id/comments",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/feed/posts/{{post_id}}/comments"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/feed/posts/:id/like",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/feed/posts/{{post_id}}/like"
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Social",
+                     "item":  [
+                                  {
+                                      "name":  "/social/check/:userId",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/social/check/{{user_id}}"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/social/follow",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/social/follow",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"userId\":\"{{user_id}}\"}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/social/followers",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/social/followers"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/social/followers/:userId",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/social/followers/{{user_id}}"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/social/following",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/social/following"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/social/following/:userId",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/social/following/{{user_id}}"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/social/stats",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/social/stats"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/social/stats/:userId",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/social/stats/{{user_id}}"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/social/unfollow",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/social/unfollow",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"userId\":\"{{user_id}}\"}"
+                                                               }
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Categories",
+                     "item":  [
+                                  {
+                                      "name":  "/categories",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/categories",
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/categories",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/v1/categories",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"name\":\"Wedding Photographer\",\"slug\":\"wedding-photographer\",\"description\":\"Specialists in wedding and pre-wedding photography\",\"icon\":\"https://cdn.clicknow.app/icons/wedding-photographer.svg\",\"image\":\"https://cdn.clicknow.app/categories/wedding-photographer.jpg\",\"isActive\":true,\"displayOrder\":1}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/categories/:id",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "url":  "{{base_url}}/api/v1/categories/{{category_id}}",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"name\":\"Wedding \u0026 Candid Photographer\",\"description\":\"Updated title for wedding candid specialists\",\"displayOrder\":2,\"isActive\":true}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/categories/:id",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "url":  "{{base_url}}/api/v1/categories/{{category_id}}"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "/categories/:slug",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/v1/categories/{{category_slug}}",
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               }
+                                                  }
+                                  }
+                              ]
+                 }
+             ]
+}

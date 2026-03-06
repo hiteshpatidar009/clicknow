@@ -1,0 +1,1870 @@
+{
+  "info": {
+    "name": "ClickNow — Milestone 1 (Auth + Onboarding)",
+    "description": "MILESTONE 1 ONLY\n\n📌 WHO IS THIS FOR:\n- Customer (role: client)\n- Professional (role: professional)\n- NO Admin APIs in this collection\n\n🔑 HOW TO USE:\n1. Run 'STEP 2 — Register' (everyone registers as Customer first)\n2. Copy the token from the response → set in Collection Variable 'token'\n3. CUSTOMER: skip to Customer Flow\n4. PROFESSIONAL: complete phone OTP in Professional Flow, then continue onboarding\n   The onboarding step auto-upgrades role from client → professional\n\n⚠️ NO role field in registration — everyone starts as 'client'\n⚠️ Role upgrades ONLY happen via POST /professionals (onboarding)\n⚠️ Admin can suspend a professional → role goes back to 'client'\n\n📂 FOLDER STRUCTURE:\n- 🔓 SHARED AUTH — Register + Email OTP, Login, Refresh, Logout\n- 🟢 CUSTOMER FLOW — Profile, Browse, Booking, Reviews\n- 🔵 PROFESSIONAL FLOW — Onboarding Steps → Dashboard\n\n⚠️ BASE URL: http://localhost:3000/api/v1\n\nAUTH NOTE:\n- Register payload uses fullName (no firstName/lastName).\n- Email OTP uses SMTP provider.\n- Phone OTP supports provider=firebase or provider=mock for testing.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "PASTE_YOUR_JWT_TOKEN_HERE",
+      "type": "string"
+    },
+    {
+      "key": "refresh_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "professionalId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "bookingId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "test_email",
+      "value": "tarun.jain@example.com",
+      "type": "string"
+    },
+    {
+      "key": "test_phone",
+      "value": "+919876543210",
+      "type": "string"
+    },
+    {
+      "key": "otp_provider_phone",
+      "value": "mock",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🔓 SHARED AUTH (No Token Required)",
+      "description": "Public endpoints — use these first to register and get your JWT token",
+      "item": [
+        {
+          "name": "STEP 1A — Send OTP (Email Verification for Registration)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{test_email}}\",\n  \"role\": \"client\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/send-otp",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "send-otp"
+              ]
+            },
+            "description": "Registration flow: send OTP to user's email.\n\nUse email + role only (no purpose field).\n\nWhen email service is integrated, OTP is delivered to email.\n\nMailerSend note: if sending fails with 450/MS42207, verify your sender domain/email and set SMTP_FROM to a verified sender."
+          },
+          "response": []
+        },
+        {
+          "name": "STEP 1B — Verify OTP (Email Verification for Registration)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{test_email}}\",\n  \"otp\": \"123456\",\n  \"role\": \"client\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/verify-otp",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "verify-otp"
+              ]
+            },
+            "description": "Registration flow: verify email OTP and receive auth response."
+          },
+          "response": []
+        },
+        {
+          "name": "STEP 2 — Register (Everyone — Customer OR Future Professional)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{test_email}}\",\n  \"password\": \"SecurePass@123\",\n  \"phone\": \"{{test_phone}}\",\n  \"fullName\": \"Tarun Jain\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Registration Screen\n\nONE REGISTRATION FOR EVERYONE.\n\nAfter register, backend sends OTP to email (auth/send-otp via email).\nVerify email OTP using STEP 1B.\n\nDo not send role at register; user starts as role='client'.\nProfessional upgrade happens later via POST /professionals onboarding.\n\nSend fullName in registration payload."
+          },
+          "response": []
+        },
+        {
+          "name": "STEP 3 — Login (Email + Password)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{test_email}}\",\n  \"password\": \"SecurePass@123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "📱 Figma Screen: Login Screen\n\nLogin with email and password.\n\nResponse includes:\n- token (JWT access token)\n- refreshToken\n- user { id, email, role, fullName }\n\n✅ Copy token → set in Collection Variable 'token'"
+          },
+          "response": []
+        },
+        {
+          "name": "Login with Google (Firebase)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firebaseToken\": \"FIREBASE_ID_TOKEN_FROM_GOOGLE_SIGN_IN\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/firebase",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "firebase"
+              ]
+            },
+            "description": "📱 Figma Screen: Login Screen → 'Sign up with Google' button\n\nExchange Firebase ID token for app JWT token.\nFirebase token is obtained from Google Sign-In on the frontend."
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refresh_token}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/refresh",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "refresh"
+              ]
+            },
+            "description": "Use refresh token to get a new access token when the current one expires.\n\nJWT access token expires in 15min by default.\nCall this when you get 401 AUTH_TOKEN_EXPIRED."
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Profile (Who Am I)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "description": "📱 Used on: App startup to check if user is logged in\n\nReturns the currently authenticated user's basic info.\n\nResponse: { id, email, role, fullName, isVerified, avatar }"
+          },
+          "response": []
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"SecurePass@123\",\n  \"newPassword\": \"NewSecurePass@456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/change-password",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "change-password"
+              ]
+            },
+            "description": "📱 Figma Screen: Profile → Settings → Change Password"
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            },
+            "description": "Invalidate the current session. Call this when user taps Logout."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🟢 CUSTOMER FLOW",
+      "description": "All APIs used by Customer role (role: client)\n\n📱 Screens Covered:\n- Customer Dashboard (Home)\n- Portfolio / Browse Professionals\n- Service Booking Form\n- My Bookings (Upcoming, Completed, Cancelled)\n- My Profile\n- Settings",
+      "item": [
+        {
+          "name": "── PROFILE & SETTINGS ──",
+          "item": [
+            {
+              "name": "Get My Profile",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/users/profile",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "users",
+                    "profile"
+                  ]
+                },
+                "description": "📱 Figma Screen: My Profile\n\nReturns the customer's full profile.\n\nRole required: client\n\nResponse: { fullName, email, phone, avatar, settings, stats: { bookings, spent, ratings } }"
+              },
+              "response": []
+            },
+            {
+              "name": "Update My Profile",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"phone\": \"{{test_phone}}\",\n  \"avatar\": \"https://cdn.example.com/avatars/tarun.jpg\",\n  \"fullName\": \"Tarun Jain\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/users/profile",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "users",
+                    "profile"
+                  ]
+                },
+                "description": "📱 Figma Screen: My Profile → Edit\n\nUpdate name, phone, avatar."
+              },
+              "response": []
+            },
+            {
+              "name": "Update Notification Settings",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"notifications\": {\n    \"push\": true,\n    \"email\": true,\n    \"whatsapp\": true,\n    \"marketing\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/users/notifications/settings",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "users",
+                    "notifications",
+                    "settings"
+                  ]
+                },
+                "description": "📱 Figma Screen: Profile → Settings → Notifications"
+              },
+              "response": []
+            },
+            {
+              "name": "Update FCM Push Token",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fcmToken\": \"FIREBASE_PUSH_TOKEN_FROM_DEVICE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/users/fcm-token",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "users",
+                    "fcm-token"
+                  ]
+                },
+                "description": "Call this on app launch after login to register the device for push notifications."
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "── BROWSE PROFESSIONALS ──",
+          "item": [
+            {
+              "name": "Get Featured Professionals (Home Screen)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/professionals/featured?limit=10",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "featured"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                },
+                "description": "📱 Figma Screen: Customer Dashboard — 'Our Leading Services' banner\n\nReturns admin-featured professionals.\nNo auth required (public)."
+              },
+              "response": []
+            },
+            {
+              "name": "Get All Categories",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/categories",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "categories"
+                  ]
+                },
+                "description": "📱 Figma Screen: Customer Dashboard — 'Services At ClickNow' grid\n\nReturns all active service categories (Photographer, DJ, Musician, Anchor, etc.)\nPublic endpoint — no auth required."
+              },
+              "response": []
+            },
+            {
+              "name": "Search Professionals (with Filters)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/professionals?category=photographer&city=Mumbai&minRating=4&maxPrice=50000&sortBy=rating&page=1&pageSize=20",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals"
+                  ],
+                  "query": [
+                    {
+                      "key": "category",
+                      "value": "photographer",
+                      "description": "photographer | dj | musician | anchor | videographer"
+                    },
+                    {
+                      "key": "city",
+                      "value": "Mumbai"
+                    },
+                    {
+                      "key": "minRating",
+                      "value": "4"
+                    },
+                    {
+                      "key": "maxPrice",
+                      "value": "50000"
+                    },
+                    {
+                      "key": "sortBy",
+                      "value": "rating",
+                      "description": "rating | price | bookings"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "📱 Figma Screen: Browse/Search Professionals\n\nAll filters are optional. Returns paginated results.\n\nResponse: { data: [...], pagination: { page, pageSize, totalCount, totalPages, hasMore } }"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Professionals by Category",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/professionals/category/photographer?page=1&pageSize=20",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "category",
+                    "photographer"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "📱 Figma Screen: Services At ClickNow → tap a category\n\nReplace 'photographer' with: dj | musician | anchor | videographer | cinematographer"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Top Rated Professionals",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/professionals/top-rated?limit=10",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "top-rated"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                },
+                "description": "📱 Figma Screen: Customer Dashboard — recommended professionals"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Professional Public Profile",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/professionals/{{professionalId}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "{{professionalId}}"
+                  ]
+                },
+                "description": "📱 Figma Screen: Service Booking Form (top section — professional info)\n\nReturns public profile: name, category, bio, pricing, rating, reviews count, location, specialties.\n\n⚠️ Set professionalId in Collection Variables first."
+              },
+              "response": []
+            },
+            {
+              "name": "Get Professional Portfolio Gallery",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/professionals/{{professionalId}}/gallery?page=1&pageSize=20",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "{{professionalId}}",
+                    "gallery"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "📱 Figma Screen: Portfolio Screen → Media Gallery tabs (All, Photography, Multiday, Wedding)\n\nReturns portfolio images/videos for a professional."
+              },
+              "response": []
+            },
+            {
+              "name": "Get Professional Reviews",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/professionals/{{professionalId}}/reviews?page=1&pageSize=10",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "{{professionalId}}",
+                    "reviews"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "10"
+                    }
+                  ]
+                },
+                "description": "📱 Figma Screen: Portfolio Screen → 'Our Client Experiences' section\n\nReturns approved reviews with rating, title, content, reviewer name."
+              },
+              "response": []
+            },
+            {
+              "name": "Get Professional Availability Slots",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/professionals/{{professionalId}}/availability/slots?date=2026-03-15&duration=120",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "{{professionalId}}",
+                    "availability",
+                    "slots"
+                  ],
+                  "query": [
+                    {
+                      "key": "date",
+                      "value": "2026-03-15",
+                      "description": "YYYY-MM-DD format"
+                    },
+                    {
+                      "key": "duration",
+                      "value": "120",
+                      "description": "Duration in minutes"
+                    }
+                  ]
+                },
+                "description": "📱 Figma Screen: Service Booking Form → Event Date field\n\nCheck available time slots for a specific date before booking."
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "── BOOKING FLOW ──",
+          "item": [
+            {
+              "name": "STEP 1 — Create Booking Request",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"professionalId\": \"{{professionalId}}\",\n  \"bookingDate\": \"2026-03-15\",\n  \"startTime\": \"10:00\",\n  \"endTime\": \"14:00\",\n  \"duration\": 240,\n  \"eventType\": \"Wedding\",\n  \"eventDetails\": {\n    \"description\": \"Full wedding ceremony and reception coverage\",\n    \"guestCount\": 200,\n    \"serviceType\": \"Full Day Photography\",\n    \"specialRequirements\": \"Drone shots required\"\n  },\n  \"location\": {\n    \"address\": \"Taj Hotel, Marine Drive\",\n    \"city\": \"Mumbai\",\n    \"state\": \"Maharashtra\",\n    \"pincode\": \"400001\"\n  },\n  \"pricing\": {\n    \"type\": \"package\",\n    \"packageName\": \"Premium Wedding Package\",\n    \"baseAmount\": 45000,\n    \"totalAmount\": 47000,\n    \"currency\": \"INR\"\n  },\n  \"notes\": \"Please bring backup equipment\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/bookings",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings"
+                  ]
+                },
+                "description": "📱 Figma Screen: Service Booking Form → 'Submit Request' / 'Book This Service' button\n\nRole required: client\n\nCreates a booking in PENDING status.\n\n✅ After success: Copy booking 'id' from response → set in Collection Variable 'bookingId'"
+              },
+              "response": []
+            },
+            {
+              "name": "Get My Bookings — Upcoming",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/bookings/client?status=confirmed&page=1&pageSize=20",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings",
+                    "client"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "confirmed",
+                      "description": "pending | confirmed | completed | cancelled | rejected"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "📱 Figma Screen: My Bookings → 'Upcoming' tab\n\nRole required: client\n\nReturns paginated list of client's bookings filtered by status."
+              },
+              "response": []
+            },
+            {
+              "name": "Get My Bookings — Completed",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/bookings/client?status=completed&page=1&pageSize=20",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings",
+                    "client"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "completed"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "📱 Figma Screen: My Bookings → 'Completed' tab"
+              },
+              "response": []
+            },
+            {
+              "name": "Get My Bookings — Cancelled",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/bookings/client?status=cancelled&page=1&pageSize=20",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings",
+                    "client"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "cancelled"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "📱 Figma Screen: My Bookings → 'Cancelled' tab"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Booking Detail",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/bookings/{{bookingId}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings",
+                    "{{bookingId}}"
+                  ]
+                },
+                "description": "📱 Figma Screen: My Bookings → tap on a booking card\n\nReturns full booking details including professional info, location, pricing, status."
+              },
+              "response": []
+            },
+            {
+              "name": "Cancel Booking (Customer)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"Change of plans\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/bookings/{{bookingId}}/cancel",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings",
+                    "{{bookingId}}",
+                    "cancel"
+                  ]
+                },
+                "description": "📱 Figma Screen: My Bookings → Upcoming → 'Cancel' action\n\nCustomer can cancel a pending or confirmed booking."
+              },
+              "response": []
+            },
+            {
+              "name": "Reschedule Booking (Customer)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"bookingDate\": \"2026-03-20\",\n  \"startTime\": \"11:00\",\n  \"endTime\": \"15:00\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/bookings/{{bookingId}}/reschedule",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings",
+                    "{{bookingId}}",
+                    "reschedule"
+                  ]
+                },
+                "description": "📱 Figma Screen: My Bookings → Reschedule action"
+              },
+              "response": []
+            },
+            {
+              "name": "Submit Review (After Booking Completed)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"bookingId\": \"{{bookingId}}\",\n  \"professionalId\": \"{{professionalId}}\",\n  \"rating\": 5,\n  \"title\": \"Exceptional service!\",\n  \"content\": \"The photography was absolutely stunning. Very professional and punctual.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/reviews",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "reviews"
+                  ]
+                },
+                "description": "📱 Figma Screen: My Bookings → Completed → 'Rate & Review'\n\nRole required: client\n\nCan only submit review for a completed booking."
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "🔵 PROFESSIONAL FLOW",
+      "description": "Professional onboarding + dashboard APIs.\n\nFlow:\n1. User Selection (choose Professional)\n2. Phone OTP verification for professional onboarding\n3. Tell About Yourself\n4. Build Profile\n5. Legal & Identity\n6. Pricing & Payment\n7. Services & Portfolio\n8. Submit and check approval status",
+      "item": [
+        {
+          "name": "── STEP 1: REGISTER (use Shared Auth above) ──",
+          "item": [
+            {
+              "name": "ℹ️ README — Professional Registration",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/auth/me",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "me"
+                  ]
+                },
+                "description": "HOW TO START AS PROFESSIONAL:\n\n1. Register/Login from SHARED AUTH and set token\n2. Send professional phone OTP (STEP 1A below)\n3. Verify professional phone OTP (STEP 1B below)\n4. Start onboarding by POST /professionals\n5. Continue remaining onboarding steps in order"
+              },
+              "response": []
+            },
+            {
+              "name": "STEP 1A — Send OTP (Professional Phone Verification)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"phone\": \"{{test_phone}}\",\n  \"role\": \"professional\",\n  \"recaptchaToken\": \"FIREBASE_RECAPTCHA_TOKEN_FROM_CLIENT\",\n  \"provider\": \"firebase\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/auth/send-otp",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "send-otp"
+                  ]
+                },
+                "description": "Professional onboarding entry: send OTP to phone number before creating professional profile.\n\nIf OTP_PROVIDER_PHONE=firebase, pass recaptchaToken from client app.\n\nUse provider=firebase.\n\nFor testing without Firebase billing/recaptcha, use provider=mock."
+              },
+              "response": []
+            },
+            {
+              "name": "STEP 1B — Verify OTP (Professional Phone Verification)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"phone\": \"{{test_phone}}\",\n  \"otp\": \"123456\",\n  \"role\": \"professional\",\n  \"provider\": \"firebase\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/auth/verify-otp",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "verify-otp"
+                  ]
+                },
+                "description": "Verify professional phone OTP before starting onboarding endpoints.\n\nUse provider=firebase."
+              },
+              "response": []
+            },
+            {
+              "name": "STEP 1A-alt — Send OTP (Professional Phone Verification Mock)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"phone\": \"{{test_phone}}\",\n  \"role\": \"professional\",\n  \"provider\": \"mock\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/auth/send-otp",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "send-otp"
+                  ]
+                },
+                "description": "Testing flow: force mock phone OTP when Firebase is not available. Response returns devOtp.\n\nFor testing without Firebase billing/recaptcha, use provider=mock."
+              },
+              "response": []
+            },
+            {
+              "name": "STEP 1B-alt — Verify OTP (Professional Phone Verification Mock)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"phone\": \"{{test_phone}}\",\n  \"otp\": \"123456\",\n  \"role\": \"professional\",\n  \"provider\": \"mock\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/auth/verify-otp",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "verify-otp"
+                  ]
+                },
+                "description": "Testing flow: verify mock phone OTP. Use the devOtp returned by Send OTP mock request."
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "── STEP 2: PERSONAL INFO (Figma: Tell About Yourself) ──",
+          "item": [
+            {
+              "name": "Save Personal Info (Onboarding Step 1)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"category\": \"photographer\",\n  \"businessName\": \"Raj Mehta Photography\",\n  \"bio\": \"Award-winning wedding photographer with 8 years of experience capturing precious moments.\",\n  \"experience\": 8,\n  \"specialties\": [\"wedding\", \"portrait\", \"corporate\", \"pre-wedding\"],\n  \"personalDetails\": {\n    \"gender\": \"male\",\n    \"dob\": \"1994-05-15\",\n    \"languagesKnown\": [\"Hindi\", \"English\", \"Gujarati\"]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/professionals",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals"
+                  ]
+                },
+                "description": "Tell About Yourself (starts professional profile creation after OTP verification).\n\nAfter success: copy professional id to {{professionalId}}."
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "── STEP 3: PROFESSIONAL PROFILE (Figma: Build Your Profile) ──",
+          "item": [
+            {
+              "name": "Update Work Details (Onboarding Step 2)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"workDetails\": {\n    \"availableWorkingDays\": [\"monday\", \"tuesday\", \"wednesday\", \"thursday\", \"friday\", \"saturday\"],\n    \"startTime\": \"09:00\",\n    \"endTime\": \"20:00\",\n    \"equipmentDetails\": \"Sony A7IV, DJI Drone, Professional Lighting Kit\",\n    \"socialLinks\": {\n      \"instagram\": \"https://instagram.com/rajmehta_photo\",\n      \"website\": \"https://rajmehta.in\",\n      \"googleMap\": \"https://maps.google.com/?q=Mumbai\"\n    }\n  },\n  \"location\": {\n    \"address\": \"Bandra West\",\n    \"city\": \"Mumbai\",\n    \"state\": \"Maharashtra\",\n    \"country\": \"India\",\n    \"pincode\": \"400050\",\n    \"coordinates\": {\n      \"latitude\": 19.0596,\n      \"longitude\": 72.8295\n    }\n  },\n  \"serviceAreas\": [\"Mumbai\", \"Pune\", \"Nashik\", \"Thane\"]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/professionals/me",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "me"
+                  ]
+                },
+                "description": "📱 Figma Screen: 'Build Your Professional Profile' — working days, location, equipment\n\nRole required: professional"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "── STEP 4: LEGAL & IDENTITY (Figma: Identity Verification) ──",
+          "item": [
+            {
+              "name": "Update Documents & KYC (Onboarding Step 3)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"documents\": {\n    \"aadharNumber\": \"1234-5678-9012\",\n    \"panNumber\": \"ABCDE1234F\",\n    \"gstNumber\": \"27ABCDE1234F1Z5\",\n    \"aadharFront\": \"https://cdn.example.com/docs/aadhar_front.jpg\",\n    \"aadharBack\": \"https://cdn.example.com/docs/aadhar_back.jpg\",\n    \"panCard\": \"https://cdn.example.com/docs/pan.jpg\",\n    \"policeVerificationCertificate\": \"https://cdn.example.com/docs/police_cert.pdf\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/professionals/me",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "me"
+                  ]
+                },
+                "description": "📱 Figma Screen: 'Legal & Identity Verification'\n\nFields: Aadhaar number, PAN number, GST (optional), document image URLs.\n\n⚠️ Upload images first using the UPLOAD API, then pass the returned URL here."
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "── STEP 5: PRICING & PAYMENT (Figma: Pricing Setup) ──",
+          "item": [
+            {
+              "name": "Update Pricing & Bank Details (Onboarding Step 4)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"pricing\": {\n    \"hourlyRate\": 2500,\n    \"minimumHours\": 4,\n    \"currency\": \"INR\",\n    \"packages\": [\n      {\n        \"name\": \"Basic Package\",\n        \"description\": \"4 hours coverage, 100 edited photos\",\n        \"price\": 15000,\n        \"duration\": 4,\n        \"includes\": [\"100 edited photos\", \"Online gallery\", \"1 photographer\"],\n        \"isPopular\": false,\n        \"order\": 1\n      },\n      {\n        \"name\": \"Premium Wedding Package\",\n        \"description\": \"Full day coverage, 500 edited photos + video\",\n        \"price\": 45000,\n        \"duration\": 10,\n        \"includes\": [\"500 edited photos\", \"Wedding film\", \"2 photographers\", \"Drone shots\", \"Same day preview\"],\n        \"isPopular\": true,\n        \"order\": 2\n      }\n    ],\n    \"travelFee\": {\n      \"enabled\": true,\n      \"perKm\": 15,\n      \"freeWithinKm\": 30\n    }\n  },\n  \"bankDetails\": {\n    \"accountNumber\": \"1234567890\",\n    \"ifscCode\": \"HDFC0001234\",\n    \"bankName\": \"HDFC Bank\",\n    \"accountHolderName\": \"Raj Mehta\",\n    \"upiId\": \"rajmehta@hdfc\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/professionals/me",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "me"
+                  ]
+                },
+                "description": "📱 Figma Screen: 'Pricing & Payment Setup'\n\nSet hourly rate, packages, and bank/UPI details for payouts."
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "── STEP 6: PORTFOLIO (Add Work Samples) ──",
+          "item": [
+            {
+              "name": "Upload File (Get URL first)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "src": [],
+                      "description": "Select your portfolio image/video file"
+                    },
+                    {
+                      "key": "folder",
+                      "value": "portfolio",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/uploads",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "uploads"
+                  ]
+                },
+                "description": "📱 Used when adding portfolio items\n\nUpload image or video first. Copy the returned URL, then use it in 'Add Portfolio Item'.\n\nResponse: { url: 'https://cdn...', thumbnailUrl: '...', type: 'image' }"
+              },
+              "response": []
+            },
+            {
+              "name": "Add Portfolio Item (Onboarding Step 5)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"image\",\n  \"url\": \"https://cdn.example.com/portfolio/wedding1.jpg\",\n  \"thumbnailUrl\": \"https://cdn.example.com/portfolio/wedding1_thumb.jpg\",\n  \"title\": \"Royal Wedding at Taj Hotel\",\n  \"description\": \"Full day wedding coverage in Mumbai\",\n  \"category\": \"wedding\",\n  \"order\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/professionals/me/portfolio",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "me",
+                    "portfolio"
+                  ]
+                },
+                "description": "📱 Figma Screen: Portfolio management\n\ntype: 'image' | 'video'\ncategory: 'wedding' | 'portrait' | 'corporate' | 'pre-wedding'"
+              },
+              "response": []
+            },
+            {
+              "name": "Remove Portfolio Item",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/professionals/me/portfolio/:itemId",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "me",
+                    "portfolio",
+                    ":itemId"
+                  ],
+                  "variable": [
+                    {
+                      "key": "itemId",
+                      "value": "PORTFOLIO_ITEM_ID"
+                    }
+                  ]
+                },
+                "description": "Remove a specific portfolio item by its ID."
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "── STEP 7: SUBMIT FOR APPROVAL ──",
+          "item": [
+            {
+              "name": "Get My Professional Profile (Check Status)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/professionals/me/profile",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "me",
+                    "profile"
+                  ]
+                },
+                "description": "📱 Figma Screen: 'Profile Submitted Successfully!' → check approval status\n\nReturns full professional profile including:\n- status: pending | approved | rejected\n- All onboarding fields\n\nPoll this after submission to check if admin has approved."
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "── DASHBOARD: BOOKINGS ──",
+          "item": [
+            {
+              "name": "Get My Bookings — All",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/bookings/professional?page=1&pageSize=20",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings",
+                    "professional"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "",
+                      "disabled": true,
+                      "description": "Filter: pending | confirmed | completed | cancelled | rejected"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "📱 Figma Screen: Vendor Dashboard → My Bookings → All tabs\n\nRole required: professional\n\nRemove status param to get all bookings."
+              },
+              "response": []
+            },
+            {
+              "name": "Get My Upcoming Bookings",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/bookings/professional/upcoming?limit=5",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings",
+                    "professional",
+                    "upcoming"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "5"
+                    }
+                  ]
+                },
+                "description": "📱 Figma Screen: Vendor Dashboard → 'Upcoming Bookings' widget\n\nRole required: professional"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Calendar View",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/bookings/professional/calendar?year=2026&month=3",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings",
+                    "professional",
+                    "calendar"
+                  ],
+                  "query": [
+                    {
+                      "key": "year",
+                      "value": "2026"
+                    },
+                    {
+                      "key": "month",
+                      "value": "3"
+                    }
+                  ]
+                },
+                "description": "📱 Figma Screen: Vendor Dashboard → Calendar\n\nReturns booked/blocked dates for the month."
+              },
+              "response": []
+            },
+            {
+              "name": "Confirm Booking (Professional Accepts)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/bookings/{{bookingId}}/confirm",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings",
+                    "{{bookingId}}",
+                    "confirm"
+                  ]
+                },
+                "description": "📱 Figma Screen: Vendor Dashboard → Pending Booking → 'Confirm' button\n\nRole required: professional\n\nChanges booking status: pending → confirmed"
+              },
+              "response": []
+            },
+            {
+              "name": "Reject Booking (Professional Declines)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"Not available on this date\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/bookings/{{bookingId}}/reject",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings",
+                    "{{bookingId}}",
+                    "reject"
+                  ]
+                },
+                "description": "📱 Figma Screen: Vendor Dashboard → Pending Booking → 'Reject' button\n\nRole required: professional"
+              },
+              "response": []
+            },
+            {
+              "name": "Mark Booking as Completed",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/bookings/{{bookingId}}/complete",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "bookings",
+                    "{{bookingId}}",
+                    "complete"
+                  ]
+                },
+                "description": "📱 Figma Screen: Vendor Dashboard → Confirmed Booking → 'Mark Complete'\n\nRole required: professional"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "── DASHBOARD: PROFILE MANAGEMENT ──",
+          "item": [
+            {
+              "name": "Update Contact Info",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"contact\": {\n    \"phone\": \"+919876543211\",\n    \"email\": \"raj.mehta@business.com\",\n    \"website\": \"https://rajmehta.in\",\n    \"instagram\": \"@rajmehta_photo\",\n    \"facebook\": \"rajmehtaphotography\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/professionals/me",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "me"
+                  ]
+                },
+                "description": "📱 Figma Screen: Vendor Dashboard → Edit Professional Information → Contact\n\nRole required: professional"
+              },
+              "response": []
+            },
+            {
+              "name": "Toggle Active Status (Go Online/Offline)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"isActive\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/professionals/me/active",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "professionals",
+                    "me",
+                    "active"
+                  ]
+                },
+                "description": "📱 Figma Screen: Vendor Dashboard → toggle active/inactive switch\n\nSet isActive: false to go offline (won't appear in search)."
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "🔧 SYSTEM",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Check if the API server is running.\n\nResponse: { success: true, message: 'API is running', timestamp, version }"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2371 @@
+{
+  "info": {
+    "name": "ClickNow - Missing APIs (Add-on)",
+    "description": "Auto-generated Postman collection for endpoints implemented in backend routes but missing from ClickNow-Full-Postman.json.\\n\\nUse this collection along with the full collection.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "PASTE_JWT_TOKEN_HERE",
+      "type": "string"
+    },
+    {
+      "key": "chatId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "date",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "itemId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "messageId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "ADMIN",
+      "item": [
+        {
+          "name": "DELETE /admin/professionals/:id/portfolio/:itemId",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/professionals/{{id}}/portfolio/{{itemId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "professionals",
+                ":id",
+                "portfolio",
+                ":itemId"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /admin/reviews/statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/reviews/statistics",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "reviews",
+                "statistics"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "POST /admin/professionals/:id/portfolio",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/professionals/{{id}}/portfolio",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "professionals",
+                ":id",
+                "portfolio"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PUT /admin/professionals/:id/about",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/professionals/{{id}}/about",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "professionals",
+                ":id",
+                "about"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "AUTH",
+      "item": [
+        {
+          "name": "POST /auth/google",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/google",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "google"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "AVAILABILITY",
+      "item": [
+        {
+          "name": "DELETE /availability/blocked-dates/:date",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/availability/blocked-dates/{{date}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "availability",
+                "blocked-dates",
+                ":date"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "DELETE /availability/special-dates/:date",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/availability/special-dates/{{date}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "availability",
+                "special-dates",
+                ":date"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /availability",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/availability",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "availability"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /availability/calendar",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/availability/calendar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "availability",
+                "calendar"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /availability/check",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/availability/check",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "availability",
+                "check"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /availability/slots",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/availability/slots",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "availability",
+                "slots"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "POST /availability/blocked-dates",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/availability/blocked-dates",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "availability",
+                "blocked-dates"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST /availability/special-dates",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/availability/special-dates",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "availability",
+                "special-dates"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PUT /availability/buffer-time",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/availability/buffer-time",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "availability",
+                "buffer-time"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PUT /availability/schedule",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/availability/schedule",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "availability",
+                "schedule"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PUT /availability/settings",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/availability/settings",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "availability",
+                "settings"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "BOOKINGS",
+      "item": [
+        {
+          "name": "GET /bookings/:id/matches",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/bookings/{{id}}/matches",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "bookings",
+                ":id",
+                "matches"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /bookings/date/:date",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/bookings/date/{{date}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "bookings",
+                "date",
+                ":date"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        }
+      ]
+    },
+    {
+      "name": "CATEGORIES",
+      "item": [
+        {
+          "name": "DELETE /categories/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/categories/{{id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categories",
+                ":id"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "POST /categories",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PUT /categories/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/categories/{{id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categories",
+                ":id"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "CHATS",
+      "item": [
+        {
+          "name": "DELETE /chats/:chatId/messages/:messageId",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/chats/{{chatId}}/messages/{{messageId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "chats",
+                ":chatId",
+                "messages",
+                ":messageId"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /chats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/chats",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "chats"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /chats/:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/chats/{{id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "chats",
+                ":id"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /chats/:id/messages",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/chats/{{id}}/messages",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "chats",
+                ":id",
+                "messages"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /chats/unread-count",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/chats/unread-count",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "chats",
+                "unread-count"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "POST /chats",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/chats",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "chats"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST /chats/:id/messages",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/chats/{{id}}/messages",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "chats",
+                ":id",
+                "messages"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PUT /chats/:id/archive",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/chats/{{id}}/archive",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "chats",
+                ":id",
+                "archive"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PUT /chats/:id/read",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/chats/{{id}}/read",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "chats",
+                ":id",
+                "read"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ENQUIRIES",
+      "item": [
+        {
+          "name": "GET /enquiries",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/enquiries",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "enquiries"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /enquiries/:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/enquiries/{{id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "enquiries",
+                ":id"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /enquiries/client",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/enquiries/client",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "enquiries",
+                "client"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /enquiries/professional",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/enquiries/professional",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "enquiries",
+                "professional"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /enquiries/professional/pending",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/enquiries/professional/pending",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "enquiries",
+                "professional",
+                "pending"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "POST /enquiries",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/enquiries",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "enquiries"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PUT /enquiries/:id/close",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/enquiries/{{id}}/close",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "enquiries",
+                ":id",
+                "close"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PUT /enquiries/:id/convert",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/enquiries/{{id}}/convert",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "enquiries",
+                ":id",
+                "convert"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PUT /enquiries/:id/respond",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/enquiries/{{id}}/respond",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "enquiries",
+                ":id",
+                "respond"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "FEED",
+      "item": [
+        {
+          "name": "DELETE /feed/posts/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/feed/posts/{{id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "feed",
+                "posts",
+                ":id"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /feed",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/feed",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "feed"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /feed/posts/:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/feed/posts/{{id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "feed",
+                "posts",
+                ":id"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /feed/posts/:id/comments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/feed/posts/{{id}}/comments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "feed",
+                "posts",
+                ":id",
+                "comments"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "POST /feed/posts",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/feed/posts",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "feed",
+                "posts"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST /feed/posts/:id/comments",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/feed/posts/{{id}}/comments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "feed",
+                "posts",
+                ":id",
+                "comments"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST /feed/posts/:id/like",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/feed/posts/{{id}}/like",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "feed",
+                "posts",
+                ":id",
+                "like"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "NOTIFICATIONS",
+      "item": [
+        {
+          "name": "DELETE /notifications/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notifications/{{id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notifications",
+                ":id"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /notifications/statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notifications/statistics",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notifications",
+                "statistics"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /notifications/unread",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notifications/unread",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notifications",
+                "unread"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /notifications/unread-count",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notifications/unread-count",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notifications",
+                "unread-count"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "PUT /notifications/read-all",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notifications/read-all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notifications",
+                "read-all"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "PROFESSIONALS",
+      "item": [
+        {
+          "name": "GET /professionals/:id/availability",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/professionals/{{id}}/availability",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "professionals",
+                ":id",
+                "availability"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        }
+      ]
+    },
+    {
+      "name": "REVIEWS",
+      "item": [
+        {
+          "name": "GET /reviews/:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reviews/{{id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reviews",
+                ":id"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /reviews/my",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reviews/my",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reviews",
+                "my"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "POST /reviews/:id/helpful",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reviews/{{id}}/helpful",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reviews",
+                ":id",
+                "helpful"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST /reviews/:id/report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reviews/{{id}}/report",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reviews",
+                ":id",
+                "report"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST /reviews/:id/response",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reviews/{{id}}/response",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reviews",
+                ":id",
+                "response"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SEARCH",
+      "item": [
+        {
+          "name": "GET /search/autocomplete",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/search/autocomplete",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "search",
+                "autocomplete"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /search/professionals",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/search/professionals",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "search",
+                "professionals"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        }
+      ]
+    },
+    {
+      "name": "SOCIAL",
+      "item": [
+        {
+          "name": "GET /social/check/:userId",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/social/check/{{userId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "social",
+                "check",
+                ":userId"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /social/followers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/social/followers",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "social",
+                "followers"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /social/followers/:userId",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/social/followers/{{userId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "social",
+                "followers",
+                ":userId"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /social/following",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/social/following",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "social",
+                "following"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /social/following/:userId",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/social/following/{{userId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "social",
+                "following",
+                ":userId"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /social/stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/social/stats",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "social",
+                "stats"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /social/stats/:userId",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/social/stats/{{userId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "social",
+                "stats",
+                ":userId"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "POST /social/follow",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/social/follow",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "social",
+                "follow"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST /social/unfollow",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/social/unfollow",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "social",
+                "unfollow"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "UPLOADS",
+      "item": [
+        {
+          "name": "DELETE /uploads",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/uploads",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "uploads"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /uploads/signed-url",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/uploads/signed-url",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "uploads",
+                "signed-url"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "POST /uploads/avatar",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/uploads/avatar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "uploads",
+                "avatar"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST /uploads/chat",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/uploads/chat",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "uploads",
+                "chat"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST /uploads/documents",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/uploads/documents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "uploads",
+                "documents"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST /uploads/general",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/uploads/general",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "uploads",
+                "general"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST /uploads/portfolio",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/uploads/portfolio",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "uploads",
+                "portfolio"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST /uploads/presigned-url",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/uploads/presigned-url",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "uploads",
+                "presigned-url"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "USERS",
+      "item": [
+        {
+          "name": "DELETE /users/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/{{id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                ":id"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /users/:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/{{id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                ":id"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "GET /users/statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/statistics",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "statistics"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed."
+          }
+        },
+        {
+          "name": "PUT /users/:id/activate",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/{{id}}/activate",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                ":id",
+                "activate"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PUT /users/:id/deactivate",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/{{id}}/deactivate",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                ":id",
+                "deactivate"
+              ]
+            },
+            "description": "Auto-generated missing endpoint. Add query/body as needed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

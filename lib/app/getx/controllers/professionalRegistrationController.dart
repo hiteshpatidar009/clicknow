@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'package:clicknow/app/getx/controllers/emailOtpController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:clicknow/app/getx/controllers/authController.dart';
 import 'package:clicknow/app/services/auth_service.dart';
 
 class Professionalregistrationcontroller extends GetxController {
@@ -205,7 +203,7 @@ class Professionalregistrationcontroller extends GetxController {
     isOtpLoading.value = true;
     try {
       final phone = "+91${phoneController.text}";
-      await _authService.sendOtp(phone: phone, role: "professional");
+      await _authService.sendOtp(phone: phone);
       isOtpSent.value = true;
       isPhoneVerified.value = false;
       startTimer();
@@ -227,12 +225,7 @@ class Professionalregistrationcontroller extends GetxController {
     isOtpLoading.value = true;
     try {
       final phone = "+91${phoneController.text}";
-      final session = await _authService.verifyOtp(
-        phone: phone,
-        otp: otpController.text,
-        role: "professional",
-      );
-      await AuthController.instance.setSession(session);
+      await _authService.verifyPhoneOtp(phone: phone, otp: otpController.text);
 
       isPhoneVerified.value = true;
       isOtpSent.value = false;

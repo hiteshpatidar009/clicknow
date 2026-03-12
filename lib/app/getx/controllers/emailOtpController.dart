@@ -37,7 +37,6 @@ class EmailOtpController extends GetxController {
       final session = await _authService.verifyOtp(
         email: email.value,
         otp: otp,
-        role: "client",
       );
       await _storage.setPendingEmail(null);
       await AuthController.instance.setSession(session);

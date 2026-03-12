@@ -77,9 +77,8 @@ class AuthService {
     String? email,
     String? phone,
     required String otp,
-    String role = "client",
   }) async {
-    final body = <String, dynamic>{"otp": otp, "role": role};
+    final body = <String, dynamic>{"otp": otp};
     if (email != null && email.isNotEmpty) {
       body["email"] = email.trim().toLowerCase();
     }
@@ -101,12 +100,27 @@ class AuthService {
     return AuthSession.fromJson(api.data!);
   }
 
-  Future<void> sendOtp({
-    String? email,
-    String? phone,
-    String role = "client",
+  /// Verify phone OTP only (no auth session returned).
+  Future<void> verifyPhoneOtp({
+    required String phone,
+    required String otp,
   }) async {
-    final body = <String, dynamic>{"role": role};
+    final body = <String, dynamic>{"otp": otp, "phone": phone.trim()};
+
+    final response = await _client.post(ApiConstants.verifyOtp_Api, body: body);
+
+    final api = ApiResponse.fromJson(
+      response,
+      parser: (data) => data as Map<String, dynamic>?,
+    );
+
+    if (!api.success) {
+      throw ApiException(api.message);
+    }
+  }
+
+  Future<void> sendOtp({String? email, String? phone}) async {
+    final body = <String, dynamic>{};
     if (email != null && email.isNotEmpty) {
       body["email"] = email.trim().toLowerCase();
     }
